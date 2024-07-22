@@ -4,8 +4,14 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/com
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Input } from "@/components/ui/input"
+import { auth } from "@/lib/auth"
+import { redirect } from "next/navigation"
 
-export default function Page() {
+export default async function  Page() {
+  const session = await auth()
+  if(!session){
+    redirect("/login")
+  }
   return (
     <div className="flex flex-col w-full min-h-screen bg-background">
       <header className="sticky top-0 z-30 flex items-center h-16 px-4 border-b bg-background sm:px-6">
