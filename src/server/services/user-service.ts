@@ -1,6 +1,7 @@
 import prismaClient from "@/lib/prisma-client";
-import { hashPassword } from "@/lib/utils";
+import { hashPassword } from "@/lib/server-utils";
 import { RegisterUserInput } from "@/schema/validation/register-user.schema";
+import { UserAlreadyRegistered } from "../errors";
 
 export const registerUser = async  ({
     email,
@@ -9,6 +10,8 @@ export const registerUser = async  ({
 }:Omit<RegisterUserInput,'passwordConfirmation'> ) => {
 
     const hashedPassword = await hashPassword(password);
+    try{
+
     const user = await prismaClient.user.create({
         data:{
             email,
@@ -18,5 +21,13 @@ export const registerUser = async  ({
     })
 
     return user;
+    }catch(err){
+        if(err.code === 'P2002'){
+            throw new UserAlreadyRegistered();
+        }
+        throw err
+
+    }
+
 
 }

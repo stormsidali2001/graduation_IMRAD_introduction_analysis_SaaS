@@ -2,7 +2,7 @@
 
 import { eurekaClient } from '@/lib/eureka-client'
 import { actionClient, ActionError } from '@/lib/safe-action'
-import { balance } from '@/lib/utils'
+import { balance } from '@/lib/server-utils'
 import axios from 'axios'
 import {z} from 'zod'
 import { getMoves } from '../dao/moves'

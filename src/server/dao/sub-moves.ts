@@ -1,6 +1,6 @@
 
 import { eurekaClient } from "@/lib/eureka-client";
-import { balance } from "@/lib/utils";
+import { balance } from "@/lib/server-utils";
 import axios from "axios";
 
 const map = {

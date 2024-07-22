@@ -1,3 +1,4 @@
+import { UserAlreadyRegistered } from "@/server/errors";
 import {
   createSafeActionClient,
   DEFAULT_SERVER_ERROR_MESSAGE,
@@ -10,9 +11,13 @@ export class ActionError extends Error {}
 // Base client.
 export const actionClient = createSafeActionClient({
   handleReturnedServerError(e) {
+    if(e instanceof UserAlreadyRegistered){
+      return e.message;
+    }
     if (e instanceof ActionError) {
       return e.message;
     }
+
 
     return DEFAULT_SERVER_ERROR_MESSAGE;
   },
