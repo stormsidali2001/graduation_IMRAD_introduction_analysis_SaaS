@@ -1,9 +1,16 @@
 import NextAuth, { User } from "next-auth"
 import Google from "next-auth/providers/google"
 import Credentials from "next-auth/providers/credentials"
- 
+ import { PrismaAdapter } from "@auth/prisma-adapter"
+import prismaClient from "./prisma-client";
+import { findUserByEmail } from "@/server/dao/user";
+import { comparePassword } from "./utils";
+
 export const { auth, handlers, signIn, signOut } = NextAuth({
-  providers: [Google, Credentials({
+  adapter:PrismaAdapter(prismaClient),
+  providers: [
+    Google,
+    Credentials({
 
       credentials: {
         email:{
@@ -12,14 +19,14 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
         },
         password: {  label: "Password", type: "password" }
       },
-      authorize: async ({email,password },request): Promise<User> => {
-        if(email === "sidali" && password === "sidali") {
 
-        }
-
-        return null;
-
+      authorize: async ({email,password }:{email:string,password:string},request): Promise<User> => {
+        const user = await findUserByEmail(email);
+        if(!user) return null;
+        if(!comparePassword(user.password,password)) return null;
+        return user;
       },
+
   })],
   callbacks:{
 
