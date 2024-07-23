@@ -10,6 +10,9 @@ import { FileUploader } from "@/components/ui/fileUpload"
 import { useAction } from "next-safe-action/hooks"
 import { pdfExtractorAction } from "@/server/actions/pdf-extractor"
 import { ArrowDown } from "lucide-react"
+import Lottie from "lottie-react";
+import loadingAnimation from '@/assets/loading-lottie.json'
+
 
 interface Sentence{
     text:string;
@@ -21,6 +24,7 @@ export const Converter = ()=>{
     const [sentences,setSentences] = useState<Sentence[]>([])
     const [files,setFiles] = useState() 
     const {executeAsync,isExecuting,result,hasSucceeded} = useAction(pdfExtractorAction)
+    const {executeAsync:executeAsyncGetMoveSubMove,isExecuting:isExecutingMoves} =useAction(geMoveSubmove)
     const [introduction,setIntroduction] =useState("")
 
     const updateSentences = debounce(async (text:string)=>{
@@ -57,7 +61,7 @@ export const Converter = ()=>{
     const handlePredictions = async ()=>{
 
       alert("loading")
-       const res = await geMoveSubmove({sentences:sentences.map(s=>s.text)});
+       const res = await executeAsyncGetMoveSubMove({sentences:sentences.map(s=>s.text)});
        if(res?.serverError){
         alert(res?.serverError)
        }
@@ -124,11 +128,20 @@ export const Converter = ()=>{
               <Button onClick={() => handlePredictions()}>Analyze</Button>
             </div>
           </div>
-          {isExecuting && <div>Loading...</div>}
+          <div className='flex items-center justify-center'>
+
+          {isExecuting && (
+            <>Uploading ...</>
+          )}
+          </div>
           <div className="mt-8">
             <h3 className="text-xl font-bold mb-4">Introduction Analysis</h3>
-            <div className="grid gap-4">
-              {sentences.map((sentence, index) => {
+            
+            {
+              !isExecutingMoves?(
+   <div className="grid gap-4">
+              {
+              sentences.map((sentence, index) => {
                 return (
                   <>
 
@@ -146,6 +159,17 @@ export const Converter = ()=>{
                 );
               })}
             </div>
+
+              ):(
+                <div className="flex items-center justify-center w-full">
+                <Lottie
+                  animationData={loadingAnimation}
+                  style={{ width: 200, height: 200 }}
+                />
+              </div>
+              )
+            }
+         
           </div>
         </div>
       </section>
