@@ -33,7 +33,7 @@ export const actionClient = createSafeActionClient({
   // Here we await the action execution.
   const result = await next({ ctx: null });
 
-  console.log("Result ->", result);
+  console.log("Result ->", JSON.stringify(result,null,4));
   console.log("Client input ->", clientInput);
   console.log("Metadata ->", metadata);
 

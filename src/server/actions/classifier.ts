@@ -17,7 +17,6 @@ export const geMoveSubmove = actionClient
   )
   .action(async ({ parsedInput: { sentences } }) => {
 
-    // submoves instances
 
     const movesPredictions = (await getMoves(sentences)).map((move,index)=>{
 

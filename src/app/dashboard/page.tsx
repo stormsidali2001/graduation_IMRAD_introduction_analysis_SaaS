@@ -6,6 +6,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Input } from "@/components/ui/input"
 import { auth } from "@/lib/auth"
 import { redirect } from "next/navigation"
+import { Converter } from "../converter"
 
 export default async function  Page() {
   const session = await auth()
@@ -42,27 +43,7 @@ export default async function  Page() {
       </header>
       <main className="flex-1 px-4 py-6 md:px-6 md:py-12">
         <div className="max-w-6xl mx-auto grid gap-8">
-          <Card>
-            <CardHeader>
-              <CardTitle>Add Introduction or Upload Paper</CardTitle>
-              <CardDescription>
-                Start by providing an introduction or uploading a paper to begin the analysis.
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="grid gap-4">
-                <div>
-                  <Label htmlFor="introduction">Introduction</Label>
-                  <Textarea id="introduction" placeholder="Enter your introduction here..." className="min-h-[150px]" />
-                </div>
-                <div>
-                  <Label htmlFor="paper">Upload Paper</Label>
-                  <Input type="file" id="paper" />
-                </div>
-                <Button>Analyze</Button>
-              </div>
-            </CardContent>
-          </Card>
+        <Converter/> 
         </div>
       </main>
     </div>

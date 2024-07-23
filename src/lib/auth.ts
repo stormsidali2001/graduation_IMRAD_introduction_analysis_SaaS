@@ -35,7 +35,6 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
   //callbacks
   callbacks: {
     async signIn({ user, account, profile, email, credentials }) {
-      console.log("signIn", { user, account, profile, email, credentials })
       return true
     },
     async redirect({ url, baseUrl }) {
@@ -43,19 +42,11 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
     },
 
     async session({ session, user, token }) {
-      console.log("session",{session,user,token  })
         //@ts-ignore
         token.user && (session.user = token.user)
         return session;
     },
     async jwt({ token, user, account, profile, isNewUser }) {
-      console.log({
-        token,
-        user,
-        account,
-        profile,
-        isNewUser
-      })
       return token
     },
   },
