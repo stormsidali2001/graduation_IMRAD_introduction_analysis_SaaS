@@ -1,9 +1,7 @@
 import {Badge} from '@/components/ui/badge'
-interface SentenceRowProps {
-    text:string;
-    move?:number;
-    subMove?:number;
-    sentenceNumber:number;
+import { PredictionOutputItemDtoType } from '@/server/validation/PredictionDto';
+interface SentenceRowProps extends PredictionOutputItemDtoType {
+  sentenceNumber:number;
 }
 const movesDict = {
   0: "Establishing the research territory",
@@ -30,25 +28,28 @@ const subMoveDict = {
   },
 };
 export const SentenceRow = ({
-  text,
+  sentence,
   move,
   subMove,
   sentenceNumber,
+  moveConfidence,
+  subMoveConfidence
+
 }: SentenceRowProps) => {
   return (
     <div className="bg-gray-100 dark:bg-gray-800 rounded-md p-4">
       <div className="flex flex-col gap-2 ">
         <div className="flex items-center gap-2">
-          {typeof move != "undefined" ? (
-            <Badge variant="default">{movesDict[move]}</Badge>
+          {typeof move === "number" ? (
+            <Badge variant="default">{movesDict[move]+` (${(moveConfidence*100).toFixed(1)}%)`}</Badge>
           ) : null}
-          {typeof move !== "undefined" && typeof subMove != "undefined" ? (
-            <Badge variant="default">{subMoveDict[move]?.[subMove]}</Badge>
+          {typeof move === "number" && typeof subMove === "number" ? (
+            <Badge variant="default">{subMoveDict[move]?.[subMove] +  ` (${(subMoveConfidence*100).toFixed(1)}%)`}</Badge>
           ) : null}
         </div>
 
         <h4 className="text-lg font-bold mb-2">Sentence {sentenceNumber}</h4>
-        <p className="text-gray-600 dark:text-gray-400">{text}</p>
+        <p className="text-gray-600 dark:text-gray-400">{sentence}</p>
       </div>
     </div>
   );

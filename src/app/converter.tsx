@@ -12,19 +12,17 @@ import { pdfExtractorAction } from "@/server/actions/pdf-extractor"
 import { ArrowDown } from "lucide-react"
 import Lottie from "lottie-react";
 import loadingAnimation from '@/assets/loading-lottie.json'
+import { PredictionOutputItemDtoType } from "@/server/validation/PredictionDto"
 
 
-interface Sentence{
-    text:string;
-    move?:number;
-    subMove?:number;
+interface Sentence extends PredictionOutputItemDtoType{
 }
 
 export const Converter = ()=>{
     const [sentences,setSentences] = useState<Sentence[]>([])
     const [files,setFiles] = useState() 
     const {executeAsync,isExecuting,result,hasSucceeded} = useAction(pdfExtractorAction)
-    const {executeAsync:executeAsyncGetMoveSubMove,isExecuting:isExecutingMoves} =useAction(geMoveSubmove)
+    const {executeAsync:executeAsyncGetMoveSubMove,isExecuting:isExecutingMoves,hasSucceeded:hasSucceededMoves} =useAction(geMoveSubmove)
     const [introduction,setIntroduction] =useState("")
 
     const updateSentences = debounce(async (text:string)=>{
@@ -38,7 +36,7 @@ export const Converter = ()=>{
 
             return{
 
-                text:sentence,
+                sentence:sentence,
                 move:null,
                 subMove:null
 
@@ -61,11 +59,11 @@ export const Converter = ()=>{
     const handlePredictions = async ()=>{
 
       alert("loading")
-       const res = await executeAsyncGetMoveSubMove({sentences:sentences.map(s=>s.text)});
+       const res = await executeAsyncGetMoveSubMove({sentences:sentences.map(s=>s.sentence)});
        if(res?.serverError){
         alert(res?.serverError)
        }
-       const predictions = res.data?.predictions ?? []
+       const predictions = res.data ?? []
        console.log(predictions)
        setSentences(sentences =>{
         const transformedSentences=  sentences.map((s,index)=>{
@@ -73,7 +71,9 @@ export const Converter = ()=>{
 
           ...s,
           move:predictions[index].move,
-          subMove:predictions[index].subMove
+          subMove:predictions[index].subMove,
+          moveConfidence:predictions[index]?.moveConfidence,
+          subMoveConfidence:predictions[index]?.subMoveConfidence
 
           }
 
@@ -125,7 +125,10 @@ export const Converter = ()=>{
               }
             />
             <div className="flex justify-end">
-              <Button onClick={() => handlePredictions()}>Analyze</Button>
+              <Button onClick={() => handlePredictions()}
+                
+                disabled={hasSucceededMoves || isExecutingMoves}
+                >{hasSucceededMoves?"Save":"Analyse"} </Button>
             </div>
           </div>
           <div className='flex items-center justify-center'>
@@ -146,10 +149,8 @@ export const Converter = ()=>{
                   <>
 
                   <SentenceRow
-                    text={sentence.text}
                     sentenceNumber={index + 1}
-                    move={sentence.move}
-                    subMove={sentence.subMove}
+                    {...sentence}
                     key={index}
                   />
                   <div className="w-full items-center flex justify-center">

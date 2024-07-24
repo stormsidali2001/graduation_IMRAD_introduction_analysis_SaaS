@@ -43,10 +43,14 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
 
     async session({ session, user, token }) {
         //@ts-ignore
-        token.user && (session.user = token.user)
+        console.log("session------------------")
+        console.log(session,token)
+        session.user.id = token.sub;
         return session;
     },
     async jwt({ token, user, account, profile, isNewUser }) {
+      console.log("jwt",token,user)
+      token.user = user;
       return token
     },
   },

@@ -10,6 +10,7 @@ import { Converter } from "../converter"
 
 export default async function  Page() {
   const session = await auth()
+  console.log("dashboard ---------",session)
   if(!session){
     redirect("/login")
   }

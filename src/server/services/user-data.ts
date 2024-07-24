@@ -1,17 +1,18 @@
 import { eurekaClient } from "@/lib/eureka-client";
+import { IntroductionDtoType } from "../validation/introductionDto";
 import { balance } from "@/lib/server-utils";
 import axios from "axios";
-import { AiModelOutputDto } from "../validation/AiModeOutputDto";
 
+export const createIntroduction = async (introduction:IntroductionDtoType)=>{
+    
 
-export const getMoves = async (sentences)=>{
 
     const modelsAiInstances =
-      eurekaClient.getInstancesByAppId("AI_MODEL_MOVES");
+      eurekaClient.getInstancesByAppId("USER-DATA-SERVICE");
     console.log("modelsAiInstances", modelsAiInstances);
     const selectedInstance = balance(modelsAiInstances);
     if(!selectedInstance){
-        console.error("No AI models available");
+        console.error("No user-data instance is available");
         return null;
     }
 
@@ -19,19 +20,17 @@ export const getMoves = async (sentences)=>{
       "http://" +
       "localhost" +
       `:${selectedInstance.port["$"]}` +
-      "/predict/batch/";
+      "/introductions";
     console.log("url", url);
     const res = await axios.post(
       url,
-      sentences,
+      introduction,
 
       {
         withCredentials: true,
       }
     );
-    const parsed = await AiModelOutputDto.parseAsync(res.data)
-    return parsed
+
+
 
 }
-
-    //replace localhost by instance hostname if you're moving to production

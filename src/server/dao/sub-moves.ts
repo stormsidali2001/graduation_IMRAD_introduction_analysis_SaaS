@@ -2,6 +2,7 @@
 import { eurekaClient } from "@/lib/eureka-client";
 import { balance } from "@/lib/server-utils";
 import axios from "axios";
+import { AiModelOutputDto } from "../validation/AiModeOutputDto";
 
 const map = {
     0:"AI_MODEL_MOVES_MOVE_0",
@@ -34,7 +35,8 @@ export const getSubmoves = async (sentences:string[],moveIndex:MoveIndex)=>{
         withCredentials: true,
       }
     );
-    return res?.data?.predictions ?? []
+    const parsed = await AiModelOutputDto.parseAsync(res.data)
+    return parsed
 
 }
 
