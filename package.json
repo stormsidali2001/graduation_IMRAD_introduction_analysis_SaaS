@@ -39,6 +39,7 @@
     "react-dropzone": "^14.2.3",
     "react-hook-form": "^7.52.1",
     "react-lottie": "^1.2.4",
+    "recharts": "^2.12.7",
     "sentence-splitter": "^5.0.0",
     "tailwind-merge": "^2.3.0",
     "tailwindcss-animate": "^1.0.7",
