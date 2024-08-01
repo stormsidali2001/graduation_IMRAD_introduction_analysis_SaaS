@@ -5,15 +5,15 @@ import axios from "axios";
 import { AiModelOutputDto } from "../validation/AiModeOutputDto";
 
 const map = {
-    0:"AI_MODEL_MOVES_MOVE_0",
-    1:"AI_MODEL_MOVES_MOVE1",
-    2:"AI_MODEL_MOVES_2",
+    0:"sub_moves_0",
+    1:"sub_moves_1",
+    2:"sub_moves_2",
 }
 export type MoveIndex = 0|1|2
 export const getSubmoves = async (sentences:string[],moveIndex:MoveIndex)=>{
 
     const modelsAiInstances =
-      eurekaClient.getInstancesByAppId(map[moveIndex]);
+      eurekaClient.getInstancesByAppId("AI_MODEL_MOVES");
     console.log("modelsAiInstances", modelsAiInstances);
     const selectedInstance = balance(modelsAiInstances);
     if(!selectedInstance){
@@ -24,7 +24,8 @@ export const getSubmoves = async (sentences:string[],moveIndex:MoveIndex)=>{
     const url =
       "http://" +
       "localhost" +
-      `:${selectedInstance.port["$"]}` +
+      `:${selectedInstance.port["$"]}/models/${map[moveIndex]}` +
+
       "/predict/batch/";
     console.log("url", url);
     const res = await axios.post(

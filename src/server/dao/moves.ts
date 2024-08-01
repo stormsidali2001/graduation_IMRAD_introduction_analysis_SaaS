@@ -18,7 +18,7 @@ export const getMoves = async (sentences)=>{
     const url =
       "http://" +
       "localhost" +
-      `:${selectedInstance.port["$"]}` +
+      `:${selectedInstance.port["$"]}/models/moves` +
       "/predict/batch/";
     console.log("url", url);
     const res = await axios.post(
