@@ -12,7 +12,9 @@ export const SentenceDto = z.object({
 export const IntroductionDto = z.object({
     sha: z.string(),    
     userId:z.string(),
-    sentences: z.array(SentenceDto)
+    sentences: z.array(SentenceDto),
+    averageSubMoveConfidence:z.number().optional(),
+    averageMoveConfidence:z.number().optional(),
 })
 
 export const introductionsArrayDto = z.array(IntroductionDto);

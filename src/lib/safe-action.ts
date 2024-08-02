@@ -5,6 +5,7 @@ import {
 } from "next-safe-action";
 import { cookies } from "next/headers";
 import { z } from "zod";
+import { auth } from "./auth";
 
 export class ActionError extends Error {}
 
@@ -40,3 +41,22 @@ export const actionClient = createSafeActionClient({
   // And then return the result of the awaited action.
   return result;
 });
+
+export const authActionClient = actionClient
+  // Define authorization middleware.
+  .use(async ({ next }) => {
+    const session = await auth(); 
+
+    if (!session) {
+      throw new Error("Session not found!");
+    }
+
+
+    const userId = session.user.id;
+    if (!userId) {
+      throw new Error("Session is not valid!");
+    }
+
+    // Return the next middleware with `userId` value in the context
+    return next({ ctx: { userId } });
+  });
