@@ -35,6 +35,7 @@ import {
 import {ArrowLeft,ArrowRight} from 'lucide-react'
 import { IntroductionDto, IntroductionDtoType } from "@/server/validation/introductionDto";
 import { PaginatedResultType } from "@/server/validation/paginationMakerDto";
+import Link from "next/link";
 
 interface IntroductionsTableProps extends PaginatedResultType<typeof IntroductionDto>{
 
@@ -44,7 +45,7 @@ interface IntroductionProps extends IntroductionDtoType {
 
 }
 
-const Introduction = ({sentences,sha,averageMoveConfidence,averageSubMoveConfidence}:IntroductionProps) => {
+const Introduction = ({sentences,sha,averageMoveConfidence,averageSubMoveConfidence,id}:IntroductionProps) => {
 
   return (
     <TableRow>
@@ -85,7 +86,7 @@ const Introduction = ({sentences,sha,averageMoveConfidence,averageSubMoveConfide
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuItem>Edit</DropdownMenuItem>
+            <DropdownMenuItem><Link href={`/user/dashboard/introductions/${id}`}>Details</Link></DropdownMenuItem>
             <DropdownMenuItem>Delete</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

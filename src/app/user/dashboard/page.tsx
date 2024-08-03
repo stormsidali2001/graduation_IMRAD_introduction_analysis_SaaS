@@ -1,5 +1,5 @@
+import { Converter } from '@/app/converter'
 import React from 'react'
-import { Converter } from '../converter'
 
 const Page = () => {
   return (

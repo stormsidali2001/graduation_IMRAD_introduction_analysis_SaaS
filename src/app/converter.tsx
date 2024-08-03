@@ -1,10 +1,12 @@
+
 "use client"
+import { IntroductionAnalysis } from './IntroductionAnalysis'
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { useEffect, useState } from "react"
 import debounce from 'lodash.debounce' 
 import {split} from "sentence-splitter";
-import { SentenceRow } from "./sentenceRow"
+import { SentenceRow } from "./_partials/sentenceRow"
 import { geMoveSubmove } from "@/server/actions/classifier"
 import { FileUploader } from "@/components/ui/fileUpload"
 import { useAction } from "next-safe-action/hooks"
@@ -142,24 +144,7 @@ export const Converter = ()=>{
             
             {
               !isExecutingMoves?(
-   <div className="grid gap-4">
-              {
-              sentences.map((sentence, index) => {
-                return (
-                  <>
-
-                  <SentenceRow
-                    sentenceNumber={index + 1}
-                    {...sentence}
-                    key={index}
-                  />
-                  <div className="w-full items-center flex justify-center">
-                    <ArrowDown className="w-6 h-6" />
-                  </div>
-                  </>
-                );
-              })}
-            </div>
+<IntroductionAnalysis sentences={sentences}    />
 
               ):(
                 <div className="flex items-center justify-center w-full">

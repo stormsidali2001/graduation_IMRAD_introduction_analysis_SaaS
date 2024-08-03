@@ -5,6 +5,7 @@ import axios from "axios";
 import { IntroductionStatsDto } from "../validation/introductionStatsDto";
 import { RetrieverParamsDtoType } from "../validation/RetrieverParamsDto";
 import { getPaginatedResults } from "../validation/paginationMakerDto";
+import { CreateSentenceFeedbackDto } from "../validation/feedbackDto";
 
 
 export const createIntroduction = async (introduction:IntroductionDtoType)=>{
@@ -106,6 +107,74 @@ export const getIntroductions = async (userId:string,params:RetrieverParamsDtoTy
     return getPaginatedResults({
         ...res?.data
     },IntroductionDto)
+
+
+
+}
+export const getIntroduction = async (id:string,userId:string)=>{
+
+
+    const modelsAiInstances =
+      eurekaClient.getInstancesByAppId("USER-DATA-SERVICE");
+    console.log("modelsAiInstances", modelsAiInstances);
+
+    const selectedInstance = balance(modelsAiInstances);
+    if(!selectedInstance){
+        console.error("No user-data instance is available");
+        return null;
+    }
+
+    const url =
+      "http://" +
+      "localhost" +
+      `:${selectedInstance.port["$"]}` +
+      "/introductions/"+id+"/users/"+userId;
+    console.log("url", url);
+    const res = await axios.get(
+      url,
+      {
+        withCredentials: true,
+        params:{
+        }
+      }
+    );
+    console.log("code451",res.data)
+
+    return IntroductionDto.parseAsync(res?.data)
+}
+
+export const createSentenceFeedback = async ({
+  feedback,
+  introductionId,
+  sentenceId,
+  userId
+}:CreateSentenceFeedbackDto)=>{
+
+
+    const modelsAiInstances =
+      eurekaClient.getInstancesByAppId("USER-DATA-SERVICE");
+    console.log("modelsAiInstances", modelsAiInstances);
+
+    const selectedInstance = balance(modelsAiInstances);
+    if(!selectedInstance){
+        console.error("No user-data instance is available");
+        return null;
+    }
+
+    const url =
+      "http://" +
+      "localhost" +
+      `:${selectedInstance.port["$"]}` +
+      "/introductions/"+introductionId+"/sentences/"+sentenceId+"/users/"+userId;
+    console.log("url", url);
+    const res = await axios.get(
+      url,
+      {
+        withCredentials: true,
+        params:{
+        }
+      }
+    );
 
 
 

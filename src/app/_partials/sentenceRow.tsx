@@ -1,5 +1,7 @@
 import {Badge} from '@/components/ui/badge'
+import { Button } from '@/components/ui/button';
 import { PredictionOutputItemDtoType } from '@/server/validation/PredictionDto';
+import {ThumbsUp,ThumbsDown} from 'lucide-react'
 interface SentenceRowProps extends PredictionOutputItemDtoType {
   sentenceNumber:number;
 }
@@ -37,7 +39,7 @@ export const SentenceRow = ({
 
 }: SentenceRowProps) => {
   return (
-    <div className="bg-gray-100 dark:bg-gray-800 rounded-md p-4">
+    <div className="bg-gray-100 dark:bg-gray-800 rounded-md p-6">
       <div className="flex flex-col gap-2 ">
         <div className="flex items-center gap-2">
           {typeof move === "number" ? (
@@ -50,6 +52,19 @@ export const SentenceRow = ({
 
         <h4 className="text-lg font-bold mb-2">Sentence {sentenceNumber}</h4>
         <p className="text-gray-600 dark:text-gray-400">{sentence}</p>
+        <div className="flex items-center justify-end gap-4">
+          <Button variant="ghost">
+
+            <ThumbsUp size={24} />
+          </Button>
+
+          <Button variant="ghost">
+            <ThumbsDown size={24} />
+            </Button>
+
+          
+
+        </div>
       </div>
     </div>
   );
