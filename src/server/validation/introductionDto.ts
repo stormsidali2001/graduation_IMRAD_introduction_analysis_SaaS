@@ -1,27 +1,29 @@
-import {z } from 'zod';
+import { z } from "zod";
+import { FeedbackDto } from "./feedbackDto";
 
 export const SentenceDto = z.object({
-        move: z.number(),
-        subMove: z.number(),
-        text: z.string(),
-        order: z.number(),
-        moveConfidence: z.number(),
-        subMoveConfidence: z.number(),
-    });
+  id: z.string().optional(),
+  move: z.number(),
+  subMove: z.number(),
+  text: z.string(),
+  order: z.number(),
+  moveConfidence: z.number(),
+  subMoveConfidence: z.number(),
+  feedback: FeedbackDto.optional(),
+});
 
 export const IntroductionDto = z.object({
-    sha: z.string(),    
-    id:z.string(),
-    userId:z.string(),
-    sentences: z.array(SentenceDto),
-    averageSubMoveConfidence:z.number().optional(),
-    averageMoveConfidence:z.number().optional(),
-})
+  sha: z.string(),
+  id: z.string(),
+  userId: z.string(),
+  sentences: z.array(SentenceDto),
+  averageSubMoveConfidence: z.number().optional(),
+  averageMoveConfidence: z.number().optional(),
+});
 
 export const introductionsArrayDto = z.array(IntroductionDto);
 
 export const UpdateSentenceDto = SentenceDto.partial();
-
 
 export type IntroductionDtoType = z.infer<typeof IntroductionDto>;
 export type SentenceDtoType = z.infer<typeof SentenceDto>;

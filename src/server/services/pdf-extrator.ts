@@ -31,5 +31,4 @@ export const extractPdfIntroduction = async (file:File)=>{
     );
 
     return res.data?.introduction ?? null
-
 }

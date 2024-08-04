@@ -1,87 +1,185 @@
-import { Dialog, DialogTrigger, DialogContent, DialogTitle, DialogDescription, DialogFooter, DialogClose } from "@/components/ui/dialog"
-import { Button } from "@/components/ui/button"
-import { Label } from "@/components/ui/label"
-import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select"
-import { Textarea } from "@/components/ui/textarea"
+"use client";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
+import { movesDict, subMoveDict } from "@/common/moves";
+import { useForm, useWatch } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { DevTool } from "@hookform/devtools";
+import {
+  CreateSentenceFeedbackDto,
+  type FeedbackDto,
+  type CreateSentenceFeedbackDto as CreateSentenceFeedbackType,
+} from "@/server/validation/feedbackDto";
+import {
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+  Form,
+} from "@/components/ui/form";
+import {
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { useAction } from "next-safe-action/hooks";
+import { createSentenceFeedbackAction } from "@/server/actions/createSentenceFeedback";
 
-export default function Component() {
-  return (
-    <Dialog>
-      <DialogTrigger asChild>
-        <Button variant="ghost" size="icon" className="text-red-500 hover:bg-red-500/10">
-          <ThumbsDownIcon className="w-5 h-5" />
-        </Button>
-      </DialogTrigger>
-      <DialogContent className="sm:max-w-[500px]">
-        <div className="space-y-6 p-6">
-          <div className="space-y-2">
-            <DialogTitle>Feedback</DialogTitle>
-            <DialogDescription>
-              Please provide feedback to help us improve our move prediction accuracy.
-            </DialogDescription>
-          </div>
-          <div className="grid gap-4">
-            <div className="grid gap-2">
-              <Label htmlFor="move-prediction">Correct Move Prediction</Label>
-              <Select id="move-prediction" defaultValue="1">
-                <SelectTrigger>
-                  <SelectValue placeholder="Select move prediction" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="1">Move 1</SelectItem>
-                  <SelectItem value="2">Move 2</SelectItem>
-                  <SelectItem value="3">Move 3</SelectItem>
-                  <SelectItem value="4">Move 4</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="grid gap-2">
-              <Label htmlFor="submove-prediction">Correct Submove Prediction</Label>
-              <Select id="submove-prediction" defaultValue="1">
-                <SelectTrigger>
-                  <SelectValue placeholder="Select submove prediction" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="1">Submove 1</SelectItem>
-                  <SelectItem value="2">Submove 2</SelectItem>
-                  <SelectItem value="3">Submove 3</SelectItem>
-                  <SelectItem value="4">Submove 4</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="grid gap-2">
-              <Label htmlFor="reason">Reason</Label>
-              <Textarea id="reason" placeholder="Provide feedback on how we can improve" className="min-h-[100px]" />
-            </div>
-          </div>
-        </div>
-        <DialogFooter className="flex justify-end gap-2">
-          <div>
-            <Button variant="ghost">Cancel</Button>
-          </div>
-          <Button type="submit">Submit</Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
-  )
+interface FeedbackDialogBody {
+  isLike: boolean;
+  introductionId: string;
+  sentenceId: string;
 }
-
-function ThumbsDownIcon(props) {
+export default function FeedbackDialogBody({
+  isLike = false,
+  introductionId,
+  sentenceId,
+}: FeedbackDialogBody) {
+  const form = useForm<CreateSentenceFeedbackType>({
+    resolver: zodResolver(CreateSentenceFeedbackDto),
+    defaultValues: {
+      feedback: {
+        correctMove: 0,
+        correctSubMove: 1,
+        liked: isLike,
+      },
+      introductionId,
+      sentenceId,
+    },
+  });
+  const { executeAsync, status } = useAction(createSentenceFeedbackAction);
+  const move = useWatch({
+    control: form.control,
+    name: "feedback.correctMove",
+  });
+  console.log(move);
+  const subMoves = subMoveDict[move as 0 | 1 | 2];
+  const onSubmit = async () => {
+    const isValid = await form.trigger();
+    if (!isValid) {
+      alert("unvalid");
+      return;
+    }
+    const data = form.getValues();
+    try {
+      const res = await executeAsync(data);
+      form.reset();
+    } catch (err) {
+      alert(JSON.stringify(err));
+    }
+  };
   return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M17 14V2" />
-      <path d="M9 18.12 10 14H4.17a2 2 0 0 1-1.92-2.56l2.33-8A2 2 0 0 1 6.5 2H20a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-2.76a2 2 0 0 0-1.79 1.11L12 22h0a3.13 3.13 0 0 1-3-3.88Z" />
-    </svg>
-  )
+    <DialogContent className="sm:max-w-[500px]">
+      <div className="space-y-6 p-6">
+        <div className="space-y-2">
+          <DialogTitle>Feedback</DialogTitle>
+          <DialogDescription>
+            Please provide feedback to help us improve our move prediction
+            accuracy.
+          </DialogDescription>
+        </div>
+
+        <Form {...form}>
+          <form className="grid gap-4" onSubmit={form.handleSubmit(onSubmit)}>
+            {/** 
+            Correct Move Field
+          **/}
+            <FormField
+              control={form.control}
+              name="feedback.correctMove"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Correct Move Prediction</FormLabel>
+
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value.toString()}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select move prediction" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {Object.entries(movesDict).map(([key, value], index) => (
+                        <SelectItem value={key}>{value}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            {/** 
+            Correct Sub Move Field
+          **/}
+            <FormField
+              control={form.control}
+              name="feedback.correctSubMove"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Correct Sub Move Prediction</FormLabel>
+
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value.toString()}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select move prediction" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {Object.entries(subMoves).map(([key, value], index) => (
+                        <SelectItem value={key}>{value}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            {/*
+             *Raison field
+             */}
+            <FormField
+              control={form.control}
+              name="feedback.reason"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Reason</FormLabel>
+                  <FormControl>
+                    <Textarea
+                      placeholder="The reason behind your feedback."
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </form>
+        </Form>
+      </div>
+      <DialogFooter className="flex justify-end gap-2">
+        <div>
+          <Button variant="ghost">Cancel</Button>
+        </div>
+        <Button type="submit" onClick={() => onSubmit()}>
+          {status === "executing" ? "Loading..." : "Submit"}
+        </Button>
+      </DialogFooter>
+    </DialogContent>
+  );
 }
