@@ -47,6 +47,7 @@
     "react-lottie": "^1.2.4",
     "recharts": "^2.12.7",
     "sentence-splitter": "^5.0.0",
+    "stripe": "^16.6.0",
     "tailwind-merge": "^2.3.0",
     "tailwindcss-animate": "^1.0.7",
     "zod": "^3.23.8",

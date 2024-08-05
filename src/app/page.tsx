@@ -3,10 +3,11 @@
  * @see https://v0.dev/t/Q9AtLr8s5nB
  * Documentation: https://v0.dev/docs#integrating-generated-code-into-your-nextjs-app
  */
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { Textarea } from "@/components/ui/textarea"
-import { Converter } from "./converter"
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+import { Converter } from "./converter";
+import { Pricing } from "@/components/ui/pricingCard";
 
 export default function Component() {
   return (
@@ -46,10 +47,13 @@ export default function Component() {
       <main className="py-12 px-4 md:px-6 lg:px-8">
         <section className="container mx-auto grid md:grid-cols-2 gap-8 items-center">
           <div className="space-y-4">
-            <h2 className="text-3xl font-bold">Improve Your Paper Introductions</h2>
+            <h2 className="text-3xl font-bold">
+              Improve Your Paper Introductions
+            </h2>
             <p className="text-gray-600 dark:text-gray-400 text-lg">
-              Our AI-powered tool analyzes your introduction text and provides real-time feedback on the IMRAD
-              structure, helping you write more effective scientific papers.
+              Our AI-powered tool analyzes your introduction text and provides
+              real-time feedback on the IMRAD structure, helping you write more
+              effective scientific papers.
             </p>
             <div className="flex items-center gap-4">
               <Button>Try It Now</Button>
@@ -63,7 +67,13 @@ export default function Component() {
             </div>
           </div>
           <div>
-            <img src="/placeholder.svg" alt="Introduction Assist" width={600} height={400} className="rounded-xl" />
+            <img
+              src="/placeholder.svg"
+              alt="Introduction Assist"
+              width={600}
+              height={400}
+              className="rounded-xl"
+            />
           </div>
         </section>
         <section className="container mx-auto mt-16">
@@ -73,30 +83,30 @@ export default function Component() {
               <DeleteIcon className="w-8 h-8" />
               <h3 className="text-xl font-bold">Paste Your Introduction</h3>
               <p className="text-gray-600 dark:text-gray-400">
-                Copy and paste your scientific paper introduction into the text area, and our tool will get to work.
+                Copy and paste your scientific paper introduction into the text
+                area, and our tool will get to work.
               </p>
             </div>
             <div className="bg-white dark:bg-gray-900 rounded-xl shadow p-6 flex flex-col gap-4">
               <CpuIcon className="w-8 h-8" />
               <h3 className="text-xl font-bold">AI-Powered Analysis</h3>
               <p className="text-gray-600 dark:text-gray-400">
-                Our machine learning model will analyze your introduction and identify the IMRAD moves and submoves in
-                each sentence.
+                Our machine learning model will analyze your introduction and
+                identify the IMRAD moves and submoves in each sentence.
               </p>
             </div>
             <div className="bg-white dark:bg-gray-900 rounded-xl shadow p-6 flex flex-col gap-4">
               <ClipboardCheckIcon className="w-8 h-8" />
               <h3 className="text-xl font-bold">Actionable Feedback</h3>
               <p className="text-gray-600 dark:text-gray-400">
-                Receive clear and concise feedback on the structure of your introduction, with explanations of each
-                IMRAD move and submove.
+                Receive clear and concise feedback on the structure of your
+                introduction, with explanations of each IMRAD move and submove.
               </p>
             </div>
           </div>
         </section>
-
-<Converter/>
-     
+        <Pricing />
+        <Converter />
       </main>
       <footer className="bg-gray-900 text-gray-400 py-8 px-4 md:px-6 lg:px-8">
         <div className="container mx-auto flex items-center justify-between">
@@ -105,20 +115,32 @@ export default function Component() {
             <span className="text-sm">Introduction Assist</span>
           </div>
           <nav className="hidden md:flex items-center gap-4">
-            <Link href="#" className="text-sm hover:text-gray-300" prefetch={false}>
+            <Link
+              href="#"
+              className="text-sm hover:text-gray-300"
+              prefetch={false}
+            >
               Features
             </Link>
-            <Link href="#" className="text-sm hover:text-gray-300" prefetch={false}>
+            <Link
+              href="#"
+              className="text-sm hover:text-gray-300"
+              prefetch={false}
+            >
               About
             </Link>
-            <Link href="#" className="text-sm hover:text-gray-300" prefetch={false}>
+            <Link
+              href="#"
+              className="text-sm hover:text-gray-300"
+              prefetch={false}
+            >
               Contact
             </Link>
           </nav>
         </div>
       </footer>
     </div>
-  )
+  );
 }
 
 function BookOpenIcon(props) {
@@ -138,9 +160,8 @@ function BookOpenIcon(props) {
       <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
       <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
     </svg>
-  )
+  );
 }
-
 
 function ClipboardCheckIcon(props) {
   return (
@@ -160,9 +181,8 @@ function ClipboardCheckIcon(props) {
       <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
       <path d="m9 14 2 2 4-4" />
     </svg>
-  )
+  );
 }
-
 
 function CpuIcon(props) {
   return (
@@ -189,9 +209,8 @@ function CpuIcon(props) {
       <path d="M9 2v2" />
       <path d="M9 20v2" />
     </svg>
-  )
+  );
 }
-
 
 function DeleteIcon(props) {
   return (
@@ -211,5 +230,6 @@ function DeleteIcon(props) {
       <line x1="18" x2="12" y1="9" y2="15" />
       <line x1="12" x2="18" y1="9" y2="15" />
     </svg>
-  )
+  );
 }
+

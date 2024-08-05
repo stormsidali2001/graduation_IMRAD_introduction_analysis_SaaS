@@ -122,6 +122,9 @@ importers:
       sentence-splitter:
         specifier: ^5.0.0
         version: 5.0.0
+      stripe:
+        specifier: ^16.6.0
+        version: 16.6.0
       tailwind-merge:
         specifier: ^2.3.0
         version: 2.3.0
@@ -2657,6 +2660,10 @@ packages:
     resolution: {integrity: sha512-vYt7UD1U9Wg6138shLtLOvdAu+8DsC/ilFtEVHcH+wydcSpNE20AfSOduf6MkRFahL5FY7X1oU7nKVZFtfq8Fg==}
     engines: {node: '>=6'}
 
+  qs@6.13.0:
+    resolution: {integrity: sha512-+38qI9SOr8tfZ4QmJNplMUxqjbe7LKvvZgWdExBOmd+egZTtjLB67Gu0HRX3u/XOq7UU2Nx6nsjvS16Z9uwfpg==}
+    engines: {node: '>=0.6'}
+
   qs@6.5.3:
     resolution: {integrity: sha512-qxXIEh4pCGfHICj1mAJQ2/2XVZkjCDTcEgfoSQxc/fYivUZxTkk7L3bDBJSoNrEzXI17oUO5Dp07ktqE5KzczA==}
     engines: {node: '>=0.6'}
@@ -2955,6 +2962,10 @@ packages:
   strip-json-comments@3.1.1:
     resolution: {integrity: sha512-6fPc+R4ihwqP6N/aIv2f1gMH8lOVtWQHoqC4yK6oSDVVocumAsfCqjkXnqiYMhmMwS/mEHLp7Vehlt3ql6lEig==}
     engines: {node: '>=8'}
+
+  stripe@16.6.0:
+    resolution: {integrity: sha512-6hWEt6n7InVyP4p2MfMpyl1GwKRJA2w4VAwxJUbXA9xhT7ToWOdrTXqTz2EnyJkw4PMM03twi3eOWQAXN/+uEg==}
+    engines: {node: '>=12.*'}
 
   structured-source@4.0.0:
     resolution: {integrity: sha512-qGzRFNJDjFieQkl/sVOI2dUjHKRyL9dAJi2gCPGJLbJHBIkyOHxjuocpIEfbLioX+qSJpvbYdT49/YCdMznKxA==}
@@ -5872,6 +5883,10 @@ snapshots:
 
   punycode@2.3.1: {}
 
+  qs@6.13.0:
+    dependencies:
+      side-channel: 1.0.6
+
   qs@6.5.3: {}
 
   queue-microtask@1.2.3: {}
@@ -6226,6 +6241,11 @@ snapshots:
   strip-bom@3.0.0: {}
 
   strip-json-comments@3.1.1: {}
+
+  stripe@16.6.0:
+    dependencies:
+      '@types/node': 20.14.2
+      qs: 6.13.0
 
   structured-source@4.0.0:
     dependencies:

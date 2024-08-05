@@ -2,27 +2,55 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
- 
+
 generator client {
   provider = "prisma-client-js"
 }
- 
+
+enum Plan {
+  free
+  premium
+}
+
+enum SubscriptionPeriod {
+  monthly
+  yearly
+}
+
+model Subscription {
+  id     String             @id @default(cuid())
+  userId String             @unique
+  plan   Plan
+  period SubscriptionPeriod
+
+  startDate DateTime @default(now())
+  endDate   DateTime
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  User User @relation(fields: [userId], references: [id])
+}
+
 model User {
   id            String          @id @default(cuid())
   name          String?
   email         String          @unique
   emailVerified DateTime?
   image         String?
-  password String
+  password      String
   accounts      Account[]
   sessions      Session[]
   // Optional for WebAuthn support
   Authenticator Authenticator[]
- 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  Subscription Subscription?
+  customerId   String?       @unique
+  plan         Plan?
 }
- 
+
 model Account {
   userId            String
   type              String
@@ -35,33 +63,33 @@ model Account {
   scope             String?
   id_token          String?
   session_state     String?
- 
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
- 
+
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
- 
+
   @@id([provider, providerAccountId])
 }
- 
+
 model Session {
   sessionToken String   @unique
   userId       String
   expires      DateTime
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
- 
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
- 
+
 model VerificationToken {
   identifier String
   token      String
   expires    DateTime
- 
+
   @@id([identifier, token])
 }
- 
+
 // Optional for WebAuthn support
 model Authenticator {
   credentialID         String  @unique
@@ -72,8 +100,8 @@ model Authenticator {
   credentialDeviceType String
   credentialBackedUp   Boolean
   transports           String?
- 
+
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
- 
+
   @@id([userId, credentialID])
 }
