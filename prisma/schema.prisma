@@ -7,16 +7,6 @@ generator client {
   provider = "prisma-client-js"
 }
 
-enum Plan {
-  free
-  premium
-}
-
-enum SubscriptionPeriod {
-  monthly
-  yearly
-}
-
 model Subscription {
   id     String             @id @default(cuid())
   userId String             @unique
@@ -39,6 +29,7 @@ model User {
   emailVerified DateTime?
   image         String?
   password      String
+  role          Role            @default(value: User)
   accounts      Account[]
   sessions      Session[]
   // Optional for WebAuthn support
@@ -104,4 +95,19 @@ model Authenticator {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@id([userId, credentialID])
+}
+
+enum Role {
+  User
+  Admin
+}
+
+enum Plan {
+  free
+  premium
+}
+
+enum SubscriptionPeriod {
+  monthly
+  yearly
 }
