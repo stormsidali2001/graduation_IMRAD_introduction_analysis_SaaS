@@ -52,14 +52,20 @@ export const authActionClient = actionClient
       throw new Error("Session not found!");
     }
 
-    const { id: userId, role: userRole, plan } = session.user;
+    const {
+      id: userId,
+      role: userRole,
+      plan,
+      name: username,
+      image: userImage,
+    } = session.user;
 
     if (!userId) {
       throw new Error("Session is not valid!");
     }
 
     // Return the next middleware with `userId` value in the context
-    return next({ ctx: { userId, userRole, plan } });
+    return next({ ctx: { userId, userRole, plan, username, userImage } });
   });
 
 export const adminAction = authActionClient.use(async ({ next, ctx }) => {

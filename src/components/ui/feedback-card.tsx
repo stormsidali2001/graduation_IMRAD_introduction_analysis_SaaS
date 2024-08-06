@@ -14,6 +14,7 @@ interface FeedbackCardProps {
   correctSubMove: string;
   reason?: string;
   username: string;
+  image?: string;
   userHandle: string;
 }
 export default function FeedbackCard({
@@ -24,6 +25,7 @@ export default function FeedbackCard({
   reason,
   username,
   userHandle,
+  image = "",
 }: FeedbackCardProps) {
   return (
     <Card>
@@ -31,12 +33,14 @@ export default function FeedbackCard({
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Avatar>
-              <AvatarImage src="/placeholder-user.jpg" alt="User Avatar" />
-              <AvatarFallback>JD</AvatarFallback>
+              <AvatarImage src={image} alt="User Avatar" />
+              <AvatarFallback>{username.at(0)}</AvatarFallback>
             </Avatar>
             <div>
               <h3 className="text-lg font-medium">{username}</h3>
-              <p className="text-sm text-muted-foreground">@{userHandle}</p>
+              <p className="text-sm text-muted-foreground">
+                @{userHandle.toLowerCase().replaceAll(" ", "-")}
+              </p>
             </div>
           </div>
           <div className="flex gap-2">

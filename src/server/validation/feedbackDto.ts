@@ -4,6 +4,8 @@ export const FeedbackDto = z.object({
   correctSubMove: z.coerce.number().optional(),
   liked: z.boolean(),
   reason: z.string().optional(),
+  username: z.string().optional(),
+  image: z.string().optional().nullable(),
 });
 
 export const CreateSentenceFeedbackDto = z.object({
@@ -11,8 +13,17 @@ export const CreateSentenceFeedbackDto = z.object({
   sentenceId: z.string(),
   feedback: FeedbackDto,
 });
+
+export const SentenceFeedbackDto = z.object({
+  feedback: FeedbackDto,
+  sentenceText: z.string(),
+  sentenceId: z.string(),
+  move: z.number().optional(),
+  subMove: z.number().optional(),
+});
+
+export type SentenceFeedbackDtoType = z.infer<typeof SentenceFeedbackDto>;
 export type FeedbackDto = z.infer<typeof FeedbackDto>;
 export type CreateSentenceFeedbackDto = z.infer<
   typeof CreateSentenceFeedbackDto
 >;
-

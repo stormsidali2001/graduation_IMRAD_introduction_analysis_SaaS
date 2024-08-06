@@ -9,7 +9,17 @@ export const createSentenceFeedbackAction = authActionClient
   .metadata({ actionName: "createSentenceFeedback" })
   .action(async ({ parsedInput, ctx }) => {
     try {
-      await createSentenceFeedback({ ...parsedInput }, ctx.userId);
+      await createSentenceFeedback(
+        {
+          ...parsedInput,
+          feedback: {
+            ...parsedInput.feedback,
+            username: ctx.username,
+            image: ctx.userImage,
+          },
+        },
+        ctx.userId,
+      );
       revalidatePath(
         "/user/dashboard/introductions/" + parsedInput.introductionId,
       );
