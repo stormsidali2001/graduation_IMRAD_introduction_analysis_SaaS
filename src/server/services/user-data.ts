@@ -13,6 +13,7 @@ import {
   SentenceFeedbackDto,
   SentenceFindParamsDtoType,
 } from "../validation/feedbackDto";
+import { DashboardStatsDto } from "../validation/DashboardStatsDto";
 
 export const createIntroduction = async (introduction: IntroductionDtoType) => {
   const modelsAiInstances =
@@ -231,4 +232,32 @@ export const deleteFeedback = async ({
       withCredentials: true,
     },
   );
+};
+
+export const getDashboardStats = async () => {
+  const modelsAiInstances =
+    eurekaClient.getInstancesByAppId("USER-DATA-SERVICE");
+  console.log("modelsAiInstances", modelsAiInstances);
+  const selectedInstance = balance(modelsAiInstances);
+  if (!selectedInstance) {
+    console.error("No user-data instance is available");
+    return null;
+  }
+
+  const url =
+    "http://" +
+    "localhost" +
+    `:${selectedInstance.port["$"]}` +
+    "/introductions/dashboard/stats";
+
+  console.log("url", url);
+
+  const res = await axios.get(
+    url,
+
+    {
+      withCredentials: true,
+    },
+  );
+  return DashboardStatsDto.parseAsync(res?.data);
 };
