@@ -10,6 +10,7 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
+import { getNextPage, getPrevPage } from "@/common/getPage";
 
 const Page = async ({ params, searchParams: { search } }) => {
   try {
@@ -38,6 +39,9 @@ const Page = async ({ params, searchParams: { search } }) => {
           <div className="flex flex-col w-full gap-2">
             {feedbacks.data.map((f) => (
               <FeedbackCard
+                introductionId={f.introductionId}
+                sentenceId={f.sentenceId}
+                sentenceText={f.sentenceText}
                 predictedMove={movesDict[f.move]}
                 correctMove={movesDict[f.feedback.correctMove]}
                 username={f.feedback.username}
@@ -55,13 +59,17 @@ const Page = async ({ params, searchParams: { search } }) => {
           <Pagination>
             <PaginationContent>
               <PaginationItem>
-                <PaginationPrevious href="#" />
+                <PaginationPrevious
+                  href={`/admin/dashboard/feedbacks/${getPrevPage({ page: feedbacks.page })}`}
+                />
               </PaginationItem>
               <PaginationItem>
                 <PaginationEllipsis />
               </PaginationItem>
               <PaginationItem>
-                <PaginationNext href="#" />
+                <PaginationNext
+                  href={`/admin/dashboard/feedbacks/${getNextPage({ page: feedbacks.page, total_pages: feedbacks.total_pages })}`}
+                />
               </PaginationItem>
             </PaginationContent>
           </Pagination>

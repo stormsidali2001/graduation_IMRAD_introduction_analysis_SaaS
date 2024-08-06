@@ -11,6 +11,7 @@ import { getPaginatedResults } from "../validation/paginationMakerDto";
 import {
   CreateSentenceFeedbackDto,
   SentenceFeedbackDto,
+  SentenceFindParamsDtoType,
 } from "../validation/feedbackDto";
 
 export const createIntroduction = async (introduction: IntroductionDtoType) => {
@@ -197,5 +198,37 @@ export const getAllFeedbacks = async (
       ...res?.data,
     },
     SentenceFeedbackDto,
+  );
+};
+
+export const deleteFeedback = async ({
+  introductionId,
+  sentenceId,
+}: SentenceFindParamsDtoType) => {
+  const modelsAiInstances =
+    eurekaClient.getInstancesByAppId("USER-DATA-SERVICE");
+  console.log("modelsAiInstances", modelsAiInstances);
+  const selectedInstance = balance(modelsAiInstances);
+  if (!selectedInstance) {
+    console.error("No user-data instance is available");
+    return null;
+  }
+
+  const url =
+    "http://" +
+    "localhost" +
+    `:${selectedInstance.port["$"]}` +
+    "/introductions/" +
+    introductionId +
+    "/sentences/" +
+    sentenceId +
+    "/feedbacks";
+  console.log("url", url);
+  await axios.delete(
+    url,
+
+    {
+      withCredentials: true,
+    },
   );
 };

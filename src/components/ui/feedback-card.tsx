@@ -1,11 +1,20 @@
-/**
- * v0 by Vercel.
- * @see https://v0.dev/t/lYSBGyNaJhB
- * Documentation: https://v0.dev/docs#integrating-generated-code-into-your-nextjs-app
- */
+"use client";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
+import { useAction } from "next-safe-action/hooks";
+import { deleteFeedbackAction } from "@/server/actions/delete-feedback";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "./alert-dialog";
 
 interface FeedbackCardProps {
   predictedMove: string;
@@ -16,6 +25,9 @@ interface FeedbackCardProps {
   username: string;
   image?: string;
   userHandle: string;
+  sentenceText: string;
+  introductionId: string;
+  sentenceId: string;
 }
 export default function FeedbackCard({
   predictedMove,
@@ -26,7 +38,11 @@ export default function FeedbackCard({
   username,
   userHandle,
   image = "",
+  sentenceText,
+  introductionId,
+  sentenceId,
 }: FeedbackCardProps) {
+  const { isExecuting, executeAsync } = useAction(deleteFeedbackAction);
   return (
     <Card>
       <CardHeader>
@@ -44,19 +60,49 @@ export default function FeedbackCard({
             </div>
           </div>
           <div className="flex gap-2">
-            <Button
-              variant="ghost"
-              size="icon"
-              className="hover:bg-muted/50 text-muted-foreground"
-            >
-              <TrashIcon className="w-5 h-5" />
-              <span className="sr-only">Delete</span>
-            </Button>
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="hover:bg-muted/50 text-muted-foreground"
+                >
+                  <TrashIcon className="w-5 h-5" />
+                  <span className="sr-only">
+                    {isExecuting ? "Loading..." : "Delete"}
+                  </span>
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    This action cannot be undone. This will permanently delete
+                    the feedback and remove your data from our servers.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction
+                    onClick={async () => {
+                      await executeAsync({ introductionId, sentenceId });
+                    }}
+                  >
+                    Continue
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
           </div>
         </div>
       </CardHeader>
       <CardContent>
         <div className="grid grid-cols-2 gap-4">
+          <div className="col-span-2">
+            <p className="text-sm text-muted-foreground">Sentence</p>
+            <p>{sentenceText}</p>
+          </div>
+
           <div>
             <p className="text-sm text-muted-foreground">Predicted Move</p>
             <p className="font-medium">{predictedMove}</p>
