@@ -10,137 +10,16 @@ import {
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Navbar } from "../_paritals/navbar";
 import { DashboardMetricsCards } from "@/app/_partials/DashboardMetricCards";
+import { RecentFeedbacksTable } from "../_paritals/RecentFeedbacksTable";
+import { LastUsersTable } from "../_paritals/LastUsersTable";
 
 export default function Component() {
   return (
     <>
       <DashboardMetricsCards />
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-        <Card className="col-span-1 lg:col-span-2">
-          <CardHeader>
-            <CardTitle>Recent Feedback</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Name</TableHead>
-                  <TableHead>Correct Move</TableHead>
-                  <TableHead>Correct Submove</TableHead>
-                  <TableHead>Like/Dislike</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                <TableRow>
-                  <TableCell>
-                    <div className="flex items-center gap-2">
-                      <Avatar className="w-8 h-8">
-                        <AvatarImage src="/placeholder-user.jpg" />
-                        <AvatarFallback>JD</AvatarFallback>
-                      </Avatar>
-                      <div>John Doe</div>
-                    </div>
-                  </TableCell>
-                  <TableCell>92%</TableCell>
-                  <TableCell>88%</TableCell>
-                  <TableCell>
-                    <ThumbsUpIcon className="w-4 h-4 text-primary" />
-                  </TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell>
-                    <div className="flex items-center gap-2">
-                      <Avatar className="w-8 h-8">
-                        <AvatarImage src="/placeholder-user.jpg" />
-                        <AvatarFallback>JA</AvatarFallback>
-                      </Avatar>
-                      <div>Jane Appleseed</div>
-                    </div>
-                  </TableCell>
-                  <TableCell>85%</TableCell>
-                  <TableCell>90%</TableCell>
-                  <TableCell>
-                    <ThumbsUpIcon className="w-4 h-4 text-primary" />
-                  </TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell>
-                    <div className="flex items-center gap-2">
-                      <Avatar className="w-8 h-8">
-                        <AvatarImage src="/placeholder-user.jpg" />
-                        <AvatarFallback>SM</AvatarFallback>
-                      </Avatar>
-                      <div>Sarah Miller</div>
-                    </div>
-                  </TableCell>
-                  <TableCell>78%</TableCell>
-                  <TableCell>82%</TableCell>
-                  <TableCell>
-                    <ThumbsDownIcon className="w-4 h-4 text-red-500" />
-                  </TableCell>
-                </TableRow>
-              </TableBody>
-            </Table>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader>
-            <CardTitle>Total Users</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">45,678</div>
-            <Table className="mt-4">
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Name</TableHead>
-                  <TableHead>Email</TableHead>
-                  <TableHead>Joined</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                <TableRow>
-                  <TableCell>
-                    <div className="flex items-center gap-2">
-                      <Avatar className="w-8 h-8">
-                        <AvatarImage src="/placeholder-user.jpg" />
-                        <AvatarFallback>JD</AvatarFallback>
-                      </Avatar>
-                      <div>John Doe</div>
-                    </div>
-                  </TableCell>
-                  <TableCell>john.doe@example.com</TableCell>
-                  <TableCell>June 1, 2023</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell>
-                    <div className="flex items-center gap-2">
-                      <Avatar className="w-8 h-8">
-                        <AvatarImage src="/placeholder-user.jpg" />
-                        <AvatarFallback>JA</AvatarFallback>
-                      </Avatar>
-                      <div>Jane Appleseed</div>
-                    </div>
-                  </TableCell>
-                  <TableCell>jane.appleseed@example.com</TableCell>
-                  <TableCell>July 15, 2022</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell>
-                    <div className="flex items-center gap-2">
-                      <Avatar className="w-8 h-8">
-                        <AvatarImage src="/placeholder-user.jpg" />
-                        <AvatarFallback>SM</AvatarFallback>
-                      </Avatar>
-                      <div>Sarah Miller</div>
-                    </div>
-                  </TableCell>
-                  <TableCell>sarah.miller@example.com</TableCell>
-                  <TableCell>September 3, 2021</TableCell>
-                </TableRow>
-              </TableBody>
-            </Table>
-          </CardContent>
-        </Card>
+        <RecentFeedbacksTable />
+        <LastUsersTable />
         <Card>
           <CardHeader>
             <CardTitle>Last Subscriptions</CardTitle>

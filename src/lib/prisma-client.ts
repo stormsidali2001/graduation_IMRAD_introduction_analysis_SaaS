@@ -1,11 +1,15 @@
-import { PrismaClient } from "@prisma/client"
+import { seed } from "@/server/seeders";
+import { PrismaClient } from "@prisma/client";
 
-function getPrismaClient(){
-    const prisma = new PrismaClient()
-    prisma.$connect()
-    return prisma
+function getPrismaClient() {
+  const prisma = new PrismaClient();
+  prisma.$connect();
+
+  return prisma;
 }
-const prismaClient:PrismaClient = global.prismaClient ?? getPrismaClient()
+const prismaClient: PrismaClient = global.prismaClient ?? getPrismaClient();
 
-global.prismaClient = prismaClient
-export default prismaClient
+global.prismaClient = prismaClient;
+
+seed();
+export default prismaClient;

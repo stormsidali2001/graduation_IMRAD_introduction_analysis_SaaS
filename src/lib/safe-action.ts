@@ -8,6 +8,7 @@ import { cookies } from "next/headers";
 import { z } from "zod";
 import { auth } from "./auth";
 import { redirect } from "next/navigation";
+import prismaClient from "./prisma-client";
 
 export class ActionError extends Error {}
 
@@ -30,6 +31,7 @@ export const actionClient = createSafeActionClient({
   },
   // Define logging middleware.
 }).use(async ({ next, clientInput, metadata }) => {
+  console.log("prisma client---------------------", prismaClient);
   console.log("LOGGING MIDDLEWARE ------------------" + new Date().toString());
 
   // Here we await the action execution.
@@ -39,6 +41,9 @@ export const actionClient = createSafeActionClient({
   console.log("Client input ->", clientInput);
   console.log("Metadata ->", metadata);
 
+  console.log(
+    "x-LOGGING MIDDLEWARE ------------------" + new Date().toString(),
+  );
   // And then return the result of the awaited action.
   return result;
 });
