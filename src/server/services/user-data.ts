@@ -41,7 +41,10 @@ export const createIntroduction = async (introduction: IntroductionDtoType) => {
   );
 };
 
-export const getIntroductionsStats = async (userId: string) => {
+export const getIntroductionsStats = async (
+  userId: string,
+  role: "User" | "Admin",
+) => {
   const modelsAiInstances =
     eurekaClient.getInstancesByAppId("USER-DATA-SERVICE");
   console.log("modelsAiInstances", modelsAiInstances);
@@ -55,11 +58,13 @@ export const getIntroductionsStats = async (userId: string) => {
     "http://" +
     "localhost" +
     `:${selectedInstance.port["$"]}` +
-    "/introductions/stats/users/" +
-    userId;
+    "/introductions/stats";
   console.log("url", url);
   const res = await axios.get(url, {
     withCredentials: true,
+    params: {
+      ...(role === "User" ? { userId } : {}),
+    },
   });
 
   return IntroductionStatsDto.parseAsync(res?.data);
@@ -68,6 +73,7 @@ export const getIntroductionsStats = async (userId: string) => {
 export const getIntroductions = async (
   userId: string,
   params: RetrieverParamsDtoType,
+  role: "Admin" | "User" = "User",
 ) => {
   const modelsAiInstances =
     eurekaClient.getInstancesByAppId("USER-DATA-SERVICE");
@@ -83,13 +89,13 @@ export const getIntroductions = async (
     "http://" +
     "localhost" +
     `:${selectedInstance.port["$"]}` +
-    "/introductions/users/" +
-    userId;
+    "/introductions";
   console.log("url", url);
   const res = await axios.get(url, {
     withCredentials: true,
     params: {
       ...params,
+      ...(role === "User" ? { userId } : {}),
     },
   });
 
@@ -168,6 +174,7 @@ export const createSentenceFeedback = async (
 export const getAllFeedbacks = async (
   params: RetrieverParamsDtoType,
   userId?: string,
+  role: "Admin" | "User" = "User",
 ) => {
   const modelsAiInstances =
     eurekaClient.getInstancesByAppId("USER-DATA-SERVICE");
@@ -189,7 +196,7 @@ export const getAllFeedbacks = async (
     withCredentials: true,
     params: {
       ...params,
-      userId,
+      ...(role === "Admin" ? {} : { userId }),
     },
   });
 

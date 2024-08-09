@@ -95,19 +95,26 @@ export async function POST(req: Request) {
         const subscription = await stripe.subscriptions.retrieve(
           (event.data.object as Stripe.Subscription).id,
         );
+        console.log(
+          "Subscription updated event",
+          JSON.stringify({ subscription }),
+        );
+
         const user = await prisma.user.findUnique({
           where: { customerId: subscription.customer as string },
         });
-        if (user) {
-          await prisma.user.update({
-            where: { id: user.id },
-            data: { plan: "free" },
-          });
-        } else {
-          console.error("User not found for the subscription deleted event.");
-          throw new Error("User not found for the subscription deleted event.");
+        if (!user) {
+          console.error(
+            "Could not find the user associated with the subscription",
+          );
+          throw new Error(
+            "Could not find the user associated with the subscription",
+          );
         }
-
+        await prisma.user.update({
+          where: { id: user.id },
+          data: { plan: "free" },
+        });
         break;
       }
 

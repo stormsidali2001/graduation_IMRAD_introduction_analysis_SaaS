@@ -1,3 +1,4 @@
+import { adminLinks, userLinks } from "@/common/navbar-links";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -13,6 +14,7 @@ import { Input } from "@/components/ui/input";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { auth } from "@/lib/auth";
 import { getCustomerPortalLinkAction } from "@/server/actions/get-customer-bortal-link";
+import { $Enums } from "@prisma/client";
 import {
   CircleUserIcon,
   MenuIcon,
@@ -20,14 +22,17 @@ import {
   SearchIcon,
 } from "lucide-react";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 
 export const Navbar = async () => {
   const session = await auth();
+  if (!session) redirect("/login");
   const { user } = session;
-  let customerPortalLink: string;
+  let customerPortalLink: string = "#";
   const isPremium = user.plan === "premium";
+  const isAdmin = user.role === $Enums.Role.Admin;
 
-  if (isPremium) {
+  if (isPremium && !isAdmin) {
     customerPortalLink = (await getCustomerPortalLinkAction({})).data;
   }
   const avatar = (
@@ -42,6 +47,45 @@ export const Navbar = async () => {
       </Button>
     </div>
   );
+  let links = [];
+
+  if (isAdmin) {
+    links = adminLinks;
+  } else {
+    links = userLinks;
+  }
+  let dropdownItems: JSX.Element = <></>;
+
+  if (!isAdmin) {
+    dropdownItems = (
+      <>
+        {isPremium ? (
+          <DropdownMenuItem>
+            <Link
+              href={customerPortalLink}
+              target="_blank"
+              className="flex items-center gap-2"
+              prefetch={false}
+            >
+              <div className="w-4 h-4" />
+              <span>Billing Portal</span>
+            </Link>
+          </DropdownMenuItem>
+        ) : (
+          <DropdownMenuItem>
+            <Link
+              href="/user/dashboard/plans"
+              className="flex items-center gap-2"
+              prefetch={false}
+            >
+              <div className="w-4 h-4" />
+              <span>Upgrade to Premium</span>
+            </Link>
+          </DropdownMenuItem>
+        )}
+      </>
+    );
+  }
   return (
     <header className="sticky top-0 flex h-16 items-center gap-4 border-b bg-background px-4 md:px-6">
       <nav className="hidden flex-col gap-6 text-lg font-medium md:flex md:flex-row md:items-center md:gap-5 md:text-sm lg:gap-6">
@@ -53,20 +97,16 @@ export const Navbar = async () => {
           <Package2Icon className="h-6 w-6" />
           <span className="sr-only">Acme Inc</span>
         </Link>
-        <Link
-          href="/user/dashboard"
-          className="text-foreground transition-colors hover:text-foreground"
-          prefetch={false}
-        >
-          Generate
-        </Link>
-        <Link
-          href="/user/dashboard/introductions/all/1"
-          className="text-muted-foreground transition-colors hover:text-foreground"
-          prefetch={false}
-        >
-          Introductions
-        </Link>
+
+        {links.map((link, index) => (
+          <Link
+            key={index}
+            href={link.href}
+            className="text-foreground transition-colors hover:text-foreground"
+          >
+            {link.label}
+          </Link>
+        ))}
       </nav>
       <Sheet>
         <SheetTrigger asChild>
@@ -88,34 +128,15 @@ export const Navbar = async () => {
             <Link href="#" className="hover:text-foreground" prefetch={false}>
               Dashboard
             </Link>
-            <Link
-              href="#"
-              className="text-muted-foreground hover:text-foreground"
-              prefetch={false}
-            >
-              Introductions
-            </Link>
-            <Link
-              href="#"
-              className="text-muted-foreground hover:text-foreground"
-              prefetch={false}
-            >
-              Feedback
-            </Link>
-            <Link
-              href="#"
-              className="text-muted-foreground hover:text-foreground"
-              prefetch={false}
-            >
-              Users
-            </Link>
-            <Link
-              href="#"
-              className="text-muted-foreground hover:text-foreground"
-              prefetch={false}
-            >
-              Subscriptions
-            </Link>
+            {links.map((link, index) => (
+              <Link
+                key={index}
+                href={link.href}
+                className="text-foreground transition-colors hover:text-foreground"
+              >
+                {link.label}
+              </Link>
+            ))}
           </nav>
         </SheetContent>
       </Sheet>
@@ -160,30 +181,7 @@ export const Navbar = async () => {
                 <span>Settings</span>
               </Link>
             </DropdownMenuItem>
-            {isPremium ? (
-              <DropdownMenuItem>
-                <Link
-                  href={customerPortalLink}
-                  target="_blank"
-                  className="flex items-center gap-2"
-                  prefetch={false}
-                >
-                  <div className="w-4 h-4" />
-                  <span>Billing Portal</span>
-                </Link>
-              </DropdownMenuItem>
-            ) : (
-              <DropdownMenuItem>
-                <Link
-                  href="/user/dashboard/plans"
-                  className="flex items-center gap-2"
-                  prefetch={false}
-                >
-                  <div className="w-4 h-4" />
-                  <span>Upgrade to Premium</span>
-                </Link>
-              </DropdownMenuItem>
-            )}
+            {dropdownItems}
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
