@@ -1,3 +1,4 @@
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -12,6 +13,7 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { CircleUserIcon, MenuIcon } from "lucide-react";
 import Link from "next/link";
 
+const links = [];
 export const Navbar = () => (
   <header className="sticky top-0 flex h-16 items-center gap-4 border-b bg-background px-4 md:px-6">
     <nav className="hidden flex-col gap-6 text-lg font-medium md:flex md:flex-row md:items-center md:gap-5 md:text-sm lg:gap-6">
@@ -121,18 +123,45 @@ export const Navbar = () => (
       </form>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="secondary" size="icon" className="rounded-full">
-            <CircleUserIcon className="h-5 w-5" />
-            <span className="sr-only">Toggle user menu</span>
+          <Button variant="ghost" size="icon" className="rounded-full">
+            <Avatar className="h-8 w-8">
+              <AvatarImage src="/placeholder-user.jpg" />
+              <AvatarFallback>JD</AvatarFallback>
+            </Avatar>
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="end">
-          <DropdownMenuLabel>My Account</DropdownMenuLabel>
+        <DropdownMenuContent align="end" className="w-48 p-2">
+          <div className="flex items-center gap-2 p-2 rounded-md hover:bg-muted">
+            <Avatar className="h-8 w-8">
+              <AvatarImage src="/placeholder-user.jpg" />
+              <AvatarFallback>JD</AvatarFallback>
+            </Avatar>
+            <div className="grid gap-0.5 leading-none">
+              <div className="font-medium">John Doe</div>
+              <div className="text-sm text-muted-foreground">
+                john@example.com
+              </div>
+            </div>
+          </div>
           <DropdownMenuSeparator />
-          <DropdownMenuItem>Settings</DropdownMenuItem>
-          <DropdownMenuItem>Support</DropdownMenuItem>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem>Logout</DropdownMenuItem>
+          <DropdownMenuItem>
+            <Link href="#" className="flex items-center gap-2" prefetch={false}>
+              <div className="w-4 h-4" />
+              <span>Settings</span>
+            </Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem>
+            <Link href="#" className="flex items-center gap-2" prefetch={false}>
+              <div className="w-4 h-4" />
+              <span>Plans</span>
+            </Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem>
+            <Link href="#" className="flex items-center gap-2" prefetch={false}>
+              <div className="w-4 h-4" />
+              <span>Upgrade to Premium</span>
+            </Link>
+          </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
     </div>

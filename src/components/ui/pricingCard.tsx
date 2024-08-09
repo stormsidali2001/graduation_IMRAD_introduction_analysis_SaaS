@@ -1,4 +1,5 @@
 "use client";
+import { PopularPlanType, PricingList } from "@/common/general";
 import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
 import {
@@ -13,18 +14,22 @@ import { Check } from "lucide-react";
 import Link from "next/link";
 
 type PaymentLinkProps = {
-  href: string;
   paymentLink?: string;
   text: string;
+  isAuthenticated: boolean;
 };
 
-const PaymentLink = ({ href, paymentLink, text }: PaymentLinkProps) => {
+const PaymentLink = ({
+  paymentLink,
+  text,
+  isAuthenticated,
+}: PaymentLinkProps) => {
   return (
     <Link
-      href={href}
+      href={isAuthenticated ? paymentLink : "/login"}
       className={buttonVariants()}
       onClick={() => {
-        if (paymentLink) {
+        if (paymentLink && !isAuthenticated) {
           localStorage.setItem("stripePaymentLink", paymentLink);
         }
       }}
@@ -33,80 +38,14 @@ const PaymentLink = ({ href, paymentLink, text }: PaymentLinkProps) => {
     </Link>
   );
 };
-enum PopularPlanType {
-  NO = 0,
-  YES = 1,
-}
 
-interface PricingProps {
-  title: string;
-  popular: PopularPlanType;
-  price: number;
-  description: string;
-  buttonText: string;
-  benefitList: string[];
-  href: string;
-  billing: string;
-  paymentLink?: string;
-}
-
-const pricingList: PricingProps[] = [
-  {
-    title: "Free",
-    popular: 0,
-    price: 0,
-    description:
-      "Lorem ipsum dolor sit, amet ipsum consectetur adipisicing elit.",
-    buttonText: "Get Started",
-    benefitList: [
-      "1 Team member",
-      "2 GB Storage",
-      "Upto 4 pages",
-      "Community support",
-      "lorem ipsum dolor",
-    ],
-    href: "/api/auth/login",
-    billing: "/month",
-  },
-  {
-    title: "Premium",
-    popular: 1,
-    price: 10,
-    description:
-      "Lorem ipsum dolor sit, amet ipsum consectetur adipisicing elit.",
-    buttonText: "Buy Now",
-    benefitList: [
-      "4 Team member",
-      "4 GB Storage",
-      "Upto 6 pages",
-      "Priority support",
-      "lorem ipsum dolor",
-    ],
-    href: "/api/auth/login",
-    paymentLink: process.env.STRIPE_MONTHLY_PLAN_LINK,
-    billing: "/month",
-  },
-  {
-    title: "Enterprise",
-    popular: 0,
-    price: 99,
-    description:
-      "Lorem ipsum dolor sit, amet ipsum consectetur adipisicing elit.",
-    buttonText: "Buy Now",
-    benefitList: [
-      "10 Team member",
-      "8 GB Storage",
-      "Upto 10 pages",
-      "Priority support",
-      "lorem ipsum dolor",
-    ],
-    href: "/api/auth/login",
-    paymentLink: process.env.STRIPE_YEARLY_PLAN_LINK,
-    billing: "/year",
-  },
-];
-
-export const Pricing = () => {
+export const Pricing = ({
+  pricingList,
+  isAuthenticated,
+}: {
+  pricingList: PricingList[];
+  isAuthenticated: boolean;
+}) => {
   return (
     <section id="pricing" className="container py-24 sm:py-32">
       <h2 className="text-3xl md:text-4xl font-bold text-center">
@@ -122,7 +61,7 @@ export const Pricing = () => {
         reiciendis.
       </h3>
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {pricingList.map((pricing: PricingProps) => (
+        {pricingList.map((pricing: PricingList) => (
           <Card
             key={pricing.title}
             className={
@@ -153,7 +92,7 @@ export const Pricing = () => {
 
             <CardContent>
               <PaymentLink
-                href={pricing.href}
+                isAuthenticated={isAuthenticated}
                 text={pricing.buttonText}
                 paymentLink={pricing.paymentLink}
               />

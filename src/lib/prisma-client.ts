@@ -1,4 +1,3 @@
-import { seed } from "@/server/seeders";
 import { PrismaClient } from "@prisma/client";
 
 function getPrismaClient() {
@@ -10,6 +9,5 @@ function getPrismaClient() {
 const prismaClient: PrismaClient = global.prismaClient ?? getPrismaClient();
 
 global.prismaClient = prismaClient;
-
-seed();
+console.log("seeed.....................................");
 export default prismaClient;

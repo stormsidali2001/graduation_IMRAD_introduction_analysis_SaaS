@@ -3,22 +3,21 @@
 import prismaClient from "@/lib/prisma-client";
 import { actionClient } from "@/lib/safe-action";
 import { RegisterUserSchema } from "@/schema/validation/register-user.schema";
-import { registerUser } from "../services/user-service";
+import { createUser, findUserByEmail } from "../services/user-service";
 import { UserAlreadyRegistered } from "../errors";
 import { signIn } from "@/lib/auth";
 import { createStripeCustomer } from "../services/stripe";
+import { registerUserUseCase } from "../use-cases/register-user";
 
 export const registerUserAction = actionClient
   .schema(RegisterUserSchema)
   .metadata({ actionName: "registerUser" })
   .action(async ({ parsedInput: { name, email, password } }) => {
     try {
-      await registerUser({ name, email, password });
-      await createStripeCustomer(email, name);
+      registerUserUseCase({ name, email, password });
       await signIn("credentials", { email, password });
     } catch (err) {
       console.error(err);
       throw new Error("Failed to register the user");
     }
   });
-

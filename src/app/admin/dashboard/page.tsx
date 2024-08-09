@@ -12,6 +12,8 @@ import { Navbar } from "../_paritals/navbar";
 import { DashboardMetricsCards } from "@/app/_partials/DashboardMetricCards";
 import { RecentFeedbacksTable } from "../_paritals/RecentFeedbacksTable";
 import { LastUsersTable } from "../_paritals/LastUsersTable";
+import { SubscriptionsCard } from "../_paritals/SubscriptionsCard";
+import { RadialStackedChart } from "@/components/ui/charts/RadialStackedChart";
 
 export default function Component() {
   return (
@@ -20,63 +22,8 @@ export default function Component() {
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
         <RecentFeedbacksTable />
         <LastUsersTable />
-        <Card>
-          <CardHeader>
-            <CardTitle>Last Subscriptions</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Name</TableHead>
-                  <TableHead>Paid Amount</TableHead>
-                  <TableHead>Expires At</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                <TableRow>
-                  <TableCell>
-                    <div className="flex items-center gap-2">
-                      <Avatar className="w-8 h-8">
-                        <AvatarImage src="/placeholder-user.jpg" />
-                        <AvatarFallback>JD</AvatarFallback>
-                      </Avatar>
-                      <div>John Doe</div>
-                    </div>
-                  </TableCell>
-                  <TableCell>$99.99</TableCell>
-                  <TableCell>June 30, 2024</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell>
-                    <div className="flex items-center gap-2">
-                      <Avatar className="w-8 h-8">
-                        <AvatarImage src="/placeholder-user.jpg" />
-                        <AvatarFallback>JA</AvatarFallback>
-                      </Avatar>
-                      <div>Jane Appleseed</div>
-                    </div>
-                  </TableCell>
-                  <TableCell>$49.99</TableCell>
-                  <TableCell>December 31, 2023</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell>
-                    <div className="flex items-center gap-2">
-                      <Avatar className="w-8 h-8">
-                        <AvatarImage src="/placeholder-user.jpg" />
-                        <AvatarFallback>SM</AvatarFallback>
-                      </Avatar>
-                      <div>Sarah Miller</div>
-                    </div>
-                  </TableCell>
-                  <TableCell>$79.99</TableCell>
-                  <TableCell>September 1, 2024</TableCell>
-                </TableRow>
-              </TableBody>
-            </Table>
-          </CardContent>
-        </Card>
+        <SubscriptionsCard />
+        <RadialStackedChart />
       </div>
     </>
   );

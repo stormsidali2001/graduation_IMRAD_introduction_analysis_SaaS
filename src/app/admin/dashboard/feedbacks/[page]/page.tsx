@@ -36,7 +36,7 @@ const Page = async ({ params, searchParams: { search } }) => {
               you have access to this exclusive content.
             </p>
           </div>
-          <div className="flex flex-col w-full gap-2">
+          <div className="flex flex-col w-full gap-6">
             {feedbacks.data.map((f) => (
               <FeedbackCard
                 introductionId={f.introductionId}

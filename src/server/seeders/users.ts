@@ -1,5 +1,7 @@
-import { getTotalUsers, registerUser } from "../services/user-service";
+import { getTotalUsers } from "../services/user-service";
+
 import { $Enums } from "@prisma/client";
+import { registerUserUseCase } from "../use-cases/register-user";
 const users = [
   {
     role: $Enums.Role.Admin,
@@ -14,17 +16,27 @@ const users = [
     email: "assoulsidali.contact@gmail.com",
     password: "123456789",
   },
+  {
+    role: $Enums.Role.User,
+    name: "Sidali Assoul",
+    email: "assoulsidali@gmail.com",
+    password: "123456789",
+  },
 ];
 export const seedUsers = async () => {
-  console.log("Seeding Users");
-  const total = await getTotalUsers();
-  if (total > 0) {
-    console.log("Already seeded");
-    return;
+  try {
+    console.log("Seeding Users");
+    const total = await getTotalUsers();
+    if (total > 0) {
+      console.log("Already seeded");
+      return;
+    }
+    await Promise.all(
+      users.map(({ email, password, name, role }) =>
+        registerUserUseCase({ email, password, name }, role),
+      ),
+    );
+  } catch (err) {
+    console.error(err);
   }
-  await Promise.all(
-    users.map(({ email, password, name, role }) =>
-      registerUser({ email, password, name }, role),
-    ),
-  );
 };

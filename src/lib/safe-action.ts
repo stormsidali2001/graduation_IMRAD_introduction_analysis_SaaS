@@ -9,6 +9,7 @@ import { z } from "zod";
 import { auth } from "./auth";
 import { redirect } from "next/navigation";
 import prismaClient from "./prisma-client";
+import { $Enums } from "@prisma/client";
 
 export class ActionError extends Error {}
 
@@ -31,7 +32,6 @@ export const actionClient = createSafeActionClient({
   },
   // Define logging middleware.
 }).use(async ({ next, clientInput, metadata }) => {
-  console.log("prisma client---------------------", prismaClient);
   console.log("LOGGING MIDDLEWARE ------------------" + new Date().toString());
 
   // Here we await the action execution.
@@ -63,6 +63,7 @@ export const authActionClient = actionClient
       plan,
       name: username,
       image: userImage,
+      customerId,
     } = session.user;
 
     if (!userId) {
@@ -70,11 +71,13 @@ export const authActionClient = actionClient
     }
 
     // Return the next middleware with `userId` value in the context
-    return next({ ctx: { userId, userRole, plan, username, userImage } });
+    return next({
+      ctx: { userId, userRole, plan, username, userImage, customerId },
+    });
   });
 
 export const adminAction = authActionClient.use(async ({ next, ctx }) => {
-  if (ctx.userRole !== "Admin") {
+  if (ctx.userRole !== $Enums.Role.Admin) {
     redirect("/user/dashboard");
   }
 
@@ -82,7 +85,7 @@ export const adminAction = authActionClient.use(async ({ next, ctx }) => {
 });
 
 export const normalUserAction = authActionClient.use(async ({ next, ctx }) => {
-  if (ctx.userRole !== "user") {
+  if (ctx.userRole !== $Enums.Role.User) {
     redirect("/admin/dashboard");
   }
 

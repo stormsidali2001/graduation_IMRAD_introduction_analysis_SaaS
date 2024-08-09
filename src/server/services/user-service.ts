@@ -5,11 +5,35 @@ import { UserAlreadyRegistered } from "../errors";
 import { RetrieverParamsDtoType } from "../validation/RetrieverParamsDto";
 import { PAGE_SIZE } from "@/common/general";
 import { getPaginatedResults } from "../validation/paginationMakerDto";
-import { UserDto } from "../validation/UserDto";
-import { type $Enums } from "@prisma/client";
+import { PrivateUserDto, UserDto } from "../validation/UserDto";
+import { $Enums } from "@prisma/client";
 
-export const registerUser = async (
-  { email, password, name }: Omit<RegisterUserInput, "passwordConfirmation">,
+export const findUserByEmail = async (email: string) => {
+  const user = await prismaClient.user.findUnique({ where: { email } });
+  if (!user) return null;
+
+  return UserDto.parseAsync(user);
+};
+
+export const findUserById = async (id: string) => {
+  const user = await prismaClient.user.findUnique({ where: { id } });
+  if (!user) return null;
+
+  return UserDto.parseAsync(user);
+};
+export const findUserByEmailWithCredentials = async (email: string) => {
+  const user = await prismaClient.user.findUnique({ where: { email } });
+  if (!user) return null;
+
+  return PrivateUserDto.parseAsync(user);
+};
+export const createUser = async (
+  {
+    email,
+    password,
+    name,
+    customerId,
+  }: Omit<RegisterUserInput, "passwordConfirmation"> & { customerId: string },
   role: $Enums.Role = "User",
 ) => {
   const hashedPassword = await hashPassword(password);
@@ -20,6 +44,8 @@ export const registerUser = async (
         password: hashedPassword,
         name,
         role,
+        customerId,
+        plan: $Enums.Plan.free,
       },
     });
 
