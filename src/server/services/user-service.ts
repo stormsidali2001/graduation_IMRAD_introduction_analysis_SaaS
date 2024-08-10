@@ -27,6 +27,24 @@ export const findUserByEmailWithCredentials = async (email: string) => {
 
   return PrivateUserDto.parseAsync(user);
 };
+
+export const banUser = async (userId: string) => {
+  await prismaClient.user.update({
+    where: { id: userId },
+
+    data: {
+      isBanned: true,
+    },
+  });
+};
+export const unbanUser = async (userId: string) => {
+  await prismaClient.user.update({
+    where: { id: userId },
+    data: {
+      isBanned: false,
+    },
+  });
+};
 export const createUser = async (
   {
     email,
@@ -65,7 +83,10 @@ export const getTotalUsers = async () => {
   }
 };
 
-export const getUsers = async ({ page, search }: RetrieverParamsDtoType) => {
+export const getUsers = async (
+  { page, search }: RetrieverParamsDtoType,
+  expectUserId: string = undefined,
+) => {
   const [total, users] = await Promise.all([
     getTotalUsers(),
     prismaClient.user.findMany({
@@ -73,6 +94,13 @@ export const getUsers = async ({ page, search }: RetrieverParamsDtoType) => {
       take: PAGE_SIZE,
       where: {
         ...(search ? { name: { contains: search } } : {}),
+        ...(expectUserId
+          ? {
+              id: {
+                not: expectUserId,
+              },
+            }
+          : {}),
       },
     }),
   ]);

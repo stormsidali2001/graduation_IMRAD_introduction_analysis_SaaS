@@ -13,7 +13,9 @@ export const authenticateWithPasswordUsecase = async (
     const match = await comparePassword(user.password, password);
     if (!match) return null;
     console.log("user loged in", user);
-    return UserDto.parse(user);
+    const userDto = await UserDto.parseAsync(user);
+    console.log("logged in as ", userDto);
+    return userDto;
   } catch (err) {
     console.error("Failed to authenticate the user");
     throw new Error(err);

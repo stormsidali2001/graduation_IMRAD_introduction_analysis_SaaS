@@ -7,6 +7,7 @@ export const UserDto = z.object({
   image: z.string().optional().nullable(),
   createdAt: z.date(),
   customerId: z.string(),
+  isBanned: z.boolean(),
   role: z.enum([$Enums.Role.Admin, $Enums.Role.User]),
   plan: z.enum([$Enums.Plan.free, $Enums.Plan.premium]),
 });
@@ -19,6 +20,7 @@ export const PrivateUserDto = z.object({
   role: z.enum([$Enums.Role.Admin, $Enums.Role.User]),
   plan: z.enum([$Enums.Plan.free, $Enums.Plan.premium]),
   createdAt: z.date(),
+  isBanned: z.boolean(),
   password: z.string(),
   customerId: z.string().optional(),
 });

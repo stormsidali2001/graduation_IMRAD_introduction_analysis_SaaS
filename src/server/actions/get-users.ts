@@ -8,11 +8,11 @@ import { getUsers } from "../services/user-service";
 export const getAllUsersAction =
   // TODO: uncomment this later
   //adminAction
-  authActionClient
+  adminAction
     .metadata({
       actionName: "getAllUsersAction",
     })
     .schema(RetrieverParamsDto)
-    .action(async ({ parsedInput }) => {
-      return getUsers(parsedInput);
+    .action(async ({ parsedInput, ctx }) => {
+      return getUsers(parsedInput, ctx.userId);
     });
