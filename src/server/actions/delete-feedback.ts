@@ -13,7 +13,7 @@ export const deleteFeedbackAction =
     .action(async ({ parsedInput }) => {
       try {
         await deleteFeedback(parsedInput);
-        revalidatePath("/dashboard/feedbacks");
+        revalidatePath("/feedbacks");
       } catch (err) {
         console.error(err);
         throw err;

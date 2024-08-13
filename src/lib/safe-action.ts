@@ -78,7 +78,9 @@ export const authActionClient = actionClient
 
 export const adminAction = authActionClient.use(async ({ next, ctx }) => {
   if (ctx.userRole !== $Enums.Role.Admin) {
-    redirect("/user/dashboard");
+    throw new ActionError(
+      "Only admin Users have the preivileges to execute this action",
+    );
   }
 
   return next({ ctx });
@@ -86,7 +88,7 @@ export const adminAction = authActionClient.use(async ({ next, ctx }) => {
 
 export const normalUserAction = authActionClient.use(async ({ next, ctx }) => {
   if (ctx.userRole !== $Enums.Role.User) {
-    redirect("/admin/dashboard");
+    throw new ActionError("This action can be executed only by normal users");
   }
 
   return next({ ctx });

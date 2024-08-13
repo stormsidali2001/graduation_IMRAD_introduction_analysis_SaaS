@@ -7,6 +7,7 @@ import { PAGE_SIZE } from "@/common/general";
 import { getPaginatedResults } from "../validation/paginationMakerDto";
 import { PrivateUserDto, UserDto } from "../validation/UserDto";
 import { $Enums } from "@prisma/client";
+import { SubscriptionDto } from "../validation/SubscriptionDto";
 
 export const findUserByEmail = async (email: string) => {
   const user = await prismaClient.user.findUnique({ where: { email } });
@@ -83,6 +84,14 @@ export const getTotalUsers = async () => {
   }
 };
 
+export const getTotalSubscriptions = async () => {
+  try {
+    return prismaClient.subscription.count();
+  } catch (err) {
+    console.error(err);
+  }
+};
+
 export const getUsers = async (
   { page, search }: RetrieverParamsDtoType,
   expectUserId: string = undefined,
@@ -114,5 +123,35 @@ export const getUsers = async (
       total_pages: Math.ceil(total / PAGE_SIZE),
     },
     UserDto,
+  );
+};
+
+export const getSubscriptions = async ({
+  page,
+  search,
+}: RetrieverParamsDtoType) => {
+  const [total, users] = await Promise.all([
+    getTotalSubscriptions(),
+    prismaClient.subscription.findMany({
+      skip: (page - 1) * PAGE_SIZE,
+      take: PAGE_SIZE,
+      include: {
+        User: true,
+      },
+      where: {
+        ...(search ? { User: { name: { contains: search } } } : {}),
+      },
+    }),
+  ]);
+
+  return getPaginatedResults(
+    {
+      data: users,
+      page,
+      per_page: PAGE_SIZE,
+      total,
+      total_pages: Math.ceil(total / PAGE_SIZE),
+    },
+    SubscriptionDto,
   );
 };

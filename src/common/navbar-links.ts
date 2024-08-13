@@ -1,7 +1,7 @@
 export const adminLinks = [
   {
     label: "Dashboard",
-    href: "/dasbhoard",
+    href: "/dashboard",
   },
   {
     label: "Introductions",

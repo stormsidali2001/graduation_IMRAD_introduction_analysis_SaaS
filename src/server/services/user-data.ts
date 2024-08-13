@@ -15,7 +15,10 @@ import {
 } from "../validation/feedbackDto";
 import { DashboardStatsDto } from "../validation/DashboardStatsDto";
 
-export const createIntroduction = async (introduction: IntroductionDtoType) => {
+export const createIntroduction = async (
+  introduction: IntroductionDtoType,
+  isPremium: boolean = false,
+) => {
   const modelsAiInstances =
     eurekaClient.getInstancesByAppId("USER-DATA-SERVICE");
   console.log("modelsAiInstances", modelsAiInstances);
@@ -33,7 +36,7 @@ export const createIntroduction = async (introduction: IntroductionDtoType) => {
   console.log("url", url);
   const res = await axios.post(
     url,
-    introduction,
+    { ...introduction, isPremium },
 
     {
       withCredentials: true,
@@ -107,7 +110,11 @@ export const getIntroductions = async (
     IntroductionDto,
   );
 };
-export const getIntroduction = async (id: string, userId: string) => {
+export const getIntroduction = async (
+  id: string,
+  userId: string,
+  role: "Admin" | "User" = "User",
+) => {
   const modelsAiInstances =
     eurekaClient.getInstancesByAppId("USER-DATA-SERVICE");
   console.log("modelsAiInstances", modelsAiInstances);
@@ -123,13 +130,13 @@ export const getIntroduction = async (id: string, userId: string) => {
     "localhost" +
     `:${selectedInstance.port["$"]}` +
     "/introductions/" +
-    id +
-    "/users/" +
-    userId;
+    id;
   console.log("url", url);
   const res = await axios.get(url, {
     withCredentials: true,
-    params: {},
+    params: {
+      ...(role === "User" ? { userId } : {}),
+    },
   });
   console.log("code451", res.data);
 

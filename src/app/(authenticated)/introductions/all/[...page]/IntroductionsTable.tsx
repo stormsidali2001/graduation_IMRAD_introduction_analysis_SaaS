@@ -32,37 +32,43 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-import {ArrowLeft,ArrowRight} from 'lucide-react'
-import { IntroductionDto, IntroductionDtoType } from "@/server/validation/introductionDto";
+import { ArrowLeft, ArrowRight } from "lucide-react";
+import {
+  IntroductionDto,
+  IntroductionDtoType,
+} from "@/server/validation/introductionDto";
 import { PaginatedResultType } from "@/server/validation/paginationMakerDto";
 import Link from "next/link";
 
-interface IntroductionsTableProps extends PaginatedResultType<typeof IntroductionDto>{
+interface IntroductionsTableProps
+  extends PaginatedResultType<typeof IntroductionDto> {}
+interface IntroductionProps extends IntroductionDtoType {}
 
-
-}
-interface IntroductionProps extends IntroductionDtoType {
-
-}
-
-const Introduction = ({sentences,sha,averageMoveConfidence,averageSubMoveConfidence,id}:IntroductionProps) => {
-
+const Introduction = ({
+  sentences,
+  sha,
+  averageMoveConfidence,
+  averageSubMoveConfidence,
+  id,
+}: IntroductionProps) => {
   return (
     <TableRow>
       <TableCell className="max-[400px]">
-        <div className="font-medium line-clamp-2">
-         {sentences[0].text} 
-        </div>
+        <div className="font-medium line-clamp-2">{sentences[0].text}</div>
       </TableCell>
       <TableCell className="w-14">
         <div className="flex items-center gap-2">
           <div className="h-2 w-full bg-muted rounded-full">
             <div
               className="h-2 bg-primary rounded-full"
-              style={{ width: `${((averageMoveConfidence?? 0)*100).toFixed(0)}%` }}
+              style={{
+                width: `${((averageMoveConfidence ?? 0) * 100).toFixed(0)}%`,
+              }}
             />
           </div>
-          <span className="text-sm font-medium">{((averageMoveConfidence ?? 0)*100).toFixed(0)}%</span>
+          <span className="text-sm font-medium">
+            {((averageMoveConfidence ?? 0) * 100).toFixed(0)}%
+          </span>
         </div>
       </TableCell>
 
@@ -71,10 +77,14 @@ const Introduction = ({sentences,sha,averageMoveConfidence,averageSubMoveConfide
           <div className="h-2 w-full bg-muted rounded-full">
             <div
               className="h-2 bg-primary rounded-full"
-              style={{ width: `${((averageSubMoveConfidence ?? 0)*100).toFixed(0)}%` }}
+              style={{
+                width: `${((averageSubMoveConfidence ?? 0) * 100).toFixed(0)}%`,
+              }}
             />
           </div>
-          <span className="text-sm font-medium">{((averageSubMoveConfidence ?? 0)*100).toFixed(0)}%</span>
+          <span className="text-sm font-medium">
+            {((averageSubMoveConfidence ?? 0) * 100).toFixed(0)}%
+          </span>
         </div>
       </TableCell>
       <TableCell>
@@ -86,7 +96,9 @@ const Introduction = ({sentences,sha,averageMoveConfidence,averageSubMoveConfide
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuItem><Link href={`/user/dashboard/introductions/${id}`}>Details</Link></DropdownMenuItem>
+            <DropdownMenuItem>
+              <Link href={`/introductions/${id}`}>Details</Link>
+            </DropdownMenuItem>
             <DropdownMenuItem>Delete</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
@@ -94,53 +106,54 @@ const Introduction = ({sentences,sha,averageMoveConfidence,averageSubMoveConfide
     </TableRow>
   );
 };
-export const IntroductionsTable = ({  data=[],total,page,per_page,total_pages}:IntroductionsTableProps={}) => (
+export const IntroductionsTable = ({
+  data = [],
+  total,
+  page,
+  per_page,
+  total_pages,
+}: IntroductionsTableProps = {}) => (
   <>
+    <Card>
+      <CardHeader>
+        <CardTitle>Introductions</CardTitle>
+        <CardDescription>
+          Showing 1-{per_page} of {total} introductions
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Introduction</TableHead>
+              <TableHead>Move Confidence</TableHead>
+              <TableHead>Sub Move Confidence</TableHead>
+              <TableHead>Actions</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {data.map((introduction, index) => (
+              <Introduction key={index} {...introduction} />
+            ))}
+          </TableBody>
+        </Table>
 
-  <Card>
-    <CardHeader>
-      <CardTitle>Introductions</CardTitle>
-      <CardDescription>Showing 1-{per_page} of {total} introductions</CardDescription>
-    </CardHeader>
-    <CardContent>
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>Introduction</TableHead>
-            <TableHead>Move Confidence</TableHead>
-            <TableHead>Sub Move Confidence</TableHead>
-            <TableHead>Actions</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {
-data.map((introduction,index)=>(
-
-          <Introduction key={index} {...introduction} />
-))
-          }
-        </TableBody>
-      </Table>
-
-<Pagination>
-      <PaginationContent>
-        <PaginationItem>
-          <PaginationPrevious href="#" />
-        </PaginationItem>
-        <PaginationItem>
-          <PaginationEllipsis />
-        </PaginationItem>
-        <PaginationItem>
-          <PaginationNext href="#" />
-        </PaginationItem>
-      </PaginationContent>
-    </Pagination>
-  
-
-    </CardContent>
-  </Card>
+        <Pagination>
+          <PaginationContent>
+            <PaginationItem>
+              <PaginationPrevious href="#" />
+            </PaginationItem>
+            <PaginationItem>
+              <PaginationEllipsis />
+            </PaginationItem>
+            <PaginationItem>
+              <PaginationNext href="#" />
+            </PaginationItem>
+          </PaginationContent>
+        </Pagination>
+      </CardContent>
+    </Card>
   </>
-
 );
 
 function MoveVerticalIcon(props) {

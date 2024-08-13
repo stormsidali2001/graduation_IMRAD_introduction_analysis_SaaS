@@ -22,29 +22,33 @@ import {
   TableCell,
 } from "@/components/ui/table";
 import { Toggle } from "@/components/ui/toggle";
+import { getSubscriptionsAction } from "@/server/actions/get-subscriptions";
 import { getAllUsersAction } from "@/server/actions/get-users";
 import { UserDtoType } from "@/server/validation/UserDto";
+import { type SubscriptionDtoType } from "@/server/validation/SubscriptionDto";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
-const UserTableRow = (user: UserDtoType) => {
+const SubscriptionTableRow = (subscription: SubscriptionDtoType) => {
   return (
     <TableRow>
-      <TableCell className="font-medium">{user.name}</TableCell>
-      <TableCell>{user.email}</TableCell>
-      <TableCell className="text-center">
-        <Toggle
-          variant="outline"
-          aria-label="Ban user"
-          className="!px-3 !py-1 text-sm"
-        >
-          <LockIcon className="mr-2 h-4 w-4" />
-          Banned
-        </Toggle>
+      <TableCell>
+        <div className="flex items-center gap-2">
+          <Avatar className="w-8 h-8">
+            <AvatarImage src="/placeholder-user.jpg" />
+            <AvatarFallback>{subscription.User.name.at(0)}</AvatarFallback>
+          </Avatar>
+          <div>{subscription.User.name}</div>
+        </div>
       </TableCell>
+
+      <TableCell>{subscription.period}</TableCell>
+      <TableCell>{subscription.startDate.toLocaleDateString()}</TableCell>
+      <TableCell>{subscription.endDate.toLocaleDateString()}</TableCell>
     </TableRow>
   );
 };
 export default async function Page({ params: { page } }) {
-  const users = (await getAllUsersAction({ page: page[0] }))?.data;
+  const subscriptions = (await getSubscriptionsAction({ page: page[0] }))?.data;
   return (
     <div className="container mx-auto px-4 md:px-6 py-12">
       <div className=" mx-auto space-y-6">
@@ -68,20 +72,24 @@ export default async function Page({ params: { page } }) {
             <CardHeader>
               <CardTitle>Subscriptions</CardTitle>
               <CardDescription>
-                Showing 1-{users?.per_page} of {users?.total} users accounts.
+                Showing 1-{subscriptions?.per_page} of {subscriptions?.total}{" "}
+                subscriptions.
               </CardDescription>
             </CardHeader>
             <CardContent>
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Name</TableHead>
-                    <TableHead>Email</TableHead>
-                    <TableHead className="text-center">Status</TableHead>
+                    <TableHead>User</TableHead>
+                    <TableHead>Period</TableHead>
+                    <TableHead>Start Date</TableHead>
+                    <TableHead>Expires At</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {users?.data?.map((u) => <UserTableRow key={u.id} {...u} />)}
+                  {subscriptions?.data?.map((s, index) => (
+                    <SubscriptionTableRow key={index} {...s} />
+                  ))}
                 </TableBody>
               </Table>
 

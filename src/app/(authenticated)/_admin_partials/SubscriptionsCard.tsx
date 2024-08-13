@@ -8,25 +8,30 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { getSubscriptionsAction } from "@/server/actions/get-subscriptions";
+import { SubscriptionDtoType } from "@/server/validation/SubscriptionDto";
 
-const SubscritpionRow = () => {
+const SubscriptionTableRow = (subscription: SubscriptionDtoType) => {
   return (
     <TableRow>
       <TableCell>
         <div className="flex items-center gap-2">
           <Avatar className="w-8 h-8">
             <AvatarImage src="/placeholder-user.jpg" />
-            <AvatarFallback>JA</AvatarFallback>
+            <AvatarFallback>{subscription.User.name.at(0)}</AvatarFallback>
           </Avatar>
-          <div>Jane Appleseed</div>
+          <div>{subscription.User.name}</div>
         </div>
       </TableCell>
-      <TableCell>$49.99</TableCell>
-      <TableCell>December 31, 2023</TableCell>
+
+      <TableCell>{subscription.period}</TableCell>
+      <TableCell>{subscription.startDate.toLocaleDateString()}</TableCell>
+      <TableCell>{subscription.endDate.toLocaleDateString()}</TableCell>
     </TableRow>
   );
 };
 export const SubscriptionsCard = async () => {
+  const subscriptions = (await getSubscriptionsAction({ page: 1 }))?.data;
   return (
     <Card className="">
       <CardHeader>
@@ -36,14 +41,16 @@ export const SubscriptionsCard = async () => {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Name</TableHead>
-              <TableHead>Paid Amount</TableHead>
+              <TableHead>User</TableHead>
               <TableHead>Period</TableHead>
+              <TableHead>Start Date</TableHead>
               <TableHead>Expires At</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            <SubscritpionRow />
+            {subscriptions?.data?.map((s, index) => (
+              <SubscriptionTableRow key={index} {...s} />
+            ))}
           </TableBody>
         </Table>
       </CardContent>

@@ -74,7 +74,7 @@ export const Navbar = async () => {
         ) : (
           <DropdownMenuItem>
             <Link
-              href="/user/dashboard/plans"
+              href="/plans"
               className="flex items-center gap-2"
               prefetch={false}
             >
