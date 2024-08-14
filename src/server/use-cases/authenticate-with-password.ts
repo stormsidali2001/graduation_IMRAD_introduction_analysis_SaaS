@@ -9,15 +9,15 @@ export const authenticateWithPasswordUsecase = async (
   console.log("authorization running");
   try {
     const user = await findUserByEmailWithCredentials(email);
-    if (!user) return null;
+    if (!user) throw new Error("User not found");
     const match = await comparePassword(user.password, password);
-    if (!match) return null;
+    if (!match) return new Error("Bad Credentials");
     console.log("user loged in", user);
     const userDto = await UserDto.parseAsync(user);
     console.log("logged in as ", userDto);
     return userDto;
   } catch (err) {
-    console.error("Failed to authenticate the user");
-    throw new Error(err);
+    console.error("Wrong Credentials" + err);
+    throw new Error("Wrong Credentials");
   }
 };

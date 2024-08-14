@@ -14,8 +14,12 @@ export const registerUserAction = actionClient
   .metadata({ actionName: "registerUser" })
   .action(async ({ parsedInput: { name, email, password } }) => {
     try {
-      registerUserUseCase({ name, email, password });
-      await signIn("credentials", { email, password });
+      await registerUserUseCase({ name, email, password });
+      const res = await signIn("credentials", {
+        email,
+        password,
+        redirect: false,
+      });
     } catch (err) {
       console.error(err);
       throw new Error("Failed to register the user");

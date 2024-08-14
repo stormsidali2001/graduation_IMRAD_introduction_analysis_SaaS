@@ -17,6 +17,7 @@ interface SentenceRowProps extends PredictionOutputItemDtoType {
   id?: string;
   introductionId?: string;
   feedback?: FeedbackDto;
+  isAdmin?: boolean;
 }
 export const SentenceRow = ({
   sentence,
@@ -28,7 +29,57 @@ export const SentenceRow = ({
   id,
   introductionId,
   feedback,
+  isAdmin = false,
 }: SentenceRowProps) => {
+  const feedbackSection = !isAdmin ? (
+    <>
+      {!feedback ? (
+        <div className="flex items-center justify-end gap-4">
+          <Dialog>
+            <DialogTrigger>
+              <Button variant="ghost">
+                <ThumbsUp
+                  size={24}
+                  className="hover:text-primary transition-all ease-in-out"
+                />
+              </Button>
+            </DialogTrigger>
+            <FeedbackDialogBody
+              isLike
+              introductionId={introductionId}
+              sentenceId={id}
+            />
+          </Dialog>
+
+          <Dialog>
+            <DialogTrigger>
+              <Button variant="ghost">
+                <ThumbsDown
+                  size={24}
+                  className="hover:text-primary transition-all ease-in-out"
+                />
+              </Button>
+            </DialogTrigger>
+            <FeedbackDialogBody
+              isLike={false}
+              introductionId={introductionId}
+              sentenceId={id}
+            />
+          </Dialog>
+        </div>
+      ) : (
+        <div className="flex items-center justify-end gap-2 text-sm text-gray-200">
+          Feedback recieved (
+          {feedback.liked ? (
+            <LucideThumbsUp className="w-4" />
+          ) : (
+            <LucideThumbsDown className="w-4" />
+          )}
+          ).
+        </div>
+      )}
+    </>
+  ) : null;
   return (
     <div className="bg-gray-100 dark:bg-gray-800 rounded-md p-6">
       <div className="flex flex-col gap-4 ">
@@ -49,51 +100,7 @@ export const SentenceRow = ({
         <h4 className="text-lg font-bold mb-2">Sentence {sentenceNumber}</h4>
         <p className="text-gray-600 dark:text-gray-400">{sentence}</p>
 
-        {!feedback ? (
-          <div className="flex items-center justify-end gap-4">
-            <Dialog>
-              <DialogTrigger>
-                <Button variant="ghost">
-                  <ThumbsUp
-                    size={24}
-                    className="hover:text-primary transition-all ease-in-out"
-                  />
-                </Button>
-              </DialogTrigger>
-              <FeedbackDialogBody
-                isLike
-                introductionId={introductionId}
-                sentenceId={id}
-              />
-            </Dialog>
-
-            <Dialog>
-              <DialogTrigger>
-                <Button variant="ghost">
-                  <ThumbsDown
-                    size={24}
-                    className="hover:text-primary transition-all ease-in-out"
-                  />
-                </Button>
-              </DialogTrigger>
-              <FeedbackDialogBody
-                isLike={false}
-                introductionId={introductionId}
-                sentenceId={id}
-              />
-            </Dialog>
-          </div>
-        ) : (
-          <div className="flex items-center justify-end gap-2 text-sm text-gray-200">
-            Feedback recieved (
-            {feedback.liked ? (
-              <LucideThumbsUp className="w-4" />
-            ) : (
-              <LucideThumbsDown className="w-4" />
-            )}
-            ).
-          </div>
-        )}
+        {feedbackSection}
       </div>
     </div>
   );

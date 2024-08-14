@@ -5,7 +5,7 @@ import { UserAlreadyRegistered } from "../errors";
 import { RetrieverParamsDtoType } from "../validation/RetrieverParamsDto";
 import { PAGE_SIZE } from "@/common/general";
 import { getPaginatedResults } from "../validation/paginationMakerDto";
-import { PrivateUserDto, UserDto } from "../validation/UserDto";
+import { PrivateUserDto, UserDto, UserDtoType } from "../validation/UserDto";
 import { $Enums } from "@prisma/client";
 import { SubscriptionDto } from "../validation/SubscriptionDto";
 
@@ -154,4 +154,10 @@ export const getSubscriptions = async ({
     },
     SubscriptionDto,
   );
+};
+
+export const getUserRedirectUrl = (user: UserDtoType) => {
+  if (user.role === "Admin") {
+    return "/dasbhoard";
+  } else return "/generate";
 };

@@ -36,6 +36,7 @@ import { Toggle } from "@/components/ui/toggle";
 import { getAllUsersAction } from "@/server/actions/get-users";
 import { UserDtoType } from "@/server/validation/UserDto";
 import { UserBanAlertDialogBody } from "../../_partials/UserBanAlertDialogBody";
+import { LockOpen } from "lucide-react";
 
 const UserTableRow = (user: UserDtoType) => {
   return (
@@ -48,20 +49,20 @@ const UserTableRow = (user: UserDtoType) => {
             {!user.isBanned ? (
               <Toggle
                 variant="outline"
-                aria-label="Ban user"
+                aria-label="unban"
                 className="!px-3 !py-1 text-sm"
               >
-                <LockIcon className="mr-2 h-4 w-4" />
-                Banned
+                <LockOpen className="mr-2 h-4 w-4" />
+                Not Baned
               </Toggle>
             ) : (
               <Toggle
                 variant="outline"
-                aria-label="Unban user"
+                aria-label="Ban"
                 className="!px-3 !py-1 text-sm"
               >
                 <LockIcon className="mr-2 h-4 w-4" />
-                unbaned
+                Ban
               </Toggle>
             )}
           </AlertDialogTrigger>

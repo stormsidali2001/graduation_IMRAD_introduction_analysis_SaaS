@@ -1,9 +1,20 @@
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { Label } from "@/components/ui/label"
-import { Input } from "@/components/ui/input"
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Form } from "./_partials/form";
+import { auth } from "@/lib/auth";
+import { getUserRedirectUrl } from "@/server/services/user-service";
+import { redirect } from "next/navigation";
+import { UserDtoType } from "@/server/validation/UserDto";
 
-export default function Page() {
+export default async function Page() {
+  const session = await auth();
+  if (session) {
+    console.log("login page: user -->", session.user);
+    const url = getUserRedirectUrl(session.user);
+    redirect(url);
+  }
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4 py-12 sm:px-6 lg:px-8">
       <div className="w-full max-w-md space-y-8">
@@ -13,7 +24,11 @@ export default function Page() {
           </h2>
           <p className="mt-2 text-center text-sm text-muted-foreground">
             Or{" "}
-            <Link href="#" className="font-medium text-primary hover:text-primary-foreground" prefetch={false}>
+            <Link
+              href="#"
+              className="font-medium text-primary hover:text-primary-foreground"
+              prefetch={false}
+            >
               sign up for a new account
             </Link>
           </p>
@@ -28,40 +43,20 @@ export default function Page() {
               <span className="w-full border-t border-muted" />
             </div>
             <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-background px-2 text-muted-foreground">Or continue with</span>
+              <span className="bg-background px-2 text-muted-foreground">
+                Or continue with
+              </span>
             </div>
           </div>
-          <form className="space-y-4">
-            <div>
-              <Label htmlFor="email">Email address</Label>
-              <Input
-                id="email"
-                type="email"
-                autoComplete="email"
-                required
-                className="mt-1 block w-full"
-                placeholder="name@example.com"
-              />
-            </div>
-            <div>
-              <Label htmlFor="password">Password</Label>
-              <Input
-                id="password"
-                type="password"
-                autoComplete="current-password"
-                required
-                className="mt-1 block w-full"
-                placeholder="Password"
-              />
-            </div>
-            <Button type="submit" className="w-full">
-              Sign in
-            </Button>
-          </form>
+
+          <Form
+            //@ts-ignore
+            user={session?.user}
+          />
         </div>
       </div>
     </div>
-  )
+  );
 }
 
 function ChromeIcon(props) {
@@ -84,9 +79,8 @@ function ChromeIcon(props) {
       <line x1="3.95" x2="8.54" y1="6.06" y2="14" />
       <line x1="10.88" x2="15.46" y1="21.94" y2="14" />
     </svg>
-  )
+  );
 }
-
 
 function XIcon(props) {
   return (
@@ -105,5 +99,5 @@ function XIcon(props) {
       <path d="M18 6 6 18" />
       <path d="m6 6 12 12" />
     </svg>
-  )
+  );
 }

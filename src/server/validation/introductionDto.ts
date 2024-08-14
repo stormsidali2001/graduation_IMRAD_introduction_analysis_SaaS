@@ -17,6 +17,8 @@ export const IntroductionDto = z.object({
   id: z.string(),
   userId: z.string(),
   sentences: z.array(SentenceDto),
+  summary: z.string().optional(),
+  classBasedSummary: z.string().optional(),
   averageSubMoveConfidence: z.number().optional(),
   averageMoveConfidence: z.number().optional(),
 });

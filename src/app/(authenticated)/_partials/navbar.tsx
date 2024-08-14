@@ -23,6 +23,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { SignOutButton } from "./sign-out-button";
 
 export const Navbar = async () => {
   const session = await auth();
@@ -182,6 +183,9 @@ export const Navbar = async () => {
               </Link>
             </DropdownMenuItem>
             {dropdownItems}
+            <DropdownMenuItem>
+              <SignOutButton />
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>

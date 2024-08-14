@@ -2,7 +2,6 @@ import NextAuth, { User } from "next-auth";
 import Google from "next-auth/providers/google";
 import Credentials from "next-auth/providers/credentials";
 import { PrismaAdapter } from "@auth/prisma-adapter";
-import prismaClient from "./prisma-client";
 import { comparePassword } from "./server-utils";
 import {
   findUserByEmail,
@@ -11,6 +10,8 @@ import {
 } from "@/server/services/user-service";
 import { UserDto } from "@/server/validation/UserDto";
 import { authenticateWithPasswordUsecase } from "@/server/use-cases/authenticate-with-password";
+import prismaClient from "./prisma-client";
+import { ActionError } from "./safe-action";
 
 export const { auth, handlers, signIn, signOut } = NextAuth({
   adapter: PrismaAdapter(prismaClient),
@@ -28,8 +29,13 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
       authorize: async (
         { email, password }: { email: string; password: string },
         request,
-      ): Promise<User> => {
-        return await authenticateWithPasswordUsecase(email, password);
+      ) => {
+        console.log(`--loging with ${email} ${password} `);
+        try {
+          return await authenticateWithPasswordUsecase(email, password);
+        } catch (err) {
+          throw new ActionError(err);
+        }
       },
     }),
   ],
@@ -37,10 +43,10 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
   //callbacks
   callbacks: {
     async signIn({ user, account, profile, email, credentials }) {
-      return true;
+      return user.role === "Admin" || !user.isBanned;
     },
     async redirect({ url, baseUrl }) {
-      return baseUrl;
+      return url ?? baseUrl;
     },
 
     async session({ session, user, token }) {
