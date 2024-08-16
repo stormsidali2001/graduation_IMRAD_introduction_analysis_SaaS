@@ -121,9 +121,7 @@ export const Converter = () => {
                 return;
               }
 
-              if (!res?.data) {
-                updateSentences(res?.data);
-              }
+              updateSentences(res?.data);
             }}
             accept={{
               "application/pdf": [],
