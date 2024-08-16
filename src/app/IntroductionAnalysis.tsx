@@ -2,7 +2,7 @@ import React from "react";
 import { SentenceRow } from "./_partials/sentenceRow";
 import { ArrowDown } from "lucide-react";
 
-export const IntroductionAnalysis = ({ sentences, isAdmin = false }) => (
+export const IntroductionAnalysis = ({ sentences, hideFeedbacks = false }) => (
   <div className="grid gap-4">
     {sentences.map((sentence, index) => {
       return (
@@ -11,7 +11,7 @@ export const IntroductionAnalysis = ({ sentences, isAdmin = false }) => (
             sentenceNumber={index + 1}
             {...sentence}
             key={index}
-            isAdmin={isAdmin}
+            hideFeedbacks={hideFeedbacks}
           />
           {index !== sentences.length - 1 && (
             <div className="w-full items-center flex justify-center">

@@ -57,7 +57,7 @@ const Page = async ({ params: { id } }) => {
         ) : null}
 
         <IntroductionAnalysis
-          isAdmin={user.role === "Admin"}
+          hideFeedbacks={user.role === "Admin"}
           sentences={introduction.sentences.map((s) => ({
             sentence: s.text,
             id: s.id,

@@ -6,7 +6,7 @@ import { ThemeProvider as NextThemesProvider } from "next-themes";
 import { type ThemeProviderProps } from "next-themes/dist/types";
 import { Toaster } from "@/components/ui/toaster";
 
-const inter = Inter({ subsets: ["latin"] });
+const inter = Inter({ subsets: ["cyrillic"] });
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -21,7 +21,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <NextThemesProvider attribute="class" defaultTheme="dark" enableSystem>
+        <NextThemesProvider attribute="class" defaultTheme="light" enableSystem>
           <NextTopLoader color="#2299DD" height={3} />
           {children}
         </NextThemesProvider>

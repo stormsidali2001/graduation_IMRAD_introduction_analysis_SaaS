@@ -51,3 +51,10 @@ export const generateSubscriptionCheckoutSession = async ({
     console.error(err);
   }
 };
+
+export const getSession = async (id: string) => {
+  const session = await stripe.checkout.sessions.retrieve(id, {
+    expand: ["line_items"],
+  });
+  return session;
+};

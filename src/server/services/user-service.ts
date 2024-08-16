@@ -5,12 +5,24 @@ import { UserAlreadyRegistered } from "../errors";
 import { RetrieverParamsDtoType } from "../validation/RetrieverParamsDto";
 import { PAGE_SIZE } from "@/common/general";
 import { getPaginatedResults } from "../validation/paginationMakerDto";
-import { PrivateUserDto, UserDto, UserDtoType } from "../validation/UserDto";
+import {
+  PrivateUserDto,
+  UpdateUserDtoSchemaType,
+  UserDto,
+  UserDtoType,
+} from "../validation/UserDto";
 import { $Enums } from "@prisma/client";
 import { SubscriptionDto } from "../validation/SubscriptionDto";
 
 export const findUserByEmail = async (email: string) => {
   const user = await prismaClient.user.findUnique({ where: { email } });
+  if (!user) return null;
+
+  return UserDto.parseAsync(user);
+};
+
+export const findUserByCustomerId = async (customerId: string) => {
+  const user = await prismaClient.user.findUnique({ where: { customerId } });
   if (!user) return null;
 
   return UserDto.parseAsync(user);
@@ -156,8 +168,60 @@ export const getSubscriptions = async ({
   );
 };
 
+export const updateUser = async (id: string, user: UpdateUserDtoSchemaType) => {
+  await prismaClient.user.update({
+    where: {
+      id,
+    },
+    data: {
+      ...user,
+    },
+  });
+};
 export const getUserRedirectUrl = (user: UserDtoType) => {
   if (user.role === "Admin") {
     return "/dasbhoard";
   } else return "/generate";
+};
+
+export const resetToFreePlan = async (id: string) => {
+  await prismaClient.$transaction([
+    prismaClient.user.update({
+      where: { id },
+      data: { plan: "free" },
+    }),
+    prismaClient.subscription.delete({ where: { userId: id } }),
+  ]);
+};
+
+export const upsertUserSubscription = async (
+  userId: string,
+  priceId: string,
+) => {
+  let endDate = new Date();
+  if (priceId === process.env.STRIPE_YEARLY_PRICE_ID!) {
+    endDate.setFullYear(endDate.getFullYear() + 1); // 1 year from now
+  } else if (priceId === process.env.STRIPE_MONTHLY_PRICE_ID!) {
+    endDate.setMonth(endDate.getMonth() + 1); // 1 month from now
+  } else {
+    throw new Error("Invalid priceId");
+  }
+  await prismaClient.subscription.upsert({
+    where: { userId },
+    create: {
+      userId,
+      startDate: new Date(),
+      endDate: endDate,
+      plan: "premium",
+      period:
+        priceId === process.env.STRIPE_YEARLY_PRICE_ID! ? "yearly" : "monthly",
+    },
+    update: {
+      plan: "premium",
+      period:
+        priceId === process.env.STRIPE_YEARLY_PRICE_ID! ? "yearly" : "monthly",
+      startDate: new Date(),
+      endDate: endDate,
+    },
+  });
 };

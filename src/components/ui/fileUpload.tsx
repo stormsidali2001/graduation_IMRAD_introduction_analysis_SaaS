@@ -1,27 +1,29 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import Image from "next/image"
-import { Cross2Icon, UploadIcon } from "@radix-ui/react-icons"
+import * as React from "react";
+import Image from "next/image";
+import { Cross2Icon, UploadIcon } from "@radix-ui/react-icons";
 import Dropzone, {
   type DropzoneProps,
   type FileRejection,
-} from "react-dropzone"
-import { cn, formatBytes } from "@/lib/utils"
-import { useControllableState } from "@/hooks/use-controllable-state"
-import { Button } from "@/components/ui/button"
-import { Progress } from "@/components/ui/progress"
-import { ScrollArea } from "@/components/ui/scroll-area"
-import { useToast } from "./use-toast"
+} from "react-dropzone";
+import { cn, formatBytes } from "@/lib/utils";
+import { useControllableState } from "@/hooks/use-controllable-state";
+import { Button } from "@/components/ui/button";
+import { Progress } from "@/components/ui/progress";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { useToast } from "./use-toast";
+import { CloudIcon } from "lucide-react";
 
-export interface FileUploaderProps extends React.HTMLAttributes<HTMLDivElement> {
+export interface FileUploaderProps
+  extends React.HTMLAttributes<HTMLDivElement> {
   /**
    * Value of the uploader.
    * @type File[]
    * @default undefined
    * @example value={files}
    */
-  value?: File[]
+  value?: File[];
 
   /**
    * Function to be called when the value changes.
@@ -29,7 +31,7 @@ export interface FileUploaderProps extends React.HTMLAttributes<HTMLDivElement> 
    * @default undefined
    * @example onValueChange={(files) => setFiles(files)}
    */
-  onValueChange?: React.Dispatch<React.SetStateAction<File[]>>
+  onValueChange?: React.Dispatch<React.SetStateAction<File[]>>;
 
   /**
    * Function to be called when files are uploaded.
@@ -37,7 +39,7 @@ export interface FileUploaderProps extends React.HTMLAttributes<HTMLDivElement> 
    * @default undefined
    * @example onUpload={(files) => uploadFiles(files)}
    */
-  onUpload?: (files: File[]) => Promise<void>
+  onUpload?: (files: File[]) => Promise<void>;
 
   /**
    * Progress of the uploaded files.
@@ -45,7 +47,7 @@ export interface FileUploaderProps extends React.HTMLAttributes<HTMLDivElement> 
    * @default undefined
    * @example progresses={{ "file1.png": 50 }}
    */
-  progresses?: Record<string, number>
+  progresses?: Record<string, number>;
 
   /**
    * Accepted file types for the uploader.
@@ -56,7 +58,7 @@ export interface FileUploaderProps extends React.HTMLAttributes<HTMLDivElement> 
    * ```
    * @example accept={["image/png", "image/jpeg"]}
    */
-  accept?: DropzoneProps["accept"]
+  accept?: DropzoneProps["accept"];
 
   /**
    * Maximum file size for the uploader.
@@ -64,7 +66,7 @@ export interface FileUploaderProps extends React.HTMLAttributes<HTMLDivElement> 
    * @default 1024 * 1024 * 2 // 2MB
    * @example maxSize={1024 * 1024 * 2} // 2MB
    */
-  maxSize?: DropzoneProps["maxSize"]
+  maxSize?: DropzoneProps["maxSize"];
 
   /**
    * Maximum number of files for the uploader.
@@ -72,7 +74,7 @@ export interface FileUploaderProps extends React.HTMLAttributes<HTMLDivElement> 
    * @default 1
    * @example maxFiles={5}
    */
-  maxFiles?: DropzoneProps["maxFiles"]
+  maxFiles?: DropzoneProps["maxFiles"];
 
   /**
    * Whether the uploader should accept multiple files.
@@ -80,7 +82,7 @@ export interface FileUploaderProps extends React.HTMLAttributes<HTMLDivElement> 
    * @default false
    * @example multiple
    */
-  multiple?: boolean
+  multiple?: boolean;
 
   /**
    * Whether the uploader is disabled.
@@ -88,11 +90,11 @@ export interface FileUploaderProps extends React.HTMLAttributes<HTMLDivElement> 
    * @default false
    * @example disabled
    */
-  disabled?: boolean
+  disabled?: boolean;
 }
 
 export function FileUploader(props: FileUploaderProps) {
-    const {toast} = useToast()
+  const { toast } = useToast();
   const {
     value: valueProp,
     onValueChange,
@@ -105,49 +107,45 @@ export function FileUploader(props: FileUploaderProps) {
     disabled = false,
     className,
     ...dropzoneProps
-  } = props
+  } = props;
 
   const [files, setFiles] = useControllableState<File[]>({
     prop: valueProp,
     onChange: onValueChange,
-  })
+  });
 
   const onDrop = React.useCallback(
     (acceptedFiles: File[], rejectedFiles: FileRejection[]) => {
       if (!multiple && maxFiles === 1 && acceptedFiles.length > 1) {
         toast({
-
-            title: "Cannot upload more than 1 file at a time",
-        })
-        return
+          title: "Cannot upload more than 1 file at a time",
+        });
+        return;
       }
 
       if ((files?.length ?? 0) + acceptedFiles.length > maxFiles) {
-
         toast({
-
-            title: `Cannot upload more than ${maxFiles} files`,
-        })
-        return
+          title: `Cannot upload more than ${maxFiles} files`,
+        });
+        return;
       }
 
       const newFiles = acceptedFiles.map((file) =>
         Object.assign(file, {
           preview: URL.createObjectURL(file),
-        })
-      )
+        }),
+      );
 
-      const updatedFiles = files ? [...files, ...newFiles] : newFiles
+      const updatedFiles = files ? [...files, ...newFiles] : newFiles;
 
-      setFiles(updatedFiles)
+      setFiles(updatedFiles);
 
       if (rejectedFiles.length > 0) {
         rejectedFiles.forEach(({ file }) => {
-        toast({
-
+          toast({
             title: `File ${file.name} was rejected`,
-        })
-        })
+          });
+        });
       }
 
       if (
@@ -156,65 +154,60 @@ export function FileUploader(props: FileUploaderProps) {
         updatedFiles.length <= maxFiles
       ) {
         const target =
-          updatedFiles.length > 0 ? `${updatedFiles.length} files` : `file`
+          updatedFiles.length > 0 ? `${updatedFiles.length} files` : `file`;
 
-          onUpload(updatedFiles).then(()=>{
+        onUpload(updatedFiles)
+          .then(() => {
             toast({
+              title: `${target} uploaded`,
+            });
 
-                title: `${target} uploaded`,
-            })
-
-            setFiles([])
+            setFiles([]);
           })
-          .catch(err=>{
+          .catch((err) => {
             toast({
-
-                title: `Failed to upload ${target}`,
-            })
-
-          })
-          
+              title: `Failed to upload ${target}`,
+            });
+          });
       }
     },
 
-    [files, maxFiles, multiple, onUpload, setFiles]
-  )
+    [files, maxFiles, multiple, onUpload, setFiles],
+  );
 
   function onRemove(index: number) {
-    if (!files) return
-    const newFiles = files.filter((_, i) => i !== index)
-    setFiles(newFiles)
-    onValueChange?.(newFiles)
+    if (!files) return;
+    const newFiles = files.filter((_, i) => i !== index);
+    setFiles(newFiles);
+    onValueChange?.(newFiles);
   }
 
   // Revoke preview url when component unmounts
   React.useEffect(() => {
     return () => {
-      if (!files) return
+      if (!files) return;
       files.forEach((file) => {
         if (isFileWithPreview(file)) {
-          URL.revokeObjectURL(file.preview)
+          URL.revokeObjectURL(file.preview);
         }
-      })
-    }
+      });
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, []);
 
-  const isDisabled = disabled || (files?.length ?? 0) >= maxFiles
+  const isDisabled = disabled || (files?.length ?? 0) >= maxFiles;
 
   return (
     <div className="relative flex flex-col gap-6 overflow-hidden">
       <Dropzone
-        
         onDrop={onDrop}
         accept={accept}
         maxSize={maxSize}
         maxFiles={maxFiles}
         multiple={maxFiles > 1 || multiple}
         disabled={isDisabled}
-
       >
-        {({ getRootProps, getInputProps, isDragActive,inputRef }) => (
+        {({ getRootProps, getInputProps, isDragActive, inputRef }) => (
           <div
             {...getRootProps()}
             className={cn(
@@ -222,11 +215,11 @@ export function FileUploader(props: FileUploaderProps) {
               "ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
               isDragActive && "border-muted-foreground/50",
               isDisabled && "pointer-events-none opacity-60",
-              className
+              className,
             )}
             {...dropzoneProps}
           >
-            <input  {...getInputProps()} />
+            <input {...getInputProps()} />
             {isDragActive ? (
               <div className="flex flex-col items-center justify-center gap-4 sm:px-5">
                 <div className="rounded-full border border-dashed p-3">
@@ -242,22 +235,27 @@ export function FileUploader(props: FileUploaderProps) {
             ) : (
               <div className="flex flex-col items-center justify-center gap-5 ">
                 <div className="flex flex-col gap-1 items-center">
-                  <>Icon</>
+                  <>
+                    <CloudIcon />
+                  </>
                   <p className="text-center">
-                    <span className="text-gray-950 text-sm font-normal font-['Inter'] leading-normal">
+                    <span className=" text-sm font-normal font-['Inter'] leading-normal">
                       Drag & drop files or{" "}
                     </span>
-                    <span onClick={(e)=>{
-                        inputRef.current?.click()
-
-                    }} className="text-blue-600 text-sm font-medium font-['Inter'] leading-normal cursor-pointer">
+                    <span
+                      onClick={(e) => {
+                        e.preventDefault();
+                        inputRef.current?.click();
+                      }}
+                      className="text-blue-600 text-sm font-medium font-['Inter'] leading-normal cursor-pointer"
+                    >
                       Browse
                     </span>
                   </p>
                 </div>
                 <div className="space-y-px">
                   <p className="text-sm text-muted-foreground/70">
-                    Supported formats: XLSX, XLS
+                    Supported formats: pdf
                   </p>
                   <p className="text-sm text-muted-foreground/70">
                     You can upload
@@ -291,17 +289,16 @@ export function FileUploader(props: FileUploaderProps) {
 }
 
 interface FileCardProps {
-  file: File
-  onRemove: () => void
-  progress?: number
+  file: File;
+  onRemove: () => void;
+  progress?: number;
 }
 
 function FileCard({ file, progress, onRemove }: FileCardProps) {
   return (
     <div className="relative flex items-center space-x-4">
       <div className="flex flex-1 space-x-4">
-        {isFileWithPreview(file) && file.type=== "image/*" ? (
-
+        {isFileWithPreview(file) && file.type === "image/*" ? (
           <Image
             src={file.preview}
             alt={file.name}
@@ -324,20 +321,16 @@ function FileCard({ file, progress, onRemove }: FileCardProps) {
         </div>
       </div>
       <div className="flex items-center gap-2">
-        <Button
-          type="button"
-          size="icon"
-          className="size-7"
-          onClick={onRemove}
-        >
+        <Button type="button" size="icon" className="size-7" onClick={onRemove}>
           <Cross2Icon className="size-4 " aria-hidden="true" />
           <span className="sr-only">Remove file</span>
         </Button>
       </div>
     </div>
-  )
+  );
 }
 
 function isFileWithPreview(file: File): file is File & { preview: string } {
-  return "preview" in file && typeof file.preview === "string"
+  return "preview" in file && typeof file.preview === "string";
 }
+

@@ -16,6 +16,7 @@ import { auth } from "@/lib/auth";
 import { getCustomerPortalLinkAction } from "@/server/actions/get-customer-bortal-link";
 import { $Enums } from "@prisma/client";
 import {
+  BookOpenIcon,
   CircleUserIcon,
   MenuIcon,
   Package2Icon,
@@ -24,6 +25,7 @@ import {
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { SignOutButton } from "./sign-out-button";
+import { SearchBar } from "./SearchBar";
 
 export const Navbar = async () => {
   const session = await auth();
@@ -90,15 +92,10 @@ export const Navbar = async () => {
   return (
     <header className="sticky top-0 flex h-16 items-center gap-4 border-b bg-background px-4 md:px-6">
       <nav className="hidden flex-col gap-6 text-lg font-medium md:flex md:flex-row md:items-center md:gap-5 md:text-sm lg:gap-6">
-        <Link
-          href="#"
-          className="flex items-center gap-2 text-lg font-semibold md:text-base"
-          prefetch={false}
-        >
-          <Package2Icon className="h-6 w-6" />
-          <span className="sr-only">Acme Inc</span>
+        <Link className="flex items-center justify-between gap-4" href="#">
+          <BookOpenIcon className="h-6 w-6 text-primary" />
+          <div className="font-bold w-[200px]">IMRAD Analyzer</div>
         </Link>
-
         {links.map((link, index) => (
           <Link
             key={index}
@@ -142,17 +139,7 @@ export const Navbar = async () => {
         </SheetContent>
       </Sheet>
       <div className="flex w-full items-center gap-4 md:ml-auto md:gap-2 lg:gap-4">
-        <form className="ml-auto flex-1 sm:flex-initial">
-          <div className="relative">
-            <SearchIcon className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-            <Input
-              type="search"
-              placeholder="Search..."
-              className="pl-8 sm:w-[300px] md:w-[200px] lg:w-[300px]"
-            />
-          </div>
-        </form>
-
+        <SearchBar />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>{avatar}</DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-fit p-2">

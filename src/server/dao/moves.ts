@@ -3,35 +3,33 @@ import { balance } from "@/lib/server-utils";
 import axios from "axios";
 import { AiModelOutputDto } from "../validation/AiModeOutputDto";
 
+export const getMoves = async (sentences) => {
+  const modelsAiInstances = eurekaClient.getInstancesByAppId("AI_MODEL_MOVES");
+  console.log("modelsAiInstances", modelsAiInstances);
+  const selectedInstance = balance(modelsAiInstances);
+  if (!selectedInstance) {
+    console.error("No AI model instance is available");
+    throw new Error("No AI model instance is available");
+    return null;
+  }
 
-export const getMoves = async (sentences)=>{
+  const url =
+    "http://" +
+    "localhost" +
+    `:${selectedInstance.port["$"]}/models/moves` +
+    "/predict/batch/";
+  console.log("url", url);
+  const res = await axios.post(
+    url,
+    sentences,
 
-    const modelsAiInstances =
-      eurekaClient.getInstancesByAppId("AI_MODEL_MOVES");
-    console.log("modelsAiInstances", modelsAiInstances);
-    const selectedInstance = balance(modelsAiInstances);
-    if(!selectedInstance){
-        console.error("No AI models available");
-        return null;
-    }
+    {
+      withCredentials: true,
+    },
+  );
+  const parsed = await AiModelOutputDto.parseAsync(res.data);
+  return parsed;
+};
 
-    const url =
-      "http://" +
-      "localhost" +
-      `:${selectedInstance.port["$"]}/models/moves` +
-      "/predict/batch/";
-    console.log("url", url);
-    const res = await axios.post(
-      url,
-      sentences,
+//replace localhost by instance hostname if you're moving to production
 
-      {
-        withCredentials: true,
-      }
-    );
-    const parsed = await AiModelOutputDto.parseAsync(res.data)
-    return parsed
-
-}
-
-    //replace localhost by instance hostname if you're moving to production

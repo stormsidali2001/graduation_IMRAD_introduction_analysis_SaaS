@@ -60,7 +60,7 @@ const Page = async ({ params, searchParams: { search } }) => {
             <PaginationContent>
               <PaginationItem>
                 <PaginationPrevious
-                  href={`/admin/dashboard/feedbacks/${getPrevPage({ page: feedbacks.page })}`}
+                  href={`/feedbacks/${getPrevPage({ page: feedbacks.page })}`}
                 />
               </PaginationItem>
               <PaginationItem>
@@ -68,7 +68,7 @@ const Page = async ({ params, searchParams: { search } }) => {
               </PaginationItem>
               <PaginationItem>
                 <PaginationNext
-                  href={`/admin/dashboard/feedbacks/${getNextPage({ page: feedbacks.page, total_pages: feedbacks.total_pages })}`}
+                  href={`/feedbacks/${getNextPage({ page: feedbacks.page, total_pages: feedbacks.total_pages })}`}
                 />
               </PaginationItem>
             </PaginationContent>

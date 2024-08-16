@@ -17,7 +17,7 @@ interface SentenceRowProps extends PredictionOutputItemDtoType {
   id?: string;
   introductionId?: string;
   feedback?: FeedbackDto;
-  isAdmin?: boolean;
+  hideFeedbacks?: boolean;
 }
 export const SentenceRow = ({
   sentence,
@@ -29,9 +29,9 @@ export const SentenceRow = ({
   id,
   introductionId,
   feedback,
-  isAdmin = false,
+  hideFeedbacks = true,
 }: SentenceRowProps) => {
-  const feedbackSection = !isAdmin ? (
+  const feedbackSection = !hideFeedbacks ? (
     <>
       {!feedback ? (
         <div className="flex items-center justify-end gap-4">

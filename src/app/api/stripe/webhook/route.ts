@@ -1,6 +1,13 @@
 import { stripe } from "@/lib/stripe";
 import Stripe from "stripe";
-import prisma from "@/lib/prisma-client";
+import { getSession } from "@/server/services/stripe";
+import {
+  findUserByCustomerId,
+  findUserByEmail,
+  resetToFreePlan,
+  updateUser,
+  upsertUserSubscription,
+} from "@/server/services/user-service";
 const WEBHOOK_SECRET = process.env.STRIPE_WEBHOOK_SECRET!;
 
 export async function POST(req: Request) {
@@ -20,25 +27,19 @@ export async function POST(req: Request) {
   try {
     switch (event.type) {
       case "checkout.session.completed":
-        const session = await stripe.checkout.sessions.retrieve(
+        const session = await getSession(
           (event.data.object as Stripe.Checkout.Session).id,
-          {
-            expand: ["line_items"],
-          },
         );
         const customerId = session.customer as string;
         const customerDetails = session.customer_details;
 
         if (customerDetails?.email) {
-          const user = await prisma.user.findUnique({
-            where: { email: customerDetails.email },
-          });
+          const user = await findUserByEmail(customerDetails.email);
           if (!user) throw new Error("User not found");
 
           if (!user.customerId) {
-            await prisma.user.update({
-              where: { id: user.id },
-              data: { customerId },
+            await updateUser(user.id, {
+              customerId,
             });
           }
 
@@ -49,41 +50,10 @@ export async function POST(req: Request) {
             const isSubscription = item.price?.type === "recurring";
 
             if (isSubscription) {
-              let endDate = new Date();
-              if (priceId === process.env.STRIPE_YEARLY_PRICE_ID!) {
-                endDate.setFullYear(endDate.getFullYear() + 1); // 1 year from now
-              } else if (priceId === process.env.STRIPE_MONTHLY_PRICE_ID!) {
-                endDate.setMonth(endDate.getMonth() + 1); // 1 month from now
-              } else {
-                throw new Error("Invalid priceId");
-              }
+              await upsertUserSubscription(user.id, priceId);
               // it is gonna create the subscription if it does not exist already, but if it exists it will update it
-              await prisma.subscription.upsert({
-                where: { userId: user.id! },
-                create: {
-                  userId: user.id,
-                  startDate: new Date(),
-                  endDate: endDate,
-                  plan: "premium",
-                  period:
-                    priceId === process.env.STRIPE_YEARLY_PRICE_ID!
-                      ? "yearly"
-                      : "monthly",
-                },
-                update: {
-                  plan: "premium",
-                  period:
-                    priceId === process.env.STRIPE_YEARLY_PRICE_ID!
-                      ? "yearly"
-                      : "monthly",
-                  startDate: new Date(),
-                  endDate: endDate,
-                },
-              });
-
-              await prisma.user.update({
-                where: { id: user.id },
-                data: { plan: "premium" },
+              await updateUser(user.id, {
+                plan: "premium",
               });
             } else {
               // one_time_purchase
@@ -100,9 +70,9 @@ export async function POST(req: Request) {
           JSON.stringify({ subscription }),
         );
 
-        const user = await prisma.user.findUnique({
-          where: { customerId: subscription.customer as string },
-        });
+        const user = await findUserByCustomerId(
+          subscription.customer as string,
+        );
         if (!user) {
           console.error(
             "Could not find the user associated with the subscription",
@@ -111,10 +81,7 @@ export async function POST(req: Request) {
             "Could not find the user associated with the subscription",
           );
         }
-        await prisma.user.update({
-          where: { id: user.id },
-          data: { plan: "free" },
-        });
+        resetToFreePlan(user.id);
         break;
       }
 

@@ -14,23 +14,29 @@ import { ArrowDown } from "lucide-react";
 import Lottie from "lottie-react";
 import loadingAnimation from "@/assets/loading-lottie.json";
 import { PredictionOutputItemDtoType } from "@/server/validation/PredictionDto";
+import { useToast } from "@/components/ui/use-toast";
 
 interface Sentence extends PredictionOutputItemDtoType {}
 
 export const Converter = () => {
   const [sentences, setSentences] = useState<Sentence[]>([]);
   const [files, setFiles] = useState();
-  const { executeAsync, isExecuting, result, hasSucceeded } =
-    useAction(pdfExtractorAction);
+  const {
+    executeAsync,
+    isExecuting,
+    result,
+    hasSucceeded,
+    reset: resetUpload,
+  } = useAction(pdfExtractorAction);
   const {
     executeAsync: executeAsyncGetMoveSubMove,
     isExecuting: isExecutingMoves,
     hasSucceeded: hasSucceededMoves,
+    reset: resetMoves,
   } = useAction(geMoveSubmove);
   const [introduction, setIntroduction] = useState("");
 
   const updateSentences = debounce(async (text: string) => {
-    setIntroduction(text);
     const sentencesStrings =
       split(text)
         .map((s) => s.raw)
@@ -45,20 +51,23 @@ export const Converter = () => {
     });
 
     setSentences(sentences);
-  });
+  }, 500);
 
   const handleTextAreaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    e.preventDefault();
-    if (!e.target.value) return;
+    setIntroduction(e.target.value);
     updateSentences(e.target.value);
   };
   const handlePredictions = async () => {
-    alert("loading");
     const res = await executeAsyncGetMoveSubMove({
       sentences: sentences.map((s) => s.sentence),
     });
     if (res?.serverError) {
-      alert(res?.serverError);
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: res.serverError,
+      });
+      return;
     }
     const predictions = res.data ?? [];
     console.log(predictions);
@@ -77,6 +86,7 @@ export const Converter = () => {
     });
   };
 
+  const { toast } = useToast();
   return (
     <section className="container mx-auto mt-16">
       <h2 className="text-3xl font-bold mb-8">Try It Now</h2>
@@ -96,21 +106,58 @@ export const Converter = () => {
               console.log("files", files);
               setFiles(files);
               const formData = new FormData();
-              formData.append("file", files[0]);
+              const file = files[0];
+              if (!file) return;
+              formData.append("file", file);
               const res = await executeAsync(formData);
+              const error = res?.serverError ?? "Failed to upload the file";
+              if (error) {
+                toast({
+                  variant: "destructive",
+                  title: "Error",
+                  description: error,
+                });
+                setFiles(null);
+                return;
+              }
 
-              updateSentences(res?.data);
+              if (!res?.data) {
+                updateSentences(res?.data);
+              }
             }}
             accept={{
               "application/pdf": [],
             }}
           />
           <div className="flex justify-end">
+            {hasSucceededMoves ? (
+              <>
+                <Button
+                  onClick={() => {
+                    resetUpload();
+                    resetMoves();
+                  }}
+                  disabled={
+                    hasSucceededMoves ||
+                    isExecutingMoves ||
+                    isExecuting ||
+                    sentences.length === 0
+                  }
+                >
+                  Analyse{" "}
+                </Button>
+              </>
+            ) : null}
             <Button
               onClick={() => handlePredictions()}
-              disabled={hasSucceededMoves || isExecutingMoves}
+              disabled={
+                hasSucceededMoves ||
+                isExecutingMoves ||
+                isExecuting ||
+                sentences.length === 0
+              }
             >
-              {hasSucceededMoves ? "Save" : "Analyse"}{" "}
+              Analyse{" "}
             </Button>
           </div>
         </div>
@@ -121,7 +168,7 @@ export const Converter = () => {
           <h3 className="text-xl font-bold mb-4">Introduction Analysis</h3>
 
           {!isExecutingMoves ? (
-            <IntroductionAnalysis sentences={sentences} />
+            <IntroductionAnalysis sentences={sentences} hideFeedbacks={true} />
           ) : (
             <div className="flex items-center justify-center w-full">
               <Lottie

@@ -15,6 +15,19 @@ export interface PricingList {
 }
 export const PAGE_SIZE = 5;
 type PricingListFn = (paymentLink: string) => PricingList;
+
+export const getFreePricingList: PricingListFn = (paymentLink: string) => ({
+  title: "Free Plan",
+  popular: 0,
+  price: 0,
+  description:
+    "Lorem ipsum dolor sit, amet ipsum consectetur adipisicing elit.",
+  buttonText: "Get Started",
+  benefitList: ["Move analysis", "Sub move analysis", "Generation Histroy."],
+  href: "/login",
+  paymentLink,
+  billing: "/month",
+});
 export const getMonthlyPricingList: PricingListFn = (paymentLink: string) => ({
   title: "Monthly Premium",
   popular: 1,
@@ -23,11 +36,12 @@ export const getMonthlyPricingList: PricingListFn = (paymentLink: string) => ({
     "Lorem ipsum dolor sit, amet ipsum consectetur adipisicing elit.",
   buttonText: "Buy Now",
   benefitList: [
-    "4 Team member",
-    "4 GB Storage",
-    "Upto 6 pages",
-    "Priority support",
-    "lorem ipsum dolor",
+    "Move analysis",
+    "Sub move analysis",
+    "Generation Histroy.",
+    "Introduction Summary",
+    "Problematic detection",
+    "Author thoughts analysis",
   ],
   href: "/api/auth/login",
   paymentLink,
@@ -42,11 +56,12 @@ export const getYearlyPricingList: PricingListFn = (paymentLink: string) => ({
     "Lorem ipsum dolor sit, amet ipsum consectetur adipisicing elit.",
   buttonText: "Buy Now",
   benefitList: [
-    "10 Team member",
-    "8 GB Storage",
-    "Upto 10 pages",
-    "Priority support",
-    "lorem ipsum dolor",
+    "Move analysis",
+    "Sub move analysis",
+    "Generation Histroy.",
+    "Introduction Summary",
+    "Problematic detection",
+    "Author thoughts analysis",
   ],
   href: "/api/auth/login",
   paymentLink,
