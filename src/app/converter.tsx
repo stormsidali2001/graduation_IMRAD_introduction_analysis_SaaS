@@ -127,22 +127,21 @@ export const Converter = () => {
               "application/pdf": [],
             }}
           />
-          <div className="flex justify-end">
+          <div className="flex justify-end gap-2">
             {hasSucceededMoves ? (
               <>
                 <Button
+                  variant="secondary"
                   onClick={() => {
                     resetUpload();
+                    setFiles(null);
                     resetMoves();
+
+                    setIntroduction("");
+                    setSentences([]);
                   }}
-                  disabled={
-                    hasSucceededMoves ||
-                    isExecutingMoves ||
-                    isExecuting ||
-                    sentences.length === 0
-                  }
                 >
-                  Analyse{" "}
+                  Reset{" "}
                 </Button>
               </>
             ) : null}
