@@ -25,6 +25,6 @@ export const PrivateUserDto = z.object({
   customerId: z.string().optional(),
 });
 
-export const UpdateUserSchema = UserDto.partial().omit({ id: true });
+export const UpdateUserSchema = PrivateUserDto.partial().omit({ id: true });
 export type UpdateUserDtoSchemaType = z.infer<typeof UpdateUserSchema>;
 export type UserDtoType = z.infer<typeof UserDto>;

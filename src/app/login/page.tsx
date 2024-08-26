@@ -25,30 +25,14 @@ export default async function Page() {
           <p className="mt-2 text-center text-sm text-muted-foreground">
             Or{" "}
             <Link
-              href="#"
-              className="font-medium text-primary hover:text-primary-foreground"
-              prefetch={false}
+              href="/sign-up"
+              className="font-medium text-primary hover:underline"
             >
               sign up for a new account
             </Link>
           </p>
         </div>
         <div className="space-y-4">
-          <Button variant="outline" className="w-full">
-            <ChromeIcon className="mr-2 h-5 w-5" />
-            Sign in with Google
-          </Button>
-          <div className="relative">
-            <div className="absolute inset-0 flex items-center">
-              <span className="w-full border-t border-muted" />
-            </div>
-            <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-background px-2 text-muted-foreground">
-                Or continue with
-              </span>
-            </div>
-          </div>
-
           <Form
             //@ts-ignore
             user={session?.user}

@@ -34,6 +34,13 @@ export const findUserById = async (id: string) => {
 
   return UserDto.parseAsync(user);
 };
+
+export const findUserByIdWithCredentials = async (id: string) => {
+  const user = await prismaClient.user.findUnique({ where: { id } });
+  if (!user) return null;
+
+  return PrivateUserDto.parseAsync(user);
+};
 export const findUserByEmailWithCredentials = async (email: string) => {
   const user = await prismaClient.user.findUnique({ where: { email } });
   if (!user) return null;
@@ -180,7 +187,7 @@ export const updateUser = async (id: string, user: UpdateUserDtoSchemaType) => {
 };
 export const getUserRedirectUrl = (user: UserDtoType) => {
   if (user.role === "Admin") {
-    return "/dasbhoard";
+    return "/dashboard";
   } else return "/generate";
 };
 

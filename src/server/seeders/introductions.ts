@@ -1,11 +1,22 @@
-import { getUsers } from "../services/user-service";
+import { findUserByEmail, getUsers } from "../services/user-service";
 import { classifyCreateIntroductionUsecase } from "../use-cases/classifiy-create-introduction-use-case";
 import fs from "fs/promises";
 import path from "path";
 
 import { split } from "sentence-splitter";
+import { getIntroductions } from "../services/user-data";
 
 export const seedIntroductions = async () => {
+  const adminUser = await findUserByEmail("admin@gmail.com");
+  const introductionsDb = await getIntroductions(
+    adminUser.id,
+    { page: 1 },
+    "Admin",
+  );
+  if (introductionsDb.total > 0) {
+    console.error("Introductions already seeded");
+    return;
+  }
   let introductions: string[];
   try {
     const jsonPath = path.join(__dirname, "../../../public/test_intros.json");

@@ -56,7 +56,9 @@ export const Form = (user?: UserDtoType) => {
     });
 
     const url = getUserRedirectUrl(user);
-    router.push(url);
+    setTimeout(() => {
+      router.push(url);
+    }, 0);
   };
   return (
     <ValidationForm {...form}>
@@ -70,7 +72,6 @@ export const Form = (user?: UserDtoType) => {
               <FormControl>
                 <Input
                   type="email"
-                  autoComplete="email"
                   {...field}
                   required
                   className="mt-1 block w-full"
@@ -92,7 +93,6 @@ export const Form = (user?: UserDtoType) => {
                 <Input
                   {...field}
                   type="password"
-                  autoComplete="password"
                   required
                   className="mt-1 block w-full"
                   placeholder="Password"

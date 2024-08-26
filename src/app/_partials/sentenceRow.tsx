@@ -61,6 +61,8 @@ export const SentenceRow = ({
               </Button>
             </DialogTrigger>
             <FeedbackDialogBody
+              defaultMove={move}
+              defaultSubMove={subMove}
               isLike={false}
               introductionId={introductionId}
               sentenceId={id}
@@ -68,7 +70,7 @@ export const SentenceRow = ({
           </Dialog>
         </div>
       ) : (
-        <div className="flex items-center justify-end gap-2 text-sm text-gray-200">
+        <div className="flex items-center justify-end gap-2 text-sm dark:text-gray-200 text-gray-800">
           Feedback recieved (
           {feedback.liked ? (
             <LucideThumbsUp className="w-4" />

@@ -14,26 +14,30 @@ export const createSentenceFeedbackUseCase = async (
     image?: string;
   },
 ) => {
-  const introduction = await getIntroduction(
-    input.introductionId,
-    userId,
-    userRole,
-  );
-  if (!introduction) {
-    throw new Error("Introduciton not found");
-  }
-  if (introduction.userId !== userId) {
-    throw new Error("Introduction not found");
-  }
-  await createSentenceFeedback(
-    {
-      ...input,
-      feedback: {
-        ...input.feedback,
-        username: username,
-        image,
+  try {
+    const introduction = await getIntroduction(
+      input.introductionId,
+      userId,
+      userRole,
+    );
+    if (!introduction) {
+      throw new Error("Introduciton not found");
+    }
+    if (introduction.userId !== userId) {
+      throw new Error("Introduction not found");
+    }
+    await createSentenceFeedback(
+      {
+        ...input,
+        feedback: {
+          ...input.feedback,
+          username: username,
+          image,
+        },
       },
-    },
-    userId,
-  );
+      userId,
+    );
+  } catch (err) {
+    console.error("Failed to create feedback" + err);
+  }
 };

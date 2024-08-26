@@ -31,6 +31,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { getIntroductionStatsAction } from "@/server/actions/get-inroductions-stats";
 import { getIntroductionsAction } from "@/server/actions/get-introductions";
+import { getNextPage, getPrevPage } from "@/common/getPage";
 
 export default async function Page({
   searchParams: { search },
@@ -44,12 +45,26 @@ export default async function Page({
 
   console.log("introductions", introductions);
 
+  const next = getNextPage({
+    page: introductions.page,
+    total_pages: introductions.total_pages,
+  });
+  const nextPage =
+    next === introductions.page ? null : `/introductions/all/${next}`;
+  const prev = getPrevPage({ page: introductions.page });
+  const previousPage =
+    prev === introductions.page ? null : `/introductions/all/${prev}`;
+
   return (
     <div className="flex flex-col h-full">
       <main className="flex-1 overflow-auto">
         <div className="grid gap-4 p-4 sm:p-6">
           <IntroductionsStats undefined />
-          <IntroductionsTable {...introductions} />
+          <IntroductionsTable
+            {...introductions}
+            nextPage={nextPage}
+            previousPage={previousPage}
+          />
         </div>
       </main>
     </div>

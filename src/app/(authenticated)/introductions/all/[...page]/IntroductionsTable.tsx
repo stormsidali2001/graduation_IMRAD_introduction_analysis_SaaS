@@ -37,11 +37,8 @@ import {
   IntroductionDto,
   IntroductionDtoType,
 } from "@/server/validation/introductionDto";
-import { PaginatedResultType } from "@/server/validation/paginationMakerDto";
 import Link from "next/link";
 
-interface IntroductionsTableProps
-  extends PaginatedResultType<typeof IntroductionDto> {}
 interface IntroductionProps extends IntroductionDtoType {}
 
 const Introduction = ({
@@ -112,13 +109,16 @@ export const IntroductionsTable = ({
   page,
   per_page,
   total_pages,
-}: IntroductionsTableProps = {}) => (
+  nextPage,
+  previousPage,
+}: any = {}) => (
   <>
     <Card>
       <CardHeader>
         <CardTitle>Introductions</CardTitle>
         <CardDescription>
-          Showing 1-{per_page} of {total} introductions
+          Showing 1-{per_page} of {total} introductions.You're currently on page{" "}
+          {page}.
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -141,13 +141,13 @@ export const IntroductionsTable = ({
         <Pagination>
           <PaginationContent>
             <PaginationItem>
-              <PaginationPrevious href="#" />
+              {previousPage ? <PaginationPrevious href={previousPage} /> : null}
             </PaginationItem>
             <PaginationItem>
               <PaginationEllipsis />
             </PaginationItem>
             <PaginationItem>
-              <PaginationNext href="#" />
+              {nextPage ? <PaginationNext href={nextPage} /> : null}
             </PaginationItem>
           </PaginationContent>
         </Pagination>

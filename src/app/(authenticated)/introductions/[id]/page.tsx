@@ -1,4 +1,5 @@
 import { IntroductionAnalysis } from "@/app/IntroductionAnalysis";
+import { getNextPage } from "@/common/getPage";
 import { Button } from "@/components/ui/button";
 import { auth } from "@/lib/auth";
 import { getIntroductionAction } from "@/server/actions/get-introduction";
@@ -14,6 +15,7 @@ const Page = async ({ params: { id } }) => {
   const introduction = res.data;
 
   console.log(introduction);
+
   return (
     <div className="w-full max-w-5xl mx-auto px-4 md:px-6 py-12 md:py-20">
       <div className="space-y-8">

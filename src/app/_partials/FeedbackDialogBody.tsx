@@ -39,18 +39,22 @@ interface FeedbackDialogBody {
   isLike: boolean;
   introductionId: string;
   sentenceId: string;
+  defaultMove: number;
+  defaultSubMove: number;
 }
 export default function FeedbackDialogBody({
   isLike = false,
   introductionId,
   sentenceId,
+  defaultMove,
+  defaultSubMove,
 }: FeedbackDialogBody) {
   const form = useForm<CreateSentenceFeedbackType>({
     resolver: zodResolver(CreateSentenceFeedbackDto),
     defaultValues: {
       feedback: {
-        correctMove: 0,
-        correctSubMove: 1,
+        correctMove: defaultMove,
+        correctSubMove: defaultSubMove,
         liked: isLike,
       },
       introductionId,
@@ -91,65 +95,73 @@ export default function FeedbackDialogBody({
 
         <Form {...form}>
           <form className="grid gap-4" onSubmit={form.handleSubmit(onSubmit)}>
-            {/** 
+            {!isLike ? (
+              <>
+                {/** 
             Correct Move Field
           **/}
-            <FormField
-              control={form.control}
-              name="feedback.correctMove"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Correct Move Prediction</FormLabel>
+                <FormField
+                  control={form.control}
+                  name="feedback.correctMove"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Correct Move Prediction</FormLabel>
 
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value.toString()}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select move prediction" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {Object.entries(movesDict).map(([key, value], index) => (
-                        <SelectItem value={key}>{value}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value.toString()}
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select move prediction" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {Object.entries(movesDict).map(
+                            ([key, value], index) => (
+                              <SelectItem value={key}>{value}</SelectItem>
+                            ),
+                          )}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-            {/** 
+                {/** 
             Correct Sub Move Field
           **/}
-            <FormField
-              control={form.control}
-              name="feedback.correctSubMove"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Correct Sub Move Prediction</FormLabel>
+                <FormField
+                  control={form.control}
+                  name="feedback.correctSubMove"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Correct Sub Move Prediction</FormLabel>
 
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value.toString()}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select move prediction" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {Object.entries(subMoves).map(([key, value], index) => (
-                        <SelectItem value={key}>{value}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value.toString()}
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select move prediction" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {Object.entries(subMoves).map(
+                            ([key, value], index) => (
+                              <SelectItem value={key}>{value}</SelectItem>
+                            ),
+                          )}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </>
+            ) : null}
             {/*
              *Raison field
              */}

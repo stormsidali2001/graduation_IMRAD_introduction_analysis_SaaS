@@ -13,7 +13,7 @@ export interface PricingList {
   billing: string;
   paymentLink?: string;
 }
-export const PAGE_SIZE = 5;
+export const PAGE_SIZE = 6;
 type PricingListFn = (paymentLink: string) => PricingList;
 
 export const getFreePricingList: PricingListFn = (paymentLink: string) => ({

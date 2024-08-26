@@ -67,7 +67,7 @@ export default function FeedbackCard({
                   size="icon"
                   className="hover:bg-muted/50 text-muted-foreground"
                 >
-                  <TrashIcon className="w-5 h-5" />
+                  <TrashIcon className="w-5 h-5 text-destructive" />
                   <span className="sr-only">
                     {isExecuting ? "Loading..." : "Delete"}
                   </span>

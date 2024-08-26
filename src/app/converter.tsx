@@ -15,6 +15,7 @@ import Lottie from "lottie-react";
 import loadingAnimation from "@/assets/loading-lottie.json";
 import { PredictionOutputItemDtoType } from "@/server/validation/PredictionDto";
 import { useToast } from "@/components/ui/use-toast";
+import ImradMovesSubmovesInfoCard from "@/components/ui/Imrad-moves-sub-moves-card";
 
 interface Sentence extends PredictionOutputItemDtoType {}
 
@@ -110,7 +111,7 @@ export const Converter = () => {
               if (!file) return;
               formData.append("file", file);
               const res = await executeAsync(formData);
-              const error = res?.serverError ?? "Failed to upload the file";
+              const error = res?.serverError;
               if (error) {
                 toast({
                   variant: "destructive",
@@ -122,6 +123,7 @@ export const Converter = () => {
               }
 
               updateSentences(res?.data);
+              setIntroduction(res?.data);
             }}
             accept={{
               "application/pdf": [],
@@ -161,6 +163,8 @@ export const Converter = () => {
         <div className="flex items-center justify-center">
           {isExecuting && <>Uploading ...</>}
         </div>
+
+        <ImradMovesSubmovesInfoCard />
         <div className="mt-8">
           <h3 className="text-xl font-bold mb-4">Introduction Analysis</h3>
 

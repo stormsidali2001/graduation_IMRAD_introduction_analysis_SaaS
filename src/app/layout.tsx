@@ -22,7 +22,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <NextThemesProvider attribute="class" defaultTheme="light" enableSystem>
-          <NextTopLoader color="#2299DD" height={3} />
+          <NextTopLoader color="hsl(262.1 83.3% 57.8%)" height={3} />
           {children}
         </NextThemesProvider>
         <Toaster />
