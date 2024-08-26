@@ -1,3 +1,4 @@
+export const RESET_REQUEST_EXPIRATION_DELAY = 15 * 60 * 1000;
 export enum PopularPlanType {
   NO = 0,
   YES = 1,

@@ -3,8 +3,9 @@ import { hashPassword } from "@/lib/server-utils";
 import { RegisterUserInput } from "@/schema/validation/register-user.schema";
 import { UserAlreadyRegistered } from "../errors";
 import { RetrieverParamsDtoType } from "../validation/RetrieverParamsDto";
-import { PAGE_SIZE } from "@/common/general";
+import { PAGE_SIZE, RESET_REQUEST_EXPIRATION_DELAY } from "@/common/general";
 import { getPaginatedResults } from "../validation/paginationMakerDto";
+import { nanoid } from "nanoid";
 import {
   PrivateUserDto,
   UpdateUserDtoSchemaType,
@@ -13,6 +14,7 @@ import {
 } from "../validation/UserDto";
 import { $Enums } from "@prisma/client";
 import { SubscriptionDto } from "../validation/SubscriptionDto";
+import { ActionError } from "@/lib/safe-action";
 
 export const findUserByEmail = async (email: string) => {
   const user = await prismaClient.user.findUnique({ where: { email } });
@@ -231,4 +233,50 @@ export const upsertUserSubscription = async (
       endDate: endDate,
     },
   });
+};
+
+export const sendResetRequest = async (userId: string) => {
+  const token = nanoid(12);
+  const expires = new Date(Date.now() + RESET_REQUEST_EXPIRATION_DELAY);
+  const resetRequest = await prismaClient.resetRequest.upsert({
+    where: { userId },
+    create: {
+      userId,
+      expires,
+      token,
+    },
+    update: {
+      userId,
+      token,
+      expires,
+    },
+  });
+  return resetRequest;
+};
+
+export const getResetRequest = async (token: string) => {
+  const resetRequest = await prismaClient.resetRequest.findFirst({
+    where: { token },
+  });
+
+  return resetRequest;
+};
+export const deleteResetRequest = async (userId: string) => {};
+
+export const updatePasswordAfterReset = async ({
+  userId,
+  passwordHash,
+}: {
+  userId: string;
+  passwordHash: string;
+}) => {
+  await prismaClient.$transaction([
+    prismaClient.resetRequest.delete({
+      where: { userId },
+    }),
+    prismaClient.user.update({
+      where: { id: userId },
+      data: { password: passwordHash },
+    }),
+  ]);
 };
