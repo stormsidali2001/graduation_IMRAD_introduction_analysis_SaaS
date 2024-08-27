@@ -12,7 +12,9 @@ export const resetPasswordUseCase = async (password: string, token: string) => {
     if (!resetRequest) {
       throw new ActionError("Bad Credentials.");
     }
-    if (resetRequest.expires >= new Date()) {
+    if (resetRequest.expires <= new Date()) {
+      console.log("current Date", new Date());
+      console.log("resetRequest.expires", resetRequest.expires);
       throw new ActionError("Reset Link already Expired");
     }
     const passwordHash = await hashPassword(password);

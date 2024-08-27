@@ -1,4 +1,4 @@
-import { comparePassword } from "@/lib/server-utils";
+import { comparePassword, hashPassword } from "@/lib/server-utils";
 import {
   findUserByIdWithCredentials,
   updateUser,
@@ -19,8 +19,10 @@ export const updatePasswordUseCase = async (
     if (!match) {
       throw new ActionError("Bad credentials");
     }
+
+    const passwordHash = await hashPassword(newPassword);
     await updateUser(userId, {
-      password: newPassword,
+      password: passwordHash,
     });
     return "Password Updated Successfully";
   } catch (err) {

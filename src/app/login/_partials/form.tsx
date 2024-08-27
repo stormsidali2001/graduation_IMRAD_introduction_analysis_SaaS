@@ -17,15 +17,16 @@ import {
   FormMessage,
   Form as ValidationForm,
 } from "@/components/ui/form";
-import { signIn } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 import { useToast } from "@/components/ui/use-toast";
 import { DevTool } from "@hookform/devtools";
 import { useRouter } from "next/navigation";
 import { UserDtoType } from "@/server/validation/UserDto";
 import { getUserRedirectUrl } from "@/lib/utils";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import Link from "next/link";
 
-export const Form = (user?: UserDtoType) => {
+export const Form = () => {
   const form = useForm({
     resolver: zodResolver(SignInSchema),
     mode: "all",
@@ -33,6 +34,7 @@ export const Form = (user?: UserDtoType) => {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const { toast } = useToast();
+  const session = useSession();
   const onSubmit = async (data: SigninSchemaType) => {
     setIsLoading(true);
     const res = await signIn("credentials", { ...data, redirect: false });
@@ -41,7 +43,7 @@ export const Form = (user?: UserDtoType) => {
       toast({
         variant: "destructive",
         title: "Error :(",
-        description: res.error,
+        description: "Bad Credentials",
       });
 
       setIsLoading(false);
@@ -54,12 +56,13 @@ export const Form = (user?: UserDtoType) => {
       title: "Success!",
       description: `Signed in succesfully`,
     });
-
-    const url = getUserRedirectUrl(user);
-    setTimeout(() => {
-      router.push(url);
-    }, 0);
   };
+  useEffect(() => {
+    if (session?.data?.user) {
+      const url = getUserRedirectUrl(session.data.user);
+      router.push(url);
+    }
+  }, [session?.data?.user]);
   return (
     <ValidationForm {...form}>
       <form className="space-y-4" onSubmit={form.handleSubmit(onSubmit)}>
@@ -102,6 +105,15 @@ export const Form = (user?: UserDtoType) => {
             </FormItem>
           )}
         />
+
+        <div className="flex justify-end">
+          <Link
+            href="/forgot-password"
+            className="font-medium text-sm text-primary hover:underline   "
+          >
+            Forgot Your password ?
+          </Link>
+        </div>
 
         <Button type="submit" className="w-full">
           {!isLoading ? "Sign in" : "Loading..."}

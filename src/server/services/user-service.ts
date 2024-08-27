@@ -45,7 +45,9 @@ export const findUserByIdWithCredentials = async (id: string) => {
 };
 export const findUserByEmailWithCredentials = async (email: string) => {
   const user = await prismaClient.user.findUnique({ where: { email } });
-  if (!user) return null;
+  if (!user) {
+    throw new Error("User not found");
+  }
 
   return PrivateUserDto.parseAsync(user);
 };
@@ -263,6 +265,12 @@ export const getResetRequest = async (token: string) => {
 };
 export const deleteResetRequest = async (userId: string) => {};
 
+export const verifyResetRequestToken = async (token: string) => {
+  const count = await prismaClient.resetRequest.count({
+    where: { token },
+  });
+  return count >= 1;
+};
 export const updatePasswordAfterReset = async ({
   userId,
   passwordHash,

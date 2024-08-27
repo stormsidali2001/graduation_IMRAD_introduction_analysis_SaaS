@@ -10,17 +10,27 @@ export const sendResetEmail = async ({
   name: string;
   token: string;
 }) => {
-  await resend.emails.send({
-    to: email,
-    from: "assoulsidali@gmail.com",
-    subject: "Rest Your password",
-    react: (
-      <ResetPasswordEmail
-        userFirstname={name}
-        resetPasswordLink={
-          process.env.BASE_URL + "/reset-password?token=" + token
-        }
-      />
-    ),
-  });
+  try {
+    const res = await resend.emails.send({
+      to:
+        process.env.NODE_ENV === "production"
+          ? email
+          : "assoulsidali@gmail.com",
+      from: "delivered@resend.dev",
+      subject: "Rest Your password",
+      react: (
+        <ResetPasswordEmail
+          userFirstname={name}
+          resetPasswordLink={process.env.BASE_URL + "/reset-password/" + token}
+        />
+      ),
+    });
+    if (res.error) {
+      throw res.error;
+    }
+    console.log("Sending email response", JSON.stringify(res));
+  } catch (err) {
+    console.error("Could not send email" + JSON.stringify(err));
+    throw err;
+  }
 };

@@ -13,30 +13,54 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { AlertCircle, ArrowLeft, CheckCircle, Lock, Mail } from "lucide-react";
+import { forgotPasswordAction } from "@/server/actions/forgot-password-action";
+import { useToast } from "@/components/ui/use-toast";
+import { useAction } from "next-safe-action/hooks";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 export default function Component() {
-  const [email, setEmail] = useState("");
-  const [error, setError] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isSubmitted, setIsSubmitted] = useState(false);
+  const { toast } = useToast();
+  const {
+    executeAsync,
+    hasSucceeded: isSubmitted,
+    isExecuting: isSubmitting,
+    input,
+    reset,
+  } = useAction(forgotPasswordAction);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setError("");
-    setIsSubmitting(true);
-
-    if (!email || !email.includes("@")) {
-      setError("Please enter a valid email address.");
-      setIsSubmitting(false);
+  const form = useForm({
+    resolver: zodResolver(
+      z.object({
+        email: z.string().email(),
+      }),
+    ),
+  });
+  const onSubmit = async ({ email }: { email: string }) => {
+    const res = await executeAsync({ email });
+    if (res.serverError) {
+      toast({
+        variant: "destructive",
+        title: "Error :(",
+        description: "Something went wrong. Please try again later.",
+      });
       return;
     }
-
-    // Simulating an API call
-    setTimeout(() => {
-      console.log("Password reset requested for:", email);
-      setIsSubmitting(false);
-      setIsSubmitted(true);
-    }, 2000);
+    toast({
+      title: "Succeeded!",
+      description: "We've sent a password reset link to your email.",
+    });
   };
 
   return (
@@ -45,14 +69,16 @@ export default function Component() {
         <header className="flex items-center justify-between mb-8">
           <div className="flex items-center gap-2">
             <Lock className="h-6 w-6 text-primary" />
-            <span className="text-xl font-semibold text-primary">
+            <span className="text-xl font-semibold text-gray-800">
               Reset Password
             </span>
           </div>
-          <Button variant="ghost" size="sm" className="text-muted-foreground">
-            <ArrowLeft className="h-4 w-4 mr-2" />
-            Back to Login
-          </Button>
+          <Link href="/login">
+            <Button variant="ghost" size="sm" className="text-muted-foreground">
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              Back to Login
+            </Button>
+          </Link>
         </header>
 
         <Card className="w-full">
@@ -69,59 +95,59 @@ export default function Component() {
             </CardTitle>
             <CardDescription className="text-center">
               {isSubmitted
-                ? `We've sent a password reset link to ${email}`
+                ? `We've sent a password reset link to ${input.email}`
                 : "Enter your email and we'll send you a reset link"}
             </CardDescription>
           </CardHeader>
           {!isSubmitted && (
-            <form onSubmit={handleSubmit}>
-              <CardContent>
-                <div className="space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="email">Email</Label>
-                    <Input
-                      id="email"
-                      type="email"
-                      placeholder="you@example.com"
-                      required
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      className="transition-all duration-200 focus:ring-2 focus:ring-primary"
-                    />
-                  </div>
-                  {error && (
-                    <div className="text-destructive text-sm flex items-center gap-2 bg-destructive/10 p-2 rounded animate-shake">
-                      <AlertCircle className="h-4 w-4" />
-                      {error}
-                    </div>
-                  )}
-                </div>
-              </CardContent>
-              <CardFooter>
-                <Button
-                  className="w-full transition-all duration-200 hover:bg-primary/90"
-                  type="submit"
-                  disabled={isSubmitting}
-                >
-                  {isSubmitting ? (
-                    <>
-                      <span className="animate-spin mr-2">⏳</span>
-                      Sending Reset Link...
-                    </>
-                  ) : (
-                    "Reset Password"
-                  )}
-                </Button>
-              </CardFooter>
-            </form>
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(onSubmit)}>
+                <CardContent>
+                  <FormField
+                    name="email"
+                    control={form.control}
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Email</FormLabel>
+                        <FormControl>
+                          <Input
+                            type="email"
+                            {...field}
+                            placeholder="you@example.com"
+                            required
+                            className="transition-all duration-200 focus:ring-2 focus:ring-primary"
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </CardContent>
+                <CardFooter>
+                  <Button
+                    className="w-full transition-all duration-200 hover:bg-primary/90"
+                    type="submit"
+                    disabled={isSubmitting}
+                  >
+                    {isSubmitting ? (
+                      <>
+                        <span className="animate-spin mr-2">⏳</span>
+                        Sending Reset Link...
+                      </>
+                    ) : (
+                      "Reset Password"
+                    )}
+                  </Button>
+                </CardFooter>
+              </form>
+            </Form>
           )}
           {isSubmitted && (
             <CardFooter>
               <Button
                 className="w-full transition-all duration-200 hover:bg-primary/90"
                 onClick={() => {
-                  setIsSubmitted(false);
-                  setEmail("");
+                  reset();
                 }}
               >
                 Reset Another Password
