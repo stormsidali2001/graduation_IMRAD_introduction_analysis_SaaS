@@ -1,4 +1,5 @@
 import { ResetPasswordEmail } from "@/components/emails/reset-password";
+import { ValidateEmail } from "@/components/emails/validate-email";
 import resend from "@/lib/resend";
 
 export const sendResetEmail = async ({
@@ -24,6 +25,33 @@ export const sendResetEmail = async ({
           resetPasswordLink={process.env.BASE_URL + "/reset-password/" + token}
         />
       ),
+    });
+    if (res.error) {
+      throw res.error;
+    }
+    console.log("Sending email response", JSON.stringify(res));
+  } catch (err) {
+    console.error("Could not send email" + JSON.stringify(err));
+    throw err;
+  }
+};
+
+export const sendVerificationLink = async ({
+  email,
+  url,
+}: {
+  email: string;
+  url: string;
+}) => {
+  try {
+    const res = await resend.emails.send({
+      to:
+        process.env.NODE_ENV === "production"
+          ? email
+          : "assoulsidali@gmail.com",
+      from: "delivered@resend.dev",
+      subject: "Rest Your password",
+      react: <ValidateEmail resetPasswordLink={url} />,
     });
     if (res.error) {
       throw res.error;

@@ -10,6 +10,7 @@ export const UserDto = z.object({
   isBanned: z.boolean(),
   role: z.enum([$Enums.Role.Admin, $Enums.Role.User]),
   plan: z.enum([$Enums.Plan.free, $Enums.Plan.premium]),
+  emailVerified: z.date().optional().nullable(),
 });
 
 export const PrivateUserDto = z.object({
@@ -23,6 +24,7 @@ export const PrivateUserDto = z.object({
   isBanned: z.boolean(),
   password: z.string(),
   customerId: z.string().optional(),
+  emailVerified: z.date().optional().nullable(),
 });
 
 export const UpdateUserSchema = PrivateUserDto.partial().omit({ id: true });

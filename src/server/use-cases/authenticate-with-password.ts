@@ -11,7 +11,7 @@ export const authenticateWithPasswordUsecase = async (
     const user = await findUserByEmailWithCredentials(email);
     if (!user) throw new Error("User not found");
     const match = await comparePassword(user.password, password);
-    if (!match) return new Error("Bad Credentials");
+    if (!match) throw new Error("Bad Credentials");
     console.log("user loged in", user);
     const userDto = await UserDto.parseAsync(user);
     console.log("logged in as ", userDto);

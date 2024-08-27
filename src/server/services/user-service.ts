@@ -18,28 +18,36 @@ import { ActionError } from "@/lib/safe-action";
 
 export const findUserByEmail = async (email: string) => {
   const user = await prismaClient.user.findUnique({ where: { email } });
-  if (!user) return null;
+  if (!user) {
+    throw new Error("User not found");
+  }
 
   return UserDto.parseAsync(user);
 };
 
 export const findUserByCustomerId = async (customerId: string) => {
   const user = await prismaClient.user.findUnique({ where: { customerId } });
-  if (!user) return null;
+  if (!user) {
+    throw new Error("User not found");
+  }
 
   return UserDto.parseAsync(user);
 };
 
 export const findUserById = async (id: string) => {
   const user = await prismaClient.user.findUnique({ where: { id } });
-  if (!user) return null;
+  if (!user) {
+    throw new Error("User not found");
+  }
 
   return UserDto.parseAsync(user);
 };
 
 export const findUserByIdWithCredentials = async (id: string) => {
   const user = await prismaClient.user.findUnique({ where: { id } });
-  if (!user) return null;
+  if (!user) {
+    throw new Error("User not found");
+  }
 
   return PrivateUserDto.parseAsync(user);
 };
@@ -285,6 +293,11 @@ export const updatePasswordAfterReset = async ({
     prismaClient.user.update({
       where: { id: userId },
       data: { password: passwordHash },
+    }),
+
+    prismaClient.user.update({
+      where: { id: userId, emailVerified: null },
+      data: { emailVerified: new Date() },
     }),
   ]);
 };

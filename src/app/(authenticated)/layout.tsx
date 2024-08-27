@@ -1,8 +1,16 @@
 import { auth } from "@/lib/auth";
 import { Navbar } from "./_partials/navbar";
+import { redirect } from "next/navigation";
 
 export default async function Layout({ children }: any) {
   const session = await auth();
+  if (!session) {
+    redirect("/login");
+  }
+  if (!session.user.emailVerified) {
+    redirect("/verify-email");
+  }
+
   console.log("dashboard ---------", session);
   return (
     <div className="flex flex-col w-full min-h-screen bg-background">

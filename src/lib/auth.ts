@@ -1,4 +1,4 @@
-import NextAuth, { User } from "next-auth";
+import NextAuth, { User, CredentialsSignin } from "next-auth";
 import Google from "next-auth/providers/google";
 import Credentials from "next-auth/providers/credentials";
 import { PrismaAdapter } from "@auth/prisma-adapter";
@@ -12,9 +12,14 @@ import { UserDto } from "@/server/validation/UserDto";
 import { authenticateWithPasswordUsecase } from "@/server/use-cases/authenticate-with-password";
 import prismaClient from "./prisma-client";
 import { ActionError } from "./safe-action";
-
+import EmailProvider from "next-auth/providers/email";
+import {
+  sendResetEmail,
+  sendVerificationLink,
+} from "@/server/services/email-service";
 export const { auth, handlers, signIn, signOut } = NextAuth({
   adapter: PrismaAdapter(prismaClient),
+
   providers: [
     Google,
     Credentials({
@@ -31,11 +36,28 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
         request,
       ) => {
         console.log(`--loging with ${email} ${password} `);
+
         try {
-          return await authenticateWithPasswordUsecase(email, password);
+          const user = await authenticateWithPasswordUsecase(email, password);
+          console.log("user------", user);
+          return user;
         } catch (err) {
-          throw new ActionError(err);
+          throw new CredentialsSignin(err);
         }
+      },
+    }),
+
+    // TODO: refactor this if you want to move to prod
+    EmailProvider({
+      name: "email",
+      server: "https://resend.com",
+      from: "YOUR EMAIL FROM (eg: team@resend.com)",
+
+      sendVerificationRequest: async (params) => {
+        sendVerificationLink({
+          email: params.identifier,
+          url: params.url,
+        });
       },
     }),
   ],

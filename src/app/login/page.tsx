@@ -10,7 +10,7 @@ import { UserDtoType } from "@/server/validation/UserDto";
 
 export default async function Page() {
   const session = await auth();
-  if (session?.user) {
+  if (session) {
     console.log("login page: user -->", session.user);
     const url = getUserRedirectUrl(session.user);
     redirect(url);
