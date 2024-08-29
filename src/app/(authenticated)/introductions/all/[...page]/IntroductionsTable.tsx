@@ -1,4 +1,7 @@
+"use client";
+
 import React from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -22,7 +25,6 @@ import {
   TableCell,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-
 import {
   Pagination,
   PaginationContent,
@@ -49,39 +51,64 @@ const Introduction = ({
   id,
 }: IntroductionProps) => {
   return (
-    <TableRow>
+    <motion.tr
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -20 }}
+      transition={{ duration: 0.3 }}
+    >
       <TableCell className="max-[400px]">
-        <div className="font-medium line-clamp-2">{sentences[0].text}</div>
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.2 }}
+          className="font-medium line-clamp-2"
+        >
+          {sentences[0].text}
+        </motion.div>
       </TableCell>
       <TableCell className="w-14">
         <div className="flex items-center gap-2">
-          <div className="h-2 w-full bg-muted rounded-full">
-            <div
+          <div className="h-2 w-full bg-muted rounded-full overflow-hidden">
+            <motion.div
               className="h-2 bg-primary rounded-full"
-              style={{
+              initial={{ width: 0 }}
+              animate={{
                 width: `${((averageMoveConfidence ?? 0) * 100).toFixed(0)}%`,
               }}
+              transition={{ duration: 0.5, delay: 0.3 }}
             />
           </div>
-          <span className="text-sm font-medium">
+          <motion.span
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.5 }}
+            className="text-sm font-medium"
+          >
             {((averageMoveConfidence ?? 0) * 100).toFixed(0)}%
-          </span>
+          </motion.span>
         </div>
       </TableCell>
-
       <TableCell className="w-14">
         <div className="flex items-center gap-2">
-          <div className="h-2 w-full bg-muted rounded-full">
-            <div
+          <div className="h-2 w-full bg-muted rounded-full overflow-hidden">
+            <motion.div
               className="h-2 bg-primary rounded-full"
-              style={{
+              initial={{ width: 0 }}
+              animate={{
                 width: `${((averageSubMoveConfidence ?? 0) * 100).toFixed(0)}%`,
               }}
+              transition={{ duration: 0.5, delay: 0.4 }}
             />
           </div>
-          <span className="text-sm font-medium">
+          <motion.span
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.6 }}
+            className="text-sm font-medium"
+          >
             {((averageSubMoveConfidence ?? 0) * 100).toFixed(0)}%
-          </span>
+          </motion.span>
         </div>
       </TableCell>
       <TableCell>
@@ -100,9 +127,10 @@ const Introduction = ({
           </DropdownMenuContent>
         </DropdownMenu>
       </TableCell>
-    </TableRow>
+    </motion.tr>
   );
 };
+
 export const IntroductionsTable = ({
   data = [],
   total,
@@ -112,14 +140,24 @@ export const IntroductionsTable = ({
   nextPage,
   previousPage,
 }: any = {}) => (
-  <>
+  <motion.div
+    initial={{ opacity: 0, y: 20 }}
+    animate={{ opacity: 1, y: 0 }}
+    transition={{ duration: 0.5 }}
+  >
     <Card>
       <CardHeader>
-        <CardTitle>Introductions</CardTitle>
-        <CardDescription>
-          Showing 1-{per_page} of {total} introductions.You're currently on page{" "}
-          {page}.
-        </CardDescription>
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2, duration: 0.5 }}
+        >
+          <CardTitle>Introductions</CardTitle>
+          <CardDescription>
+            Showing 1-{per_page} of {total} introductions. You're currently on
+            page {page}.
+          </CardDescription>
+        </motion.div>
       </CardHeader>
       <CardContent>
         <Table>
@@ -132,28 +170,39 @@ export const IntroductionsTable = ({
             </TableRow>
           </TableHeader>
           <TableBody>
-            {data.map((introduction, index) => (
-              <Introduction key={index} {...introduction} />
-            ))}
+            <AnimatePresence>
+              {data.map((introduction, index) => (
+                <Introduction key={index} {...introduction} />
+              ))}
+            </AnimatePresence>
           </TableBody>
         </Table>
-
-        <Pagination>
-          <PaginationContent>
-            <PaginationItem>
-              {previousPage ? <PaginationPrevious href={previousPage} /> : null}
-            </PaginationItem>
-            <PaginationItem>
-              <PaginationEllipsis />
-            </PaginationItem>
-            <PaginationItem>
-              {nextPage ? <PaginationNext href={nextPage} /> : null}
-            </PaginationItem>
-          </PaginationContent>
-        </Pagination>
+        {total_pages > 1 && (
+          <motion.div
+            initial={{ y: 20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ delay: 0.4, duration: 0.5 }}
+          >
+            <Pagination>
+              <PaginationContent>
+                <PaginationItem>
+                  {previousPage && <PaginationPrevious href={previousPage} />}
+                </PaginationItem>
+                <PaginationItem>
+                  <span className="text-sm text-muted-foreground">
+                    Page {page} of {total_pages}
+                  </span>
+                </PaginationItem>
+                <PaginationItem>
+                  {nextPage && <PaginationNext href={nextPage} />}
+                </PaginationItem>
+              </PaginationContent>
+            </Pagination>
+          </motion.div>
+        )}
       </CardContent>
     </Card>
-  </>
+  </motion.div>
 );
 
 function MoveVerticalIcon(props) {

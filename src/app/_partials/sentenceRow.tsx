@@ -1,3 +1,5 @@
+"use client";
+
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
@@ -11,6 +13,7 @@ import {
 import FeedbackDialogBody from "./FeedbackDialogBody";
 import { movesDict, subMoveDict } from "@/common/moves";
 import { FeedbackDto } from "@/server/validation/feedbackDto";
+import { motion } from "framer-motion";
 
 interface SentenceRowProps extends PredictionOutputItemDtoType {
   sentenceNumber: number;
@@ -19,6 +22,7 @@ interface SentenceRowProps extends PredictionOutputItemDtoType {
   feedback?: FeedbackDto;
   hideFeedbacks?: boolean;
 }
+
 export const SentenceRow = ({
   sentence,
   move,
@@ -36,13 +40,18 @@ export const SentenceRow = ({
       {!feedback ? (
         <div className="flex items-center justify-end gap-4">
           <Dialog>
-            <DialogTrigger>
-              <Button variant="ghost">
-                <ThumbsUp
-                  size={24}
-                  className="hover:text-primary transition-all ease-in-out"
-                />
-              </Button>
+            <DialogTrigger asChild>
+              <motion.div
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <Button variant="ghost" className="rounded-full p-2">
+                  <ThumbsUp
+                    size={24}
+                    className="text-primary/80 hover:text-primary transition-all duration-300 ease-in-out"
+                  />
+                </Button>
+              </motion.div>
             </DialogTrigger>
             <FeedbackDialogBody
               isLike
@@ -52,13 +61,18 @@ export const SentenceRow = ({
           </Dialog>
 
           <Dialog>
-            <DialogTrigger>
-              <Button variant="ghost">
-                <ThumbsDown
-                  size={24}
-                  className="hover:text-primary transition-all ease-in-out"
-                />
-              </Button>
+            <DialogTrigger asChild>
+              <motion.div
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <Button variant="ghost" className="rounded-full p-2">
+                  <ThumbsDown
+                    size={24}
+                    className="text-primary/80 hover:text-primary transition-all duration-300 ease-in-out"
+                  />
+                </Button>
+              </motion.div>
             </DialogTrigger>
             <FeedbackDialogBody
               defaultMove={move}
@@ -70,40 +84,75 @@ export const SentenceRow = ({
           </Dialog>
         </div>
       ) : (
-        <div className="flex items-center justify-end gap-2 text-sm dark:text-gray-200 text-gray-800">
-          Feedback recieved (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="flex items-center justify-end gap-2 text-sm text-primary/80"
+        >
+          Feedback received (
           {feedback.liked ? (
             <LucideThumbsUp className="w-4" />
           ) : (
             <LucideThumbsDown className="w-4" />
           )}
-          ).
-        </div>
+          )
+        </motion.div>
       )}
     </>
   ) : null;
+
   return (
-    <div className="bg-gray-100 dark:bg-gray-800 rounded-md p-6">
-      <div className="flex flex-col gap-4 ">
-        <div className="flex items-center gap-2">
-          {typeof move === "number" ? (
-            <Badge variant="default">
-              {movesDict[move] + ` (${(moveConfidence * 100).toFixed(1)}%)`}
-            </Badge>
-          ) : null}
-          {typeof move === "number" && typeof subMove === "number" ? (
-            <Badge variant="default">
-              {subMoveDict[move]?.[subMove] +
-                ` (${(subMoveConfidence * 100).toFixed(1)}%)`}
-            </Badge>
-          ) : null}
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+      className="bg-card text-card-foreground shadow-lg rounded-lg p-6 hover:shadow-xl transition-shadow duration-300"
+    >
+      <div className="flex flex-col gap-4">
+        <div className="flex flex-wrap items-center gap-2">
+          {typeof move === "number" && (
+            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+              <Badge
+                variant="secondary"
+                className="text-xs font-semibold px-2 py-1"
+              >
+                {movesDict[move]} ({(moveConfidence * 100).toFixed(1)}%)
+              </Badge>
+            </motion.div>
+          )}
+          {typeof move === "number" && typeof subMove === "number" && (
+            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+              <Badge
+                variant="secondary"
+                className="text-xs font-semibold px-2 py-1"
+              >
+                {subMoveDict[move]?.[subMove]} (
+                {(subMoveConfidence * 100).toFixed(1)}%)
+              </Badge>
+            </motion.div>
+          )}
         </div>
 
-        <h4 className="text-lg font-bold mb-2">Sentence {sentenceNumber}</h4>
-        <p className="text-gray-600 dark:text-gray-400">{sentence}</p>
+        <motion.h4
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.2 }}
+          className="text-lg font-bold mb-2"
+        >
+          Sentence {sentenceNumber}
+        </motion.h4>
+        <motion.p
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.3 }}
+          className="text-muted-foreground"
+        >
+          {sentence}
+        </motion.p>
 
         {feedbackSection}
       </div>
-    </div>
+    </motion.div>
   );
 };

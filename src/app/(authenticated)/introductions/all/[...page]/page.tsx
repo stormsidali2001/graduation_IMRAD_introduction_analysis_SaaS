@@ -1,37 +1,8 @@
 import { IntroductionsStats } from "./IntroductionsStats";
 import { IntroductionsTable } from "./IntroductionsTable";
-import { Input } from "@/components/ui/input";
-import {
-  DropdownMenu,
-  DropdownMenuTrigger,
-  DropdownMenuContent,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuCheckboxItem,
-  DropdownMenuRadioGroup,
-  DropdownMenuRadioItem,
-  DropdownMenuItem,
-} from "@/components/ui/dropdown-menu";
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-  CardContent,
-} from "@/components/ui/card";
-import {
-  Table,
-  TableHeader,
-  TableRow,
-  TableHead,
-  TableBody,
-  TableCell,
-} from "@/components/ui/table";
-import { Badge } from "@/components/ui/badge";
-import { getIntroductionStatsAction } from "@/server/actions/get-inroductions-stats";
 import { getIntroductionsAction } from "@/server/actions/get-introductions";
 import { getNextPage, getPrevPage } from "@/common/getPage";
+import { getIntroductionStatsAction } from "@/server/actions/get-inroductions-stats";
 
 export default async function Page({
   searchParams: { search },
@@ -42,6 +13,11 @@ export default async function Page({
     page: p[0],
   });
   const introductions = res?.data;
+  if (!introductions) {
+    throw new Error("Failed to fetch the introductions");
+  }
+
+  const stats = (await getIntroductionStatsAction({}))?.data ?? {};
 
   console.log("introductions", introductions);
 
@@ -59,7 +35,7 @@ export default async function Page({
     <div className="flex flex-col h-full">
       <main className="flex-1 overflow-auto">
         <div className="grid gap-4 p-4 sm:p-6">
-          <IntroductionsStats undefined />
+          <IntroductionsStats {...stats} />
           <IntroductionsTable
             {...introductions}
             nextPage={nextPage}

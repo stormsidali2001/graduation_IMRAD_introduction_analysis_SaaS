@@ -1,4 +1,5 @@
 "use client";
+
 import { IntroductionAnalysis } from "./IntroductionAnalysis";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -10,12 +11,13 @@ import { geMoveSubmove } from "@/server/actions/classifier";
 import { FileUploader } from "@/components/ui/fileUpload";
 import { useAction } from "next-safe-action/hooks";
 import { pdfExtractorAction } from "@/server/actions/pdf-extractor";
-import { ArrowDown } from "lucide-react";
+import { ArrowDown, FileText, RefreshCw } from "lucide-react";
 import Lottie from "lottie-react";
 import loadingAnimation from "@/assets/loading-lottie.json";
 import { PredictionOutputItemDtoType } from "@/server/validation/PredictionDto";
 import { useToast } from "@/components/ui/use-toast";
 import ImradMovesSubmovesInfoCard from "@/components/ui/Imrad-moves-sub-moves-card";
+import { motion, AnimatePresence } from "framer-motion";
 
 interface Sentence extends PredictionOutputItemDtoType {}
 
@@ -58,6 +60,7 @@ export const Converter = () => {
     setIntroduction(e.target.value);
     updateSentences(e.target.value);
   };
+
   const handlePredictions = async () => {
     const res = await executeAsyncGetMoveSubMove({
       sentences: sentences.map((s) => s.sentence),
@@ -88,17 +91,28 @@ export const Converter = () => {
   };
 
   const { toast } = useToast();
+
   return (
-    <section className="container mx-auto mt-16">
+    <motion.section
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+      className="container mx-auto mt-16"
+    >
       <h2 className="text-3xl font-bold mb-8">Try It Now</h2>
-      <div className="bg-white dark:bg-gray-900 rounded-xl shadow p-6">
+      <motion.div
+        initial={{ scale: 0.95 }}
+        animate={{ scale: 1 }}
+        transition={{ duration: 0.3 }}
+        className="bg-white dark:bg-gray-900 rounded-xl shadow-lg p-6"
+      >
         <div className="grid gap-4">
           <Textarea
             onChange={handleTextAreaChange}
             value={introduction}
             placeholder="Paste your introduction text here..."
             rows={5}
-            className="w-full rounded-md border-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-50 focus:border-blue-500 focus:ring-blue-500"
+            className="w-full rounded-md border-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-50 focus:border-blue-500 focus:ring-blue-500 transition-all duration-300"
           />
           <FileUploader
             maxFiles={1}
@@ -130,56 +144,91 @@ export const Converter = () => {
             }}
           />
           <div className="flex justify-end gap-2">
-            {hasSucceededMoves ? (
-              <>
-                <Button
-                  variant="secondary"
-                  onClick={() => {
-                    resetUpload();
-                    setFiles(null);
-                    resetMoves();
-
-                    setIntroduction("");
-                    setSentences([]);
-                  }}
+            <AnimatePresence>
+              {hasSucceededMoves && (
+                <motion.div
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -20 }}
+                  transition={{ duration: 0.3 }}
                 >
-                  Reset{" "}
-                </Button>
-              </>
-            ) : null}
-            <Button
-              onClick={() => handlePredictions()}
-              disabled={
-                hasSucceededMoves ||
-                isExecutingMoves ||
-                isExecuting ||
-                sentences.length === 0
-              }
-            >
-              Analyse{" "}
-            </Button>
+                  <Button
+                    variant="secondary"
+                    onClick={() => {
+                      resetUpload();
+                      setFiles(null);
+                      resetMoves();
+                      setIntroduction("");
+                      setSentences([]);
+                    }}
+                  >
+                    <RefreshCw className="mr-2 h-4 w-4" />
+                    Reset
+                  </Button>
+                </motion.div>
+              )}
+            </AnimatePresence>
+            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+              <Button
+                onClick={() => handlePredictions()}
+                disabled={
+                  hasSucceededMoves ||
+                  isExecutingMoves ||
+                  isExecuting ||
+                  sentences.length === 0
+                }
+              >
+                <FileText className="mr-2 h-4 w-4" />
+                Analyse
+              </Button>
+            </motion.div>
           </div>
         </div>
-        <div className="flex items-center justify-center">
-          {isExecuting && <>Uploading ...</>}
-        </div>
+        <AnimatePresence>
+          {isExecuting && (
+            <motion.div
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              className="flex items-center justify-center mt-4"
+            >
+              <span className="text-blue-500 font-semibold">Uploading...</span>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
-        <ImradMovesSubmovesInfoCard />
-        <div className="mt-8">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3, duration: 0.5 }}
+        >
+          <ImradMovesSubmovesInfoCard />
+        </motion.div>
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.5, duration: 0.5 }}
+          className="mt-8"
+        >
           <h3 className="text-xl font-bold mb-4">Introduction Analysis</h3>
 
           {!isExecutingMoves ? (
             <IntroductionAnalysis sentences={sentences} hideFeedbacks={true} />
           ) : (
-            <div className="flex items-center justify-center w-full">
+            <motion.div
+              initial={{ scale: 0.8 }}
+              animate={{ scale: 1 }}
+              transition={{ type: "spring", stiffness: 200, damping: 20 }}
+              className="flex items-center justify-center w-full"
+            >
               <Lottie
                 animationData={loadingAnimation}
                 style={{ width: 200, height: 200 }}
               />
-            </div>
+            </motion.div>
           )}
-        </div>
-      </div>
-    </section>
+        </motion.div>
+      </motion.div>
+    </motion.section>
   );
 };

@@ -9,7 +9,7 @@ export const getSubscriptionLinksAction = normalUserAction
   .metadata({ actionName: "getCustomerPortalLinkAction" })
   .action(async ({ ctx }) => {
     try {
-      const redirectUrl = "http://localhost:3000/user/dashboard";
+      const redirectUrl = "http://localhost:3000/generate";
       const common = {
         successUrl: redirectUrl,
         cancelUrl: redirectUrl,

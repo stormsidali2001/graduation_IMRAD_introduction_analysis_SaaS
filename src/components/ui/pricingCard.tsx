@@ -1,7 +1,8 @@
 "use client";
+
 import { PopularPlanType, PricingList } from "@/common/general";
 import { Badge } from "@/components/ui/badge";
-import { buttonVariants } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -10,8 +11,9 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Check } from "lucide-react";
+import { Check, Zap } from "lucide-react";
 import Link from "next/link";
+import { motion } from "framer-motion";
 
 type PaymentLinkProps = {
   paymentLink?: string;
@@ -27,7 +29,11 @@ const PaymentLink = ({
   return (
     <Link
       href={isAuthenticated ? paymentLink : "/login"}
-      className={buttonVariants()}
+      className={buttonVariants({
+        variant: "default",
+        size: "lg",
+        className: "w-full",
+      })}
       onClick={() => {
         if (paymentLink && !isAuthenticated) {
           localStorage.setItem("stripePaymentLink", paymentLink);
@@ -39,80 +45,98 @@ const PaymentLink = ({
   );
 };
 
-export const Pricing = ({
+const MotionCard = motion(Card);
+const MotionBadge = motion(Badge);
+
+export function Pricing({
   pricingList,
   isAuthenticated,
 }: {
   pricingList: PricingList[];
   isAuthenticated: boolean;
-}) => {
+}) {
   return (
     <section id="pricing" className="container py-24 sm:py-32">
-      <h2 className="text-3xl md:text-4xl font-bold text-center">
-        Get
-        <span className="bg-gradient-to-b from-primary/60 to-primary uppercase text-transparent bg-clip-text">
-          {" "}
-          Unlimited{" "}
-        </span>
-        Access
-      </h2>
-      <h3 className="text-xl text-center text-muted-foreground pt-4 pb-8">
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Alias
-        reiciendis.
-      </h3>
+      <motion.h2
+        className="text-4xl md:text-5xl font-bold text-center mb-4"
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+      >
+        Get Unlimited Access
+      </motion.h2>
+      <motion.p
+        className="text-xl text-center text-muted-foreground max-w-2xl mx-auto mb-16"
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.2 }}
+      >
+        Choose the perfect plan to unlock all features and take your experience
+        to the next level.
+      </motion.p>
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {pricingList.map((pricing: PricingList) => (
-          <Card
+        {pricingList.map((pricing: PricingList, index: number) => (
+          <MotionCard
             key={pricing.title}
-            className={
+            className={`relative overflow-hidden ${
               pricing.popular === PopularPlanType.YES
-                ? "drop-shadow-xl shadow-black/10 dark:shadow-white/10"
-                : ""
-            }
+                ? "border-primary shadow-lg"
+                : "hover:border-primary transition-colors duration-300"
+            }`}
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: index * 0.1 }}
+            whileHover={{ scale: 1.03, transition: { duration: 0.2 } }}
           >
-            <CardHeader>
-              <CardTitle className="flex item-center justify-between">
+            <CardHeader className="text-center p-6">
+              <CardTitle className="text-2xl font-bold mb-2">
                 {pricing.title}
-                {pricing.popular === PopularPlanType.YES ? (
-                  <Badge variant="secondary" className="text-sm text-primary">
-                    Most popular
-                  </Badge>
-                ) : null}
               </CardTitle>
-              <div>
-                <span className="text-3xl font-bold">${pricing.price}</span>
-                <span className="text-muted-foreground">
-                  {" "}
-                  {pricing.billing}
+              <div className="mb-4">
+                <span className="text-5xl font-extrabold">
+                  ${pricing.price}
                 </span>
+                <span className="text-gray-100 ml-2">{pricing.billing}</span>
               </div>
-
-              <CardDescription>{pricing.description}</CardDescription>
+              <CardDescription className="text-md">
+                {pricing.description}
+              </CardDescription>
             </CardHeader>
-
-            <CardContent>
+            <CardContent className="p-6">
+              <h4 className="font-semibold mb-4 flex items-center text-lg">
+                <Zap className="mr-2 h-5 w-5 text-primary" />
+                Plan Features
+              </h4>
+              <ul className="space-y-3 text-sm">
+                {pricing.benefitList.map(
+                  (benefit: string, benefitIndex: number) => (
+                    <motion.li
+                      key={benefit}
+                      className="flex items-center"
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{
+                        duration: 0.3,
+                        delay: index * 0.1 + benefitIndex * 0.1,
+                      }}
+                    >
+                      <Check className="text-primary mr-2 flex-shrink-0 h-5 w-5" />
+                      <span>{benefit}</span>
+                    </motion.li>
+                  ),
+                )}
+              </ul>
+            </CardContent>
+            <CardFooter className="p-6">
               <PaymentLink
                 isAuthenticated={isAuthenticated}
                 text={pricing.buttonText}
                 paymentLink={pricing.paymentLink}
               />
-            </CardContent>
-
-            <hr className="w-4/5 m-auto mb-4" />
-
-            <CardFooter className="flex">
-              <div className="space-y-4">
-                {pricing.benefitList.map((benefit: string) => (
-                  <span key={benefit} className="flex">
-                    <Check className="text-purple-500" />{" "}
-                    <h3 className="ml-2">{benefit}</h3>
-                  </span>
-                ))}
-              </div>
             </CardFooter>
-          </Card>
+          </MotionCard>
         ))}
       </div>
     </section>
   );
-};
+}

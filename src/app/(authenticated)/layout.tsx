@@ -13,7 +13,10 @@ export default async function Layout({ children }: any) {
 
   console.log("dashboard ---------", session);
   return (
-    <div className="flex flex-col w-full min-h-screen bg-background">
+    <div
+      className="flex flex-col w-full min-h-screen 
+          bg-gradient-to-br from-purple-100 to-indigo-200 "
+    >
       <Navbar />
       <main className="flex-1 px-4 py-6 md:px-6 md:py-12">{children}</main>
     </div>

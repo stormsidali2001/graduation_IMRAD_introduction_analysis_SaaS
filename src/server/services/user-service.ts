@@ -19,7 +19,7 @@ import { ActionError } from "@/lib/safe-action";
 export const findUserByEmail = async (email: string) => {
   const user = await prismaClient.user.findUnique({ where: { email } });
   if (!user) {
-    throw new Error("User not found");
+    return null;
   }
 
   return UserDto.parseAsync(user);
@@ -28,7 +28,7 @@ export const findUserByEmail = async (email: string) => {
 export const findUserByCustomerId = async (customerId: string) => {
   const user = await prismaClient.user.findUnique({ where: { customerId } });
   if (!user) {
-    throw new Error("User not found");
+    return null;
   }
 
   return UserDto.parseAsync(user);
@@ -37,7 +37,7 @@ export const findUserByCustomerId = async (customerId: string) => {
 export const findUserById = async (id: string) => {
   const user = await prismaClient.user.findUnique({ where: { id } });
   if (!user) {
-    throw new Error("User not found");
+    return null;
   }
 
   return UserDto.parseAsync(user);
@@ -46,7 +46,7 @@ export const findUserById = async (id: string) => {
 export const findUserByIdWithCredentials = async (id: string) => {
   const user = await prismaClient.user.findUnique({ where: { id } });
   if (!user) {
-    throw new Error("User not found");
+    return null;
   }
 
   return PrivateUserDto.parseAsync(user);
@@ -54,7 +54,7 @@ export const findUserByIdWithCredentials = async (id: string) => {
 export const findUserByEmailWithCredentials = async (email: string) => {
   const user = await prismaClient.user.findUnique({ where: { email } });
   if (!user) {
-    throw new Error("User not found");
+    return null;
   }
 
   return PrivateUserDto.parseAsync(user);

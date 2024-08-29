@@ -7,6 +7,7 @@ import { type ThemeProviderProps } from "next-themes/dist/types";
 import { Toaster } from "@/components/ui/toaster";
 import { SessionProvider } from "next-auth/react";
 import { auth } from "@/lib/auth";
+import { cn } from "@/lib/utils";
 
 const inter = Inter({ subsets: ["cyrillic"] });
 
@@ -23,7 +24,12 @@ export default async function RootLayout({
   const session = await auth();
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body
+        className={cn(
+          inter.className,
+          " bg-gradient-to-br from-purple-100 to-indigo-200 ",
+        )}
+      >
         <SessionProvider session={session}>
           <NextThemesProvider
             attribute="class"

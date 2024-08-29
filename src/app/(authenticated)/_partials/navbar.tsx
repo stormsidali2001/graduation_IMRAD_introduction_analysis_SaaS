@@ -26,6 +26,8 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { SignOutButton } from "./sign-out-button";
 import { SearchBar } from "./SearchBar";
+import { cn } from "@/lib/utils";
+import NavbarLinks from "./NavbarLinks";
 
 export const Navbar = async () => {
   const session = await auth();
@@ -40,9 +42,11 @@ export const Navbar = async () => {
   }
   const avatar = (
     <div
-      className={`${isPremium ? "outline-primary outline-2 outline rounded-full" : ""}`}
+      className={`${
+        isPremium ? "outline-primary outline-2 outline rounded-full" : ""
+      }`}
     >
-      <Button variant="ghost" className="rounded-full  " size="icon">
+      <Button variant="ghost" className="rounded-full" size="icon">
         <Avatar>
           <AvatarImage src={user.image} />
           <AvatarFallback>{user.name.at(0)}</AvatarFallback>
@@ -70,7 +74,6 @@ export const Navbar = async () => {
               className="flex items-center gap-2"
               prefetch={false}
             >
-              <div className="w-4 h-4" />
               <span>Billing Portal</span>
             </Link>
           </DropdownMenuItem>
@@ -78,10 +81,9 @@ export const Navbar = async () => {
           <DropdownMenuItem>
             <Link
               href="/plans"
-              className="flex items-center gap-2"
+              className="flex items-start gap-2"
               prefetch={false}
             >
-              <div className="w-4 h-4" />
               <span>Upgrade to Premium</span>
             </Link>
           </DropdownMenuItem>
@@ -90,91 +92,73 @@ export const Navbar = async () => {
     );
   }
   return (
-    <header className="sticky top-0 flex h-16 items-center gap-4 border-b bg-background px-4 md:px-6">
-      <nav className="hidden flex-col gap-6 text-lg font-medium md:flex md:flex-row md:items-center md:gap-5 md:text-sm lg:gap-6">
-        <Link className="flex items-center justify-between gap-4" href="/">
-          <BookOpenIcon className="h-6 w-6 text-primary" />
-          <div className="font-bold w-[200px]">IMRAD Analyzer</div>
-        </Link>
-        {links.map((link, index) => (
-          <Link
-            key={index}
-            href={link.href}
-            className="text-foreground transition-colors hover:text-foreground"
-          >
-            {link.label}
+    <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <div className="container flex h-16 items-center">
+        <div className="mr-4 hidden md:flex">
+          <Link className="mr-6 flex items-center space-x-2" href="/">
+            <BookOpenIcon className="h-6 w-6 text-primary" />
+            <span className="hidden font-bold sm:inline-block">
+              IMRAD Analyzer
+            </span>
           </Link>
-        ))}
-      </nav>
-      <Sheet>
-        <SheetTrigger asChild>
-          <Button variant="outline" size="icon" className="shrink-0 md:hidden">
-            <MenuIcon className="h-5 w-5" />
-            <span className="sr-only">Toggle navigation menu</span>
-          </Button>
-        </SheetTrigger>
-        <SheetContent side="left">
-          <nav className="grid gap-6 text-lg font-medium">
-            <Link
-              href="#"
-              className="flex items-center gap-2 text-lg font-semibold"
-              prefetch={false}
-            >
-              <Package2Icon className="h-6 w-6" />
-              <span className="sr-only">Acme Inc</span>
-            </Link>
-            <Link href="#" className="hover:text-foreground" prefetch={false}>
-              Dashboard
-            </Link>
-            {links.map((link, index) => (
-              <Link
-                key={index}
-                href={link.href}
-                className="text-foreground transition-colors hover:text-foreground"
-              >
-                {link.label}
-              </Link>
-            ))}
+          <nav className="flex items-center space-x-6 text-sm font-medium">
+            <NavbarLinks links={links} />
           </nav>
-        </SheetContent>
-      </Sheet>
-      <div className="flex w-full items-center gap-4 md:ml-auto md:gap-2 lg:gap-4">
-        <SearchBar />
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>{avatar}</DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-fit p-2">
-            <div className="flex items-center gap-2 p-2 rounded-md hover:bg-muted">
-              {avatar}
-              <div className="grid gap-0.5 leading-none">
-                <div className="font-medium">{user.name}</div>
-                <div className="text-sm text-muted-foreground">
-                  {user.email}
+        </div>
+        <Sheet>
+          <SheetTrigger asChild>
+            <Button
+              variant="ghost"
+              className="mr-2 px-0 text-base hover:bg-transparent focus-visible:bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 md:hidden"
+            >
+              <MenuIcon className="h-6 w-6" />
+              <span className="sr-only">Toggle Menu</span>
+            </Button>
+          </SheetTrigger>
+          <SheetContent side="left" className="pr-0">
+            <Link href="/" className="flex items-center" prefetch={false}>
+              <BookOpenIcon className="mr-2 h-6 w-6 text-primary" />
+              <span className="font-bold">IMRAD Analyzer</span>
+            </Link>
+            <nav className="mt-6 flex flex-col space-y-4">
+              <NavbarLinks links={links} />
+            </nav>
+          </SheetContent>
+        </Sheet>
+        <div className="flex flex-1 items-center justify-end space-x-4">
+          <SearchBar />
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>{avatar}</DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-56">
+              <div className="flex items-center justify-start gap-2 p-2">
+                <div className="flex flex-col space-y-1 leading-none">
+                  <p className="font-medium">{user.name}</p>
+                  <p className="w-[200px] truncate text-sm text-muted-foreground">
+                    {user.email}
+                  </p>
                 </div>
               </div>
-            </div>
-
-            <DropdownMenuSeparator />
-            <div className="flex gap-3 my-2 justify-center">
-              <div>User Plan: </div>
-              <Badge variant="default">{user.plan}</Badge>
-            </div>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>
-              <Link
-                href="/settings"
-                className="flex items-center gap-2"
-                prefetch={false}
-              >
-                <div className="w-4 h-4" />
-                <span>Settings</span>
-              </Link>
-            </DropdownMenuItem>
-            {dropdownItems}
-            <DropdownMenuItem>
-              <SignOutButton />
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem className="flex items-center justify-between">
+                User Plan:
+                <Badge variant={isPremium ? "default" : "secondary"}>
+                  {user.plan}
+                </Badge>
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem asChild>
+                <Link href="/settings" className="cursor-pointer">
+                  Settings
+                </Link>
+              </DropdownMenuItem>
+              {dropdownItems}
+              <DropdownMenuSeparator />
+              <DropdownMenuItem>
+                <SignOutButton />
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
       </div>
     </header>
   );
