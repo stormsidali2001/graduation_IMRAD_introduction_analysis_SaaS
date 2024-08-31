@@ -22,6 +22,7 @@ export const SentenceFeedbackDto = z.object({
   move: z.number().optional(),
   subMove: z.number().optional(),
 });
+export const SentenceFeedbacksDto = z.array(SentenceFeedbackDto);
 
 export const SentenceFindParamsDto = z.object({
   sentenceId: z.string(),

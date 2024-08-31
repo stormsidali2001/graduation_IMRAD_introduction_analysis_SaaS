@@ -1,7 +1,7 @@
-"use action";
+"use server";
 
 import { authActionClient } from "@/lib/safe-action";
-import { getAllFeedbacks } from "../services/user-data";
+import { getFeedbacks } from "../services/user-data";
 import { RetrieverParamsDto } from "../validation/RetrieverParamsDto";
 
 export const getAllFeedbacksAction = authActionClient
@@ -10,5 +10,5 @@ export const getAllFeedbacksAction = authActionClient
   })
   .schema(RetrieverParamsDto)
   .action(async ({ parsedInput, ctx }) => {
-    return getAllFeedbacks(parsedInput, ctx.userId, ctx.userRole);
+    return getFeedbacks(parsedInput, ctx.userId, ctx.userRole);
   });

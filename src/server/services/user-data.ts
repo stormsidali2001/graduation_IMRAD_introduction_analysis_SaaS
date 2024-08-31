@@ -11,6 +11,7 @@ import { getPaginatedResults } from "../validation/paginationMakerDto";
 import {
   CreateSentenceFeedbackDto,
   SentenceFeedbackDto,
+  SentenceFeedbacksDto,
   SentenceFindParamsDtoType,
 } from "../validation/feedbackDto";
 import { DashboardStatsDto } from "../validation/DashboardStatsDto";
@@ -178,7 +179,37 @@ export const createSentenceFeedback = async (
   );
 };
 
-export const getAllFeedbacks = async (
+export const getAllAFeedbacks = async () => {
+  try {
+    const modelsAiInstances =
+      eurekaClient.getInstancesByAppId("USER-DATA-SERVICE");
+    console.log("modelsAiInstances", modelsAiInstances);
+
+    const selectedInstance = balance(modelsAiInstances);
+    if (!selectedInstance) {
+      console.error("No user-data instance is available");
+      return null;
+    }
+
+    const url =
+      "http://" +
+      "localhost" +
+      `:${selectedInstance.port["$"]}` +
+      "/introductions/feedbacks/all";
+    console.log("url", url);
+    const res = await axios.get(url, {
+      withCredentials: true,
+    });
+
+    console.log("code451", res.data);
+    const feedbacks = SentenceFeedbacksDto.parse(res?.data);
+    return feedbacks;
+  } catch (err) {
+    console.error("user-data", err);
+    throw new Error("Failed to fetch feedback");
+  }
+};
+export const getFeedbacks = async (
   params: RetrieverParamsDtoType,
   userId?: string,
   role: "Admin" | "User" = "User",

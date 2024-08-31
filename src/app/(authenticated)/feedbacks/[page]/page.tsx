@@ -3,14 +3,6 @@ import FeedbackCard from "@/components/ui/feedback-card";
 import { getAllFeedbacksAction } from "@/server/actions/get-all-feedbacks";
 import { redirect } from "next/navigation";
 import { movesDict, subMoveDict } from "@/common/moves";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationEllipsis,
-  PaginationItem,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/components/ui/pagination";
 import { getNextPage, getPrevPage } from "@/common/getPage";
 import { auth } from "@/lib/auth";
 import { MasonryGrid } from "../_partials/MasonryGrid";

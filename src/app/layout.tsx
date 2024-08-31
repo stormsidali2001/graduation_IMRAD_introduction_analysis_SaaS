@@ -8,6 +8,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { SessionProvider } from "next-auth/react";
 import { auth } from "@/lib/auth";
 import { cn } from "@/lib/utils";
+import { eurekaClient } from "@/lib/eureka-client";
 
 const inter = Inter({ subsets: ["cyrillic"] });
 

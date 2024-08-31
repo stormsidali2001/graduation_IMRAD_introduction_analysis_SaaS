@@ -10,6 +10,12 @@ import { UserDtoType } from "@/server/validation/UserDto";
 import { motion } from "framer-motion";
 import React from "react";
 import { MasonryGrid } from "./MasonryGrid";
+import { Button } from "@/components/ui/button";
+import { Download } from "lucide-react";
+import { useAction } from "next-safe-action/hooks";
+import { downloadFeedbackAction } from "@/server/actions/download-feedback";
+import { useToast } from "@/components/ui/use-toast";
+import { downloadFile } from "@/lib/utils";
 
 export const Feedbacks = ({
   user,
@@ -22,6 +28,30 @@ export const Feedbacks = ({
   previousPage: string;
   nextPage: string;
 }) => {
+  const { executeAsync } = useAction(downloadFeedbackAction);
+  const { toast } = useToast();
+
+  const handleDownload = async () => {
+    // Implement download logic here
+
+    console.log("Downloading feedbacks...");
+    const res = await executeAsync({});
+    if (res.serverError) {
+      toast({
+        variant: "destructive",
+        title: "Error :(",
+        description: res.serverError,
+      });
+      return;
+    }
+
+    downloadFile(res.data, "feedbacks.json");
+    toast({
+      title: "Success!",
+      description: "Feedbacks downloaded successfully.",
+    });
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -51,6 +81,19 @@ export const Feedbacks = ({
             ) : null}{" "}
             Explore and learn from your submitted feedbacks.
           </p>
+          {user.role === "Admin" && (
+            <motion.div
+              initial={{ y: 20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ delay: 0.4, duration: 0.5 }}
+              className="mt-6"
+            >
+              <Button onClick={handleDownload} variant="outline">
+                <Download className="mr-2 h-4 w-4" />
+                Download Feedbacks
+              </Button>
+            </motion.div>
+          )}
         </motion.div>
 
         <div className="space-y-8">

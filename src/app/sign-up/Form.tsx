@@ -31,6 +31,7 @@ import {
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
+import { useToast } from "@/components/ui/use-toast";
 
 const containerVariants = {
   hidden: { opacity: 0, y: -50 },
@@ -73,15 +74,29 @@ export default function FormWrapper() {
   const { executeAsync, isExecuting, hasErrored, hasSucceeded, result, reset } =
     useAction(registerUserAction);
   const router = useRouter();
+  const { toast } = useToast();
 
   const onSubmit = async (data: RegisterUserInput) => {
     if (isExecuting) return;
-    await executeAsync(data);
+    const res = await executeAsync(data);
+    if (res.serverError) {
+      toast({
+        variant: "destructive",
+        title: "Error :(",
+        description: res.serverError,
+      });
+      return;
+    }
     form.reset({
       name: "",
       email: "",
       password: "",
       passwordConfirmation: "",
+    });
+
+    toast({
+      title: "Success!",
+      description: "Registration successful!",
     });
     router.push("/verify-email");
   };
