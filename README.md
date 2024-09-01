@@ -1,5 +1,5 @@
 
-# IMRaD Introduction Analysis Platform (Next.js Microservice)
+# IMRaD Introduction Analysis Micro Saas Platform (Nextjs, Express.js , Fastapi, Tensorflow/serving, Gemini Api...)
 
 This repository contains the Next.js-based frontend and API for a Micro SaaS platform designed to analyze the introductions of scientific research papers based on the IMRaD (Introduction, Methods, Results, and Discussion) structure.
 
@@ -116,9 +116,6 @@ The trained TensorFlow models are published on Hugging Face:
 ![Verify Email (Success)](./app_screens/verify_email_page_2.png)
 ![Dashboard Error Page](./app_screens/dashboard_error_page.png)
 ![General Error Page](./app_screens/error_page.png)
-## Getting Started
-
-[Provide instructions on how to set up and run the project locally. Include prerequisites, installation steps, and how to start the different microservices.] 
 
 ## Contributing
 
@@ -126,14 +123,7 @@ Contributions are welcome!
 
 ## License 
 
-[Specify your project's license]
+Mit
 
 
-**Key Features:**
 
-* **Appealing:** The README uses clear headings, concise descriptions, and links for easy navigation.
-* **Complete:**  Includes references to all datasets, trained models, microservice repositories, and important directories. 
-* **Informative:** Provides an overview of the project, architecture, and key components.
-* **Actionable:**  Includes a "Getting Started" section to guide users on how to run the project. 
-
-Remember to customize the placeholders (like "[Provide instructions...]") with your specific information.  
