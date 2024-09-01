@@ -1,67 +1,111 @@
+# IMRaD Introduction Analysis Micro SaaS Platform 
 
-# IMRaD Introduction Analysis Micro Saas Platform (Nextjs, Express.js , Fastapi, Tensorflow/serving, Gemini Api...)
+This repository contains the core components for a microservices-based SaaS platform designed to help researchers and students analyze and improve the introductions of their scientific research papers. The platform leverages cutting-edge AI models to automatically identify and classify sentences according to their IMRaD (Introduction, Methods, Results, and Discussion) moves and sub-moves.
 
-This repository contains the Next.js-based frontend and API for a Micro SaaS platform designed to analyze the introductions of scientific research papers based on the IMRaD (Introduction, Methods, Results, and Discussion) structure.
+## Understanding IMRaD
 
-## Project Overview
+The IMRaD structure is a widely accepted standard for organizing scientific papers, ensuring clarity and a logical flow of information. The introduction section, in particular, is crucial for:
 
-The platform uses state-of-the-art AI models to automatically classify sentences in introductions into their corresponding IMRaD moves and sub-moves. It provides:
+* **Establishing a Research Territory:** Setting the context and background of the research.
+* **Establishing a Niche:** Identifying a gap or problem in existing research.
+* **Occupying the Niche:**  Outlining the study's purpose and proposed solution. 
 
-* **Automated Analysis:**  Accurately identify and categorize sentences within research paper introductions.
-* **Visual Feedback:** Highlight sentences and label them with their predicted moves and sub-moves.
-* **Premium Features:**  Offer advanced features like summarization and author thought process analysis for paid subscribers. 
-* **User-Friendly Interface:**  Provide an easy-to-use web interface for researchers, students, and educators to analyze introductions and improve their scientific writing. 
+## Platform Features
+
+* **Automated IMRaD Analysis:**  Our AI models automatically analyze introductions, identifying the IMRaD moves and sub-moves present in each sentence. 
+* **Visualized Results:** The platform provides an intuitive visual representation of the analysis results. Each sentence is highlighted and labeled according to its IMRaD classification. 
+* **Detailed Feedback:** Users can provide feedback on the AI's predictions, helping to improve the accuracy of the models over time. 
+* **Premium Features:** Paid subscribers gain access to advanced features, including:
+    * **Summarization:**  Generate concise summaries of analyzed introductions.
+    * **Thought Process:** Explore a hypothetical representation of the author's thought process behind the introduction.
+* **User-Friendly Interface:** The platform's web interface is designed for ease of use and accessibility, catering to researchers, students, and educators.
 
 ## Microservice Architecture
 
-The platform is built using a microservice architecture for scalability and maintainability. This repository is the main microservice, responsible for the frontend user interface, user authentication, API endpoints, and orchestration of other microservices.
+We've implemented a microservice architecture to ensure scalability, flexibility, and maintainability. The platform consists of the following interconnected microservices:
 
-**Other Microservices:**
+* **Next.js Frontend:** This repository hosts the Next.js application, responsible for user interface, user interactions, and presentation of results.  
+* **Next.js API:**  The backend API, built with Next.js, handles user authentication, authorization, API endpoints, aggregation of results, subscription management, and interaction with databases.
+* **PDF Extractor:** A FastAPI (Python) microservice for extracting introduction text from PDF documents.
+* **TensorFlow Serving:**  A Dockerized service for high-performance serving of the AI models. 
+* **Moves & Submoves AI Models:** Another FastAPI (Python) microservice that handles interactions with the AI models for predictions, summarization, and thought process generation. This service utilizes the Gemini API for advanced natural language processing. 
+* **User Data Microservice:** Built with Express.js, this service stores user data, including analyzed introductions, predictions, summaries, feedback, and manages the feedback system. It uses a MongoDB database for storage. 
 
-* **User Data Microservice:**  [https://github.com/stormsidali2001/imrad_introduction_moves_sub_moves_express_user_data](https://github.com/stormsidali2001/imrad_introduction_moves_sub_moves_express_user_data)
-    * Built with Express.js and TypeScript.
-    * Stores user data, analyzed introductions, predictions, summaries, and user feedback. 
-    * Manages the feedback system. 
-
-* **AI Models and PDF Extractor Microservices:**  [https://github.com/stormsidali2001/imrad_intros_moves_submoves_python_microservices](https://github.com/stormsidali2001/imrad_intros_moves_submoves_python_microservices)
-    * **AI Models Microservice:**
-        * Built with FastAPI (Python).
-        * Handles interaction with the AI models, predictions, summarization, and thought process generation.
-    * **PDF Extractor Microservice:**
-        * Built with FastAPI (Python).
-        * Extracts introductions from PDF research papers. 
-
-**Additional Components:**
-
-* **TensorFlow Serving:** Deployed using Docker, serves the AI models for prediction. (Docker Compose configuration is in the AI Models Microservice repository).
-* **Redis:**  Used as a message broker for asynchronous communication between microservices.
+**Communication:** The services communicate using HTTP/REST and asynchronous messaging through Redis, a message broker. 
 
 ## Datasets
 
-The AI models in this platform are trained on a unique dataset of over 169,000 sentences. This dataset was generated using Google's Gemini Pro model and a custom-designed pipeline applied to a set of randomly selected introductions from the **unarXive IMRaD Classification Dataset (Hugging Face):** [https://huggingface.co/datasets/saier/unarXive_imrad_clf](https://huggingface.co/datasets/saier/unarXive_imrad_clf).
+The heart of this platform is a meticulously crafted dataset used to train the AI models. It consists of over 169,000 sentences, generated through a custom pipeline that utilizes Google's Gemini Pro model and the **unarXive IMRaD Classification Dataset (Hugging Face):** [https://huggingface.co/datasets/saier/unarXive_imrad_clf](https://huggingface.co/datasets/saier/unarXive_imrad_clf).
 
-The pipeline involved the following steps:
+The dataset creation process involved:
 
-1. **Introduction Selection:**  A set of introductions were randomly selected from the unarXive dataset. 
-2. **Sentence Splitting with Gemini Pro:**  Gemini Pro was used to split each selected introduction into individual sentences. 
-3. **Initial Move and Sub-move Prediction (Gemini Pro):** Gemini Pro was used to generate initial predictions for the IMRaD move and sub-move of each sentence. 
-4. **Outlier Detection:** A custom outlier detection pipeline analyzed the initial predictions, identifying and removing sentences with likely incorrect classifications. 
-5. **Data Augmentation with Gemini Pro:** For each IMRaD move label, additional sentences were generated using Gemini Pro, based on the correctly classified sentences remaining after outlier detection.
+1. **Introduction Selection:** A random selection of introductions was taken from the unarXive dataset. 
+2. **Sentence Splitting (Gemini Pro):** The introductions were split into sentences using Gemini Pro. 
+3. **Initial IMRaD Predictions (Gemini Pro):**  Gemini Pro generated initial predictions for the IMRaD move and sub-move of each sentence.
+4. **Outlier Detection:**  A custom pipeline identified and removed sentences with potentially incorrect classifications.
+5. **Data Augmentation (Gemini Pro):** For each IMRaD move, Gemini Pro generated additional sentences, expanding the dataset to over 169,000 accurately labeled sentences.
 
-This process resulted in a final dataset of over 169,000 sentences, meticulously labeled for their respective IMRaD moves and sub-moves.
+You can explore the detailed process of dataset creation in the `/notebooks/v3` directory.
 
-**Dataset Generation Notebooks:**
+## Trained Models
 
-The notebooks used to create this dataset can be found in the `/notebooks` directory of this repository. 
-
-**Trained Models:**
-
-The trained TensorFlow models are published on Hugging Face:
+The fine-tuned TensorFlow models for IMRaD classification are available on Hugging Face:
 
 * **IMRaD Introduction Move Classifier:**  [https://huggingface.co/stormsidali2001/IMRAD_introduction_moves_classifier](https://huggingface.co/stormsidali2001/IMRAD_introduction_moves_classifier) 
 * **IMRaD Introduction Move 0 Sub-move Classifier:** [https://huggingface.co/stormsidali2001/IMRAD-introduction-move-zero-sub-moves-classifier](https://huggingface.co/stormsidali2001/IMRAD-introduction-move-zero-sub-moves-classifier)
 * **IMRaD Introduction Move 1 Sub-move Classifier:** [https://huggingface.co/stormsidali2001/IMRAD-introduction-move-one-sub-moves-classifier](https://huggingface.co/stormsidali2001/IMRAD-introduction-move-one-sub-moves-classifier)
 * **IMRaD Introduction Move 2 Sub-move Classifier:**  [https://huggingface.co/stormsidali2001/IMRAD-introduction-move-two-sub-moves-classifier](https://huggingface.co/stormsidali2001/IMRAD-introduction-move-two-sub-moves-classifier) 
+
+## Application Features and Functionality
+
+The platform is designed to cater to the needs of researchers, students, and educators alike, providing them with valuable insights into the structure of scientific introductions. Here is a breakdown of the platform's core features:
+
+###  Introduction Analysis
+
+At its core, the platform is designed to accurately identify and classify IMRaD moves and sub-moves within scientific introductions. 
+
+- **Upload Research Paper:** Users can conveniently upload research papers in PDF format for analysis. The system automatically extracts the introduction section.
+- **Direct Text Input:** Users can also manually paste or type the introduction text if a PDF is unavailable. 
+- **Sentence-Level Classification:** The platform's powerful AI models, based on the fine-tuned BERT architecture, analyze each sentence in the introduction. 
+- **Visualization of Results:** The analysis results are visually presented with sentences highlighted and clearly labeled according to their predicted IMRaD moves and sub-moves. 
+
+### Feedback System
+
+To ensure ongoing improvement and adaptation to different writing styles and disciplines, the platform incorporates a comprehensive feedback mechanism. 
+
+- **Sentence-Specific Feedback:** Users can provide feedback on each sentence, indicating whether they agree or disagree with the AI's classification. 
+- **Corrections and Rationale:** Users can suggest corrections for misclassified sentences and provide a brief rationale to explain their feedback. 
+- **Feedback Review (Administrators):** Administrators have a dedicated section to review all submitted feedback, providing valuable insights for model training and platform refinement.
+- **Feedback Download (Administrators):**  Administrators can download all submitted feedback data, facilitating offline analysis.
+
+### Subscription Model and Premium Features
+
+To support further development and provide enhanced capabilities, the platform implements a subscription-based model, offering premium features to paid users.
+
+- **Premium Plans:**  Users can choose from various subscription plans tailored to different needs and usage levels. 
+- **Stripe Integration:** The platform leverages Stripe, a secure and robust payment gateway, to handle subscriptions, payments, and billing.
+- **Premium Features:**  Premium users unlock access to additional powerful tools:
+    - **Introduction Summarization:**  Generate automated, concise summaries that capture the key points of the analyzed introduction. 
+    - **Author Thought Process:**  Explore a hypothetical representation of the author's thought process based on the detected IMRaD moves, providing unique insights into the underlying logic of the introduction. 
+
+### Account Management
+
+The platform provides standard functionalities for user account management, ensuring a secure and personalized experience. 
+
+- **User Registration:**  New users can easily create an account by providing their name, email, and password.
+- **Login:**  Registered users can securely log in to access their personalized data and features.
+- **Profile Management:** Users can manage their profile settings, including updating their information and changing their password.
+- **Email Verification:**  To maintain account security and data integrity, the platform requires email verification during registration. 
+- **Password Reset:** A streamlined password reset process is provided for users who forget their password. 
+
+### Administrative Functionalities
+
+For efficient management and oversight, the platform offers dedicated features for administrators.
+
+- **User Management:** Administrators have control over user accounts, allowing them to view user lists, edit user details, manage roles (normal user or administrator), and ban or unban users. 
+- **Subscription Management:** Administrators can view detailed information about all subscriptions, including plan details and payment statuses. 
+- **Feedback Review:**  Administrators have a dedicated interface to review and analyze all user feedback.  This feedback helps identify patterns, prioritize improvements, and assess model performance.
+- **Platform Statistics:** Administrators can access comprehensive platform usage statistics, providing insights into user engagement, popular features, and overall performance. 
 
 ## Repository Structure
 
@@ -70,7 +114,6 @@ The trained TensorFlow models are published on Hugging Face:
 * `/nginx`:  Includes the Docker Compose configuration and Nginx configuration files for the API Gateway. 
 * `/notebooks`: Contains the Jupyter notebooks used for data analysis, model training, and experimentation. 
 * `/images`: Contains screenshots of the application interface.
-
 
 **App Screens:**
 
@@ -117,6 +160,12 @@ The trained TensorFlow models are published on Hugging Face:
 ![Dashboard Error Page](./app_screens/dashboard_error_page.png)
 ![General Error Page](./app_screens/error_page.png)
 
+
+
+## Getting Started
+
+[Provide instructions on how to set up and run the project locally. Include prerequisites, installation steps, and how to start the different microservices.] 
+
 ## Contributing
 
 Contributions are welcome! 
@@ -124,6 +173,3 @@ Contributions are welcome!
 ## License 
 
 Mit
-
-
-
