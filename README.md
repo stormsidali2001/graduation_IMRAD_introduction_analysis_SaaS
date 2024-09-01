@@ -71,9 +71,6 @@ The trained TensorFlow models are published on Hugging Face:
 * `/notebooks`: Contains the Jupyter notebooks used for data analysis, model training, and experimentation. 
 * `/images`: Contains screenshots of the application interface.
 
-## Repository Structure 
-
-[ ... existing Repository Structure content ... ] 
 
 **App Screens:**
 
