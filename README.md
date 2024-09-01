@@ -121,8 +121,8 @@ For efficient management and oversight, the platform offers dedicated features f
 
 ## Repository Structure
 
-* `/api`: Contains the Next.js API server code.
-* `/frontend`: Contains the Next.js frontend code.
+* `/src/app/api`: Contains the Next.js API server code.
+* `src/app/**`: Contains the Next.js frontend code.
 * `/nginx`:  Includes the Docker Compose configuration and Nginx configuration files for the API Gateway. 
 * `/notebooks`: Contains the Jupyter notebooks used for data analysis, model training, and experimentation. 
 * `/images`: Contains screenshots of the application interface.
@@ -130,48 +130,78 @@ For efficient management and oversight, the platform offers dedicated features f
 
 **App Screens:**
 
-### Admin Section
+### Admin Dashboard
 
 ![Admin Dashboard](./app_screens/admin_dashboard_page.png)
-![Admin Subscriptions](./app_screens/admin_subscriptions_page.png)
-![Admin Users](./app_screens/admin_users_page.png)
+
+### Admin Users Section
+
+![Admin Users](./app_screens/admin_users_page.png) 
+
+### Admin Subscription Section
+
+![Admin Subscriptions](./app_screens/admin_subscriptions_page.png) 
+
+### Admin Feedback Section
+
 ![Admin Download Feedback](./app_screens/download_all_plateform_feedbacks_admin.png) 
-
-### User Section 
-
-![Introduction Details (Normal User)](./app_screens/app_screens_introduction_details_normal_user.png)
-![Introduction Details (Premium User)](./app_screens/app_screens_introduction_details_premium_user.png)
-![Billing Portal 1](./app_screens/billing_portal_1.png)
-![Billing Portal 2](./app_screens/billing_portal_2.png)
 ![Feedbacks](./app_screens/feedbacks_state_1.png)
-![Submit Feedback (Like)](./app_screens/submit_feedback_like.png)
-![Submit Feedback (Dislike)](./app_screens/submit_feedback_dislike.png) 
-![Plans](./app_screens/upgrade_plan_screens_1.png)
-![Stripe Checkout](./app_screens/upgrade_plan_screens_2_stripe_checkout.png)
-![Premium User](./app_screens/upgrade_plan_screens_3_premium_user.png)
 
-### Public Pages 
+### Generate Page
 
-![Forgot Password Form](./app_screens/forgot_password_state_1.png)
-![Forgot Password Success](./app_screens/forgot_password_state_2.png)
 ![Generate (Initial State)](./app_screens/generate_state_1.png)
 ![Generate (Introduction Input)](./app_screens/generate_state_2.png)
 ![Generate (Sentence List)](./app_screens/generate_state_3.png)
 ![Generate (Loading)](./app_screens/generate_state_4_loading.png)
 ![Generate (Analysis Results)](./app_screens/generate_state_5.png)
+
+### Introductions Page 
+
 ![Introductions List](./app_screens/introductions_page.png)
-![Loading Page](./app_screens/loading_page.png)
+
+### Introduction Details Page 
+
+![Introduction Details (Normal User)](./app_screens/app_screens_introduction_details_normal_user.png)
+![Introduction Details (Premium User)](./app_screens/app_screens_introduction_details_premium_user.png)
+
+### Feedback Page
+
+![Submit Feedback (Like)](./app_screens/submit_feedback_like.png)
+![Submit Feedback (Dislike)](./app_screens/submit_feedback_dislike.png) 
+
+### Plans Page
+
+![Plans](./app_screens/upgrade_plan_screens_1.png)
+
+### Stripe Chekout Page
+
+![Stripe Checkout](./app_screens/upgrade_plan_screens_2_stripe_checkout.png)
+
+### Premium User Page 
+
+![Premium User](./app_screens/upgrade_plan_screens_3_premium_user.png)
+
+### User Authentification
+
+![Forgot Password Form](./app_screens/forgot_password_state_1.png)
+![Forgot Password Success](./app_screens/forgot_password_state_2.png)
 ![Login](./app_screens/login.png)
 ![Reset Password Form](./app_screens/reset_password_callback_page_state_1.png)
 ![Reset Password Success](./app_screens/reset_password_callback_page_state_2.png)
-![Settings Part 1](./app_screens/settings_1.png)
-![Settings Part 2](./app_screens/settings_2.png)
 ![Registration Form](./app_screens/sign_up_state_1.png)
 ![Registration Form (State 2)](./app_screens/sign_up_state_2.png)
 ![Verify Email (Pending)](./app_screens/verify_email_page_1.png)
 ![Verify Email (Success)](./app_screens/verify_email_page_2.png)
+
+### General Pages
+
+![Billing Portal 1](./app_screens/billing_portal_1.png)
+![Billing Portal 2](./app_screens/billing_portal_2.png)
+![Loading Page](./app_screens/loading_page.png)
+![Settings Part 1](./app_screens/settings_1.png)
+![Settings Part 2](./app_screens/settings_2.png)
 ![Dashboard Error Page](./app_screens/dashboard_error_page.png)
-![General Error Page](./app_screens/error_page.png)
+
 
 
 
