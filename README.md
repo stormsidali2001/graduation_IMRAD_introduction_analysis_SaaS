@@ -177,7 +177,7 @@ For efficient management and oversight, the platform offers dedicated features f
 
 ## Getting Started
 
-[Provide instructions on how to set up and run the project locally. Include prerequisites, installation steps, and how to start the different microservices.] 
+I will be filling this section when i get some time.
 
 ## Contributing
 
