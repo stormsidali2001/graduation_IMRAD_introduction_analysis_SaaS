@@ -1,6 +1,6 @@
 # IMRaD Introduction Analysis Micro SaaS Platform 
 
-This repository contains the core components for a microservices-based SaaS platform designed to help researchers and students analyze and improve the introductions of their scientific research papers. The platform leverages cutting-edge AI models to automatically identify and classify sentences according to their IMRaD (Introduction, Methods, Results, and Discussion) moves and sub-moves.
+This repository contains the complete Next.js application (both frontend and API) for a Micro SaaS platform designed to help researchers and students analyze and improve the introductions of their scientific research papers. The platform leverages cutting-edge AI models to automatically identify and classify sentences according to their IMRaD (Introduction, Methods, Results, and Discussion) moves and sub-moves.
 
 ## Understanding IMRaD
 
@@ -22,16 +22,28 @@ The IMRaD structure is a widely accepted standard for organizing scientific pape
 
 ## Microservice Architecture
 
-We've implemented a microservice architecture to ensure scalability, flexibility, and maintainability. The platform consists of the following interconnected microservices:
+We've implemented a microservice architecture to ensure scalability, flexibility, and maintainability.  While this repository contains the complete Next.js application (both frontend and API), the platform interacts with several other microservices:
 
-* **Next.js Frontend:** This repository hosts the Next.js application, responsible for user interface, user interactions, and presentation of results.  
-* **Next.js API:**  The backend API, built with Next.js, handles user authentication, authorization, API endpoints, aggregation of results, subscription management, and interaction with databases.
-* **PDF Extractor:** A FastAPI (Python) microservice for extracting introduction text from PDF documents.
-* **TensorFlow Serving:**  A Dockerized service for high-performance serving of the AI models. 
-* **Moves & Submoves AI Models:** Another FastAPI (Python) microservice that handles interactions with the AI models for predictions, summarization, and thought process generation. This service utilizes the Gemini API for advanced natural language processing. 
-* **User Data Microservice:** Built with Express.js, this service stores user data, including analyzed introductions, predictions, summaries, feedback, and manages the feedback system. It uses a MongoDB database for storage. 
+**Other Microservice Repositories:**
 
-**Communication:** The services communicate using HTTP/REST and asynchronous messaging through Redis, a message broker. 
+* **User Data Microservice:**  [https://github.com/stormsidali2001/imrad_introduction_moves_sub_moves_express_user_data](https://github.com/stormsidali2001/imrad_introduction_moves_sub_moves_express_user_data)
+    * Built with Express.js and TypeScript.
+    * Stores user data, analyzed introductions, predictions, summaries, and user feedback. 
+    * Manages the feedback system. 
+
+* **AI Models and PDF Extractor Microservices:**  [https://github.com/stormsidali2001/imrad_intros_moves_submoves_python_microservices](https://github.com/stormsidali2001/imrad_intros_moves_submoves_python_microservices)
+    * This repository contains two separate microservices:
+        * **AI Models Microservice:**
+            * Built with FastAPI (Python).
+            * Handles interaction with the AI models, predictions, summarization, and thought process generation.
+        * **PDF Extractor Microservice:**
+            * Built with FastAPI (Python).
+            * Extracts introductions from PDF research papers. 
+
+**Additional Components:**
+
+* **TensorFlow Serving:** Deployed using Docker, serves the AI models for prediction. (Docker Compose configuration is in the AI Models Microservice repository).
+* **Redis:**  Used as a message broker for asynchronous communication between microservices.
 
 ## Datasets
 
@@ -85,8 +97,8 @@ To support further development and provide enhanced capabilities, the platform i
 - **Premium Plans:**  Users can choose from various subscription plans tailored to different needs and usage levels. 
 - **Stripe Integration:** The platform leverages Stripe, a secure and robust payment gateway, to handle subscriptions, payments, and billing.
 - **Premium Features:**  Premium users unlock access to additional powerful tools:
-    - **Introduction Summarization:**  Generate automated, concise summaries that capture the key points of the analyzed introduction. 
-    - **Author Thought Process:**  Explore a hypothetical representation of the author's thought process based on the detected IMRaD moves, providing unique insights into the underlying logic of the introduction. 
+    * **Introduction Summarization:**  Generate automated, concise summaries that capture the key points of the analyzed introduction. 
+    * **Author Thought Process:**  Explore a hypothetical representation of the author's thought process based on the detected IMRaD moves, providing unique insights into the underlying logic of the introduction. 
 
 ### Account Management
 
@@ -114,6 +126,7 @@ For efficient management and oversight, the platform offers dedicated features f
 * `/nginx`:  Includes the Docker Compose configuration and Nginx configuration files for the API Gateway. 
 * `/notebooks`: Contains the Jupyter notebooks used for data analysis, model training, and experimentation. 
 * `/images`: Contains screenshots of the application interface.
+
 
 **App Screens:**
 
