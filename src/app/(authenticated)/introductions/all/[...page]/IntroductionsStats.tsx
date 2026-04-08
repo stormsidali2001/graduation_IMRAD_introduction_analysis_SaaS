@@ -2,6 +2,7 @@
 
 import React from "react";
 import { motion } from "framer-motion";
+import { fadeInUpVariants } from "@/lib/animation-variants";
 import {
   Card,
   CardHeader,
@@ -21,11 +22,6 @@ export const IntroductionsStats = ({
   totalIntroductions,
   totalIntroductionsByMove,
 }) => {
-  const cardVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0 },
-  };
-
   const statVariants = {
     hidden: { opacity: 0, x: -20 },
     visible: { opacity: 1, x: 0 },
@@ -34,7 +30,7 @@ export const IntroductionsStats = ({
   return (
     <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
       <MotionCard
-        variants={cardVariants}
+        variants={fadeInUpVariants}
         initial="hidden"
         animate="visible"
         transition={{ duration: 0.5 }}
@@ -74,7 +70,7 @@ export const IntroductionsStats = ({
       </MotionCard>
 
       <MotionCard
-        variants={cardVariants}
+        variants={fadeInUpVariants}
         initial="hidden"
         animate="visible"
         transition={{ duration: 0.5, delay: 0.2 }}
@@ -120,7 +116,7 @@ export const IntroductionsStats = ({
       </MotionCard>
 
       <MotionCard
-        variants={cardVariants}
+        variants={fadeInUpVariants}
         initial="hidden"
         animate="visible"
         transition={{ duration: 0.5, delay: 0.4 }}

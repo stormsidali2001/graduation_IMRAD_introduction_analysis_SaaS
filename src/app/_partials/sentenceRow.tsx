@@ -3,7 +3,6 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
-import { PredictionOutputItemDtoType } from "@/server/validation/PredictionDto";
 import {
   ThumbsUp,
   ThumbsDown,
@@ -15,7 +14,12 @@ import { movesDict, subMoveDict } from "@/common/moves";
 import { FeedbackDto } from "@/server/validation/feedbackDto";
 import { motion } from "framer-motion";
 
-interface SentenceRowProps extends PredictionOutputItemDtoType {
+interface SentenceRowProps {
+  sentence: string;
+  move: number | null;
+  subMove: number | null;
+  moveConfidence?: number;
+  subMoveConfidence?: number;
   sentenceNumber: number;
   id?: string;
   introductionId?: string;

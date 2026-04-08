@@ -31,7 +31,7 @@ import {
 } from "@/server/validation/ResetPasswordDto";
 import { useAction } from "next-safe-action/hooks";
 import { ResetPasswordAction } from "@/server/actions/reset-passowrd";
-import { useToast } from "@/components/ui/use-toast";
+import { useActionToast } from "@/hooks/use-action-toast";
 import { useRouter } from "next/navigation";
 
 export default function FormWrapper({ token }: { token: string }) {
@@ -48,30 +48,14 @@ export default function FormWrapper({ token }: { token: string }) {
   });
 
   const router = useRouter();
-  const { toast } = useToast();
+  const { handleError, handleSuccess } = useActionToast();
 
   const onSubmit = async (data: ResetPasswordSchemaType) => {
-    try {
-      const res = await executeAsync(data);
-      if (res.serverError) {
-        toast({
-          variant: "destructive",
-          title: "Error :(",
-          description: res.serverError,
-        });
-        return;
-      }
-
-      console.log("Password reset submitted:", data);
-      toast({
-        title: "Success!",
-        description: "Your password has been reset.",
-      });
-      form.reset();
-      router.push("/login");
-    } catch (error) {
-      console.error("Error submitting form:", error);
-    }
+    const res = await executeAsync(data);
+    if (handleError(res)) return;
+    handleSuccess("Your password has been reset.");
+    form.reset();
+    router.push("/login");
   };
 
   const getPasswordStrength = (password: string) => {

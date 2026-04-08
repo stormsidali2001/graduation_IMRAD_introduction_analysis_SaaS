@@ -35,11 +35,8 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
         { email, password }: { email: string; password: string },
         request,
       ) => {
-        console.log(`--loging with ${email} ${password} `);
-
         try {
           const user = await authenticateWithPasswordUsecase(email, password);
-          console.log("user------", user);
           return user;
         } catch (err) {
           throw new CredentialsSignin(err);
@@ -71,31 +68,16 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
       return url ?? baseUrl;
     },
 
-    async session({ session, user, token }) {
-      console.log("session callback here------------------");
-      // user param is only available if auth strategy is database
-      //@ts-ignore
-      if (token.user.id) {
-        //@ts-ignore
+    async session({ session, token }) {
+      if (token.user?.id) {
         const user = await findUserById(token.user.id);
-
-        //@ts-ignore
         session.user = user;
       }
 
-      console.log("session: ", session);
-      console.log("token", token);
-
       return session;
     },
-    async jwt({ token, user, account, profile, isNewUser }) {
-      console.log("jwt callback here----");
-      console.log("jwt", token);
-      console.log("user", user);
-      console.log("account", account);
-      console.log("profile", profile);
+    async jwt({ token, user }) {
       if (user) {
-        //@ts-ignore
         token.user = {
           id: user.id,
         };

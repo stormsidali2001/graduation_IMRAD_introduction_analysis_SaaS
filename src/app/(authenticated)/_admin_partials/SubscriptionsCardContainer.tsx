@@ -1,6 +1,7 @@
 "use client";
 import React from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { fadeInUpVariants, staggerContainerVariants } from "@/lib/animation-variants";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -16,15 +17,6 @@ import { SubscriptionDtoType } from "@/server/validation/SubscriptionDto";
 const MotionCard = motion(Card);
 const MotionTableRow = motion(TableRow);
 
-const cardVariants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
-};
-
-const tableBodyVariants = {
-  hidden: { opacity: 0 },
-  visible: { opacity: 1, transition: { staggerChildren: 0.1 } },
-};
 
 const rowVariants = {
   hidden: { opacity: 0, x: -20 },
@@ -65,7 +57,7 @@ const SubscriptionsCardContainer = ({ subscriptions }) => {
       className=""
       initial="hidden"
       animate="visible"
-      variants={cardVariants}
+      variants={fadeInUpVariants}
     >
       <CardHeader>
         <CardTitle>Last Subscriptions</CardTitle>
@@ -82,7 +74,7 @@ const SubscriptionsCardContainer = ({ subscriptions }) => {
           </TableHeader>
           <AnimatePresence>
             <motion.tbody
-              variants={tableBodyVariants}
+              variants={staggerContainerVariants}
               initial="hidden"
               animate="visible"
             >

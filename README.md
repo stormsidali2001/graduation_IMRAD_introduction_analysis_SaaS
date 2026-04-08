@@ -207,7 +207,143 @@ For efficient management and oversight, the platform offers dedicated features f
 
 ## Getting Started
 
-I will be filling this section when i get some time.
+To run the complete platform locally, you need to start the microservices in a specific order to ensure that all dependencies (databases, message brokers, and discovery servers) are available when the services start.
+
+### Prerequisites
+
+*   **Docker & Docker Compose:** For running infrastructure (PostgreSQL, MongoDB, Redis, TensorFlow Serving).
+*   **Node.js (v20+):** For the Next.js frontend and Express microservice.
+*   **pnpm:** Recommended package manager for Node.js projects.
+*   **Python (3.10+):** For the AI Model and PDF Extractor microservices.
+*   **Java (JDK 17+) & Maven:** For the Spring Cloud Eureka discovery server.
+
+---
+
+### Step 1: Infrastructure Setup (Docker)
+
+Start the required databases and AI model server using Docker Compose.
+
+1.  **PostgreSQL (Auth & Subscriptions):**
+    ```bash
+    cd graduation_IMRAD_introduction_analysis_SaaS/postgres
+    docker-compose up -d
+    ```
+
+2.  **MongoDB (User Data & Feedback):**
+    ```bash
+    cd imrad_introduction_moves_sub_moves_express_user_data/mongodb
+    docker-compose up -d
+    ```
+
+3.  **Redis (Messaging & Caching):**
+    ```bash
+    cd imrad_introduction_moves_sub_moves_express_user_data/redis
+    docker-compose up -d
+    ```
+
+4.  **TensorFlow Serving (AI Models):**
+    *Note: The default image is optimized for ARM64 (Apple Silicon). If you are on x86, update the image in `docker-compose.yml` to `tensorflow/serving:latest`.*
+    ```bash
+    cd imrad_intros_moves_submoves_python_microservices/tensorflow-models
+    docker-compose up -d
+    ```
+
+---
+
+### Step 2: Service Discovery (Eureka Server)
+
+The Eureka server must be running before any microservices start so they can register themselves.
+
+1.  Navigate to the Eureka server directory:
+    ```bash
+    cd Spring-cloud-eureka-server
+    ```
+2.  Run the server:
+    ```bash
+    ./mvnw spring-boot:run
+    ```
+    *The dashboard will be available at [http://localhost:8761](http://localhost:8761).*
+
+---
+
+### Step 3: Backend Microservices
+
+Once Eureka is up, start the backend services.
+
+1.  **AI Model Moves Service (FastAPI):**
+    ```bash
+    cd imrad_intros_moves_submoves_python_microservices
+    # Create and activate a virtual environment
+    python -m venv .venv
+    source .venv/bin/activate # or .venv\Scripts\activate on Windows
+    pip install -r requirements.txt
+    python moves/main.py
+    ```
+
+2.  **PDF Extractor Service (FastAPI):**
+    ```bash
+    # (In the same virtual environment)
+    python pdf-extractor/main.py
+    ```
+
+3.  **User Data Microservice (Express):**
+    ```bash
+    cd imrad_introduction_moves_sub_moves_express_user_data
+    pnpm install
+    # Ensure .env is configured (copy from example.env if provided)
+    pnpm dev
+    ```
+
+---
+
+### Step 4: Main SaaS Application (Next.js)
+
+Finally, start the main platform.
+
+1.  Navigate to the SaaS application directory:
+    ```bash
+    cd graduation_IMRAD_introduction_analysis_SaaS
+    ```
+2.  Install dependencies:
+    ```bash
+    pnpm install
+    ```
+3.  Set up the database (Prisma):
+    ```bash
+    pnpx prisma generate
+    pnpx prisma db push
+    ```
+4.  Run the development server:
+    ```bash
+    pnpm dev
+    ```
+    *The application will be accessible at [http://localhost:3000](http://localhost:3000).*
+
+---
+
+### Step 5: (Optional) API Gateway
+
+If you wish to access the application through Nginx:
+```bash
+cd graduation_IMRAD_introduction_analysis_SaaS/nginx
+docker-compose up -d
+```
+*The application will then be available at [http://localhost:4000](http://localhost:4000).*
+
+---
+
+### Summary of Ports
+
+| Service | Port | Description |
+| :--- | :--- | :--- |
+| Eureka Server | 8761 | Service Discovery |
+| Next.js App | 3000 | Frontend & Auth API |
+| User Data Service | 8011 | Express API (User Data) |
+| AI Model Service | 8000 | FastAPI (Predictions & Summary) |
+| PDF Extractor | 8010 | FastAPI (PDF Processing) |
+| TF Serving | 8501 | TensorFlow Model API |
+| Nginx Gateway | 4000 | Optional Reverse Proxy |
+
 
 ## Contributing
 

@@ -1,4 +1,4 @@
-import { UserAlreadyRegistered } from "@/server/errors";
+import { UserAlreadyRegistered, ServiceUnavailableError, AppError } from "@/server/errors";
 import {
   createSafeActionClient,
   DEFAULT_SERVER_ERROR_MESSAGE,
@@ -22,6 +22,12 @@ export const actionClient = createSafeActionClient({
     if (e instanceof ActionError) {
       return e.message;
     }
+    if (e instanceof ServiceUnavailableError) {
+      return e.message;
+    }
+    if (e instanceof AppError) {
+      return e.message;
+    }
 
     return DEFAULT_SERVER_ERROR_MESSAGE;
   },
@@ -30,21 +36,8 @@ export const actionClient = createSafeActionClient({
       actionName: z.string(),
     });
   },
-  // Define logging middleware.
-}).use(async ({ next, clientInput, metadata }) => {
-  console.log("LOGGING MIDDLEWARE ------------------" + new Date().toString());
-
-  // Here we await the action execution.
+}).use(async ({ next }) => {
   const result = await next({ ctx: null });
-
-  console.log("Result ->", JSON.stringify(result, null, 4));
-  console.log("Client input ->", clientInput);
-  console.log("Metadata ->", metadata);
-
-  console.log(
-    "x-LOGGING MIDDLEWARE ------------------" + new Date().toString(),
-  );
-  // And then return the result of the awaited action.
   return result;
 });
 

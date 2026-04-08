@@ -2,6 +2,7 @@
 
 import React from "react";
 import { motion } from "framer-motion";
+import { fadeInUpVariants } from "@/lib/animation-variants";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ActivityIcon, BarChartIcon, MessageCircleIcon } from "lucide-react";
 
@@ -11,12 +12,7 @@ const DashboardMetricsCardsContainer = ({
   total,
   totalFeedbacks,
 }) => {
-  const cardVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0 },
-  };
-
-  const iconVariants = {
+const iconVariants = {
     hidden: { scale: 0 },
     visible: { scale: 1 },
   };
@@ -54,7 +50,7 @@ const DashboardMetricsCardsContainer = ({
       {cards.map((card, index) => (
         <motion.div
           key={card.title}
-          variants={cardVariants}
+          variants={fadeInUpVariants}
           initial="hidden"
           animate="visible"
           transition={{ duration: 0.5, delay: index * 0.1 }}

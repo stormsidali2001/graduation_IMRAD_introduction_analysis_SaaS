@@ -34,13 +34,14 @@ import {
 } from "@/components/ui/dialog";
 import { useAction } from "next-safe-action/hooks";
 import { createSentenceFeedbackAction } from "@/server/actions/createSentenceFeedback";
+import { useActionToast } from "@/hooks/use-action-toast";
 
 interface FeedbackDialogBody {
   isLike: boolean;
   introductionId: string;
   sentenceId: string;
-  defaultMove: number;
-  defaultSubMove: number;
+  defaultMove?: number | null;
+  defaultSubMove?: number | null;
 }
 export default function FeedbackDialogBody({
   isLike = false,
@@ -53,8 +54,8 @@ export default function FeedbackDialogBody({
     resolver: zodResolver(CreateSentenceFeedbackDto),
     defaultValues: {
       feedback: {
-        correctMove: defaultMove,
-        correctSubMove: defaultSubMove,
+        correctMove: defaultMove ?? undefined,
+        correctSubMove: defaultSubMove ?? undefined,
         liked: isLike,
       },
       introductionId,
@@ -62,25 +63,23 @@ export default function FeedbackDialogBody({
     },
   });
   const { executeAsync, status } = useAction(createSentenceFeedbackAction);
+  const { handleError, handleSuccess } = useActionToast();
   const move = useWatch({
     control: form.control,
     name: "feedback.correctMove",
   });
-  console.log(move);
   const subMoves = subMoveDict[move as 0 | 1 | 2];
   const onSubmit = async () => {
     const isValid = await form.trigger();
     if (!isValid) {
-      alert("unvalid");
+      handleError({ serverError: "Please fill in all required fields." });
       return;
     }
     const data = form.getValues();
-    try {
-      const res = await executeAsync(data);
-      form.reset();
-    } catch (err) {
-      alert(JSON.stringify(err));
-    }
+    const res = await executeAsync(data);
+    if (handleError(res)) return;
+    form.reset();
+    handleSuccess("Feedback submitted. Thank you!");
   };
   return (
     <DialogContent className="sm:max-w-[500px]">

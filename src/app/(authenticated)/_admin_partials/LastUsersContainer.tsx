@@ -1,6 +1,7 @@
 "use client";
 import React from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { fadeInUpVariants } from "@/lib/animation-variants";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -16,10 +17,6 @@ import { UserDtoType } from "@/server/validation/UserDto";
 
 const MotionTableRow = motion(TableRow);
 
-const cardVariants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
-};
 
 const countVariants = {
   hidden: { opacity: 0, scale: 0.5 },
@@ -62,7 +59,7 @@ const UserRow = ({
 
 const LastUsersContainer = ({ users }) => {
   return (
-    <motion.div initial="hidden" animate="visible" variants={cardVariants}>
+    <motion.div initial="hidden" animate="visible" variants={fadeInUpVariants}>
       <Card>
         <CardHeader>
           <CardTitle>Total Users</CardTitle>

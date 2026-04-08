@@ -1,3 +1,5 @@
+"use server";
+
 import { normalUserAction } from "@/lib/safe-action";
 import { generateStripeCustomerPortalLink } from "../services/stripe";
 

@@ -14,7 +14,7 @@ import { Button } from "@/components/ui/button";
 import { Download } from "lucide-react";
 import { useAction } from "next-safe-action/hooks";
 import { downloadFeedbackAction } from "@/server/actions/download-feedback";
-import { useToast } from "@/components/ui/use-toast";
+import { useActionToast } from "@/hooks/use-action-toast";
 import { downloadFile } from "@/lib/utils";
 
 export const Feedbacks = ({
@@ -29,27 +29,13 @@ export const Feedbacks = ({
   nextPage: string;
 }) => {
   const { executeAsync } = useAction(downloadFeedbackAction);
-  const { toast } = useToast();
+  const { handleError, handleSuccess } = useActionToast();
 
   const handleDownload = async () => {
-    // Implement download logic here
-
-    console.log("Downloading feedbacks...");
     const res = await executeAsync({});
-    if (res.serverError) {
-      toast({
-        variant: "destructive",
-        title: "Error :(",
-        description: res.serverError,
-      });
-      return;
-    }
-
+    if (handleError(res)) return;
     downloadFile(res.data, "feedbacks.json");
-    toast({
-      title: "Success!",
-      description: "Feedbacks downloaded successfully.",
-    });
+    handleSuccess("Feedbacks downloaded successfully.");
   };
 
   return (

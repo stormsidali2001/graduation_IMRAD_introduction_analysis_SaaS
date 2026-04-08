@@ -31,7 +31,12 @@ import {
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
-import { useToast } from "@/components/ui/use-toast";
+import { useActionToast } from "@/hooks/use-action-toast";
+import {
+  calculatePasswordStrength,
+  STRENGTH_LABELS,
+  STRENGTH_COLORS,
+} from "@/lib/password-strength";
 
 const containerVariants = {
   hidden: { opacity: 0, y: -50 },
@@ -74,30 +79,14 @@ export default function FormWrapper() {
   const { executeAsync, isExecuting, hasErrored, hasSucceeded, result, reset } =
     useAction(registerUserAction);
   const router = useRouter();
-  const { toast } = useToast();
+  const { handleError, handleSuccess } = useActionToast();
 
   const onSubmit = async (data: RegisterUserInput) => {
     if (isExecuting) return;
     const res = await executeAsync(data);
-    if (res.serverError) {
-      toast({
-        variant: "destructive",
-        title: "Error :(",
-        description: res.serverError,
-      });
-      return;
-    }
-    form.reset({
-      name: "",
-      email: "",
-      password: "",
-      passwordConfirmation: "",
-    });
-
-    toast({
-      title: "Success!",
-      description: "Registration successful!",
-    });
+    if (handleError(res)) return;
+    form.reset({ name: "", email: "", password: "", passwordConfirmation: "" });
+    handleSuccess("Registration successful!");
     router.push("/verify-email");
   };
 
@@ -111,29 +100,6 @@ export default function FormWrapper() {
     }
   }, [form.watch("password")]);
 
-  const calculatePasswordStrength = (password: string) => {
-    let strength = 0;
-    if (password.length >= 8) strength += 1;
-    if (password.match(/[a-z]/) && password.match(/[A-Z]/)) strength += 1;
-    if (password.match(/\d/)) strength += 1;
-    if (password.match(/[^a-zA-Z\d]/)) strength += 1;
-    return strength;
-  };
-
-  const getPasswordStrengthColor = () => {
-    switch (passwordStrength) {
-      case 1:
-        return "bg-red-500";
-      case 2:
-        return "bg-yellow-500";
-      case 3:
-        return "bg-blue-500";
-      case 4:
-        return "bg-green-500";
-      default:
-        return "bg-gray-300";
-    }
-  };
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-primary/20 to-background px-4 py-12 sm:px-6 lg:px-8">
@@ -274,16 +240,12 @@ export default function FormWrapper() {
                                 Password strength
                               </span>
                               <span className="text-sm text-muted-foreground">
-                                {passwordStrength === 0 && "Too weak"}
-                                {passwordStrength === 1 && "Weak"}
-                                {passwordStrength === 2 && "Fair"}
-                                {passwordStrength === 3 && "Good"}
-                                {passwordStrength === 4 && "Strong"}
+                                {STRENGTH_LABELS[passwordStrength as keyof typeof STRENGTH_LABELS]}
                               </span>
                             </div>
                             <div className="h-2 w-full bg-gray-200 rounded-full overflow-hidden">
                               <motion.div
-                                className={`h-full ${getPasswordStrengthColor()}`}
+                                className={`h-full ${STRENGTH_COLORS[passwordStrength as keyof typeof STRENGTH_COLORS]}`}
                                 initial={{ width: 0 }}
                                 animate={{ width: `${passwordStrength * 25}%` }}
                                 transition={{ duration: 0.3 }}

@@ -9,7 +9,6 @@ export const banUserAction = adminAction
   .metadata({ actionName: "banUserAction" })
   .action(async ({ parsedInput: { userId } }) => {
     try {
-      console.log("baaaaaaaaan------------------" + userId);
       await banUser(userId);
       revalidatePath("/users");
     } catch (err) {

@@ -1,10 +1,8 @@
-import { eurekaClient } from "@/lib/eureka-client";
+import { callService } from "@/lib/service-client";
 import {
   IntroductionDto,
   IntroductionDtoType,
 } from "../validation/introductionDto";
-import { balance } from "@/lib/server-utils";
-import axios from "axios";
 import { IntroductionStatsDto } from "../validation/introductionStatsDto";
 import { RetrieverParamsDtoType } from "../validation/RetrieverParamsDto";
 import { getPaginatedResults } from "../validation/paginationMakerDto";
@@ -16,62 +14,33 @@ import {
 } from "../validation/feedbackDto";
 import { DashboardStatsDto } from "../validation/DashboardStatsDto";
 
+const SERVICE = "USER-DATA-SERVICE";
+
+type PaginatedResponse = {
+  data: object[];
+  page: number;
+  per_page: number;
+  total: number;
+  total_pages: number;
+};
+
 export const createIntroduction = async (
   introduction: IntroductionDtoType,
   isPremium: boolean = false,
 ) => {
-  const modelsAiInstances =
-    eurekaClient.getInstancesByAppId("USER-DATA-SERVICE");
-  console.log("modelsAiInstances", modelsAiInstances);
-  const selectedInstance = balance(modelsAiInstances);
-  if (!selectedInstance) {
-    console.error("No user-data instance is available");
-    return null;
-  }
-
-  const url =
-    "http://" +
-    "localhost" +
-    `:${selectedInstance.port["$"]}` +
-    "/introductions";
-  console.log("url", url);
-  const res = await axios.post(
-    url,
-    { ...introduction, isPremium },
-
-    {
-      withCredentials: true,
-    },
-  );
+  await callService(SERVICE, "post", "/introductions", {
+    data: { ...introduction, isPremium },
+  });
 };
 
 export const getIntroductionsStats = async (
   userId: string,
   role: "User" | "Admin",
 ) => {
-  const modelsAiInstances =
-    eurekaClient.getInstancesByAppId("USER-DATA-SERVICE");
-  console.log("modelsAiInstances", modelsAiInstances);
-  const selectedInstance = balance(modelsAiInstances);
-  if (!selectedInstance) {
-    console.error("No user-data instance is available");
-    return null;
-  }
-
-  const url =
-    "http://" +
-    "localhost" +
-    `:${selectedInstance.port["$"]}` +
-    "/introductions/stats";
-  console.log("url", url);
-  const res = await axios.get(url, {
-    withCredentials: true,
-    params: {
-      ...(role === "User" ? { userId } : {}),
-    },
+  const data = await callService(SERVICE, "get", "/introductions/stats", {
+    params: { ...(role === "User" ? { userId } : {}) },
   });
-
-  return IntroductionStatsDto.parseAsync(res?.data);
+  return IntroductionStatsDto.parseAsync(data);
 };
 
 export const getIntroductions = async (
@@ -79,230 +48,67 @@ export const getIntroductions = async (
   params: RetrieverParamsDtoType,
   role: "Admin" | "User" = "User",
 ) => {
-  const modelsAiInstances =
-    eurekaClient.getInstancesByAppId("USER-DATA-SERVICE");
-  console.log("modelsAiInstances", modelsAiInstances);
-
-  const selectedInstance = balance(modelsAiInstances);
-  if (!selectedInstance) {
-    console.error("No user-data instance is available");
-    return null;
-  }
-
-  const url =
-    "http://" +
-    "localhost" +
-    `:${selectedInstance.port["$"]}` +
-    "/introductions";
-  console.log("url", url);
-  const res = await axios.get(url, {
-    withCredentials: true,
-    params: {
-      ...params,
-      ...(role === "User" ? { userId } : {}),
-    },
+  const data = await callService<PaginatedResponse>(SERVICE, "get", "/introductions", {
+    params: { ...params, ...(role === "User" ? { userId } : {}) },
   });
-
-  console.log("code451", res.data);
-  return getPaginatedResults(
-    {
-      ...res?.data,
-    },
-    IntroductionDto,
-  );
+  return getPaginatedResults(data, IntroductionDto);
 };
+
 export const getIntroduction = async (
   id: string,
   userId: string,
   role: "Admin" | "User" = "User",
 ) => {
-  const modelsAiInstances =
-    eurekaClient.getInstancesByAppId("USER-DATA-SERVICE");
-  console.log("modelsAiInstances", modelsAiInstances);
-
-  const selectedInstance = balance(modelsAiInstances);
-  if (!selectedInstance) {
-    console.error("No user-data instance is available");
-    return null;
-  }
-
-  const url =
-    "http://" +
-    "localhost" +
-    `:${selectedInstance.port["$"]}` +
-    "/introductions/" +
-    id;
-  console.log("url", url);
-  const res = await axios.get(url, {
-    withCredentials: true,
-    params: {
-      ...(role === "User" ? { userId } : {}),
-    },
+  const data = await callService(SERVICE, "get", `/introductions/${id}`, {
+    params: { ...(role === "User" ? { userId } : {}) },
   });
-  console.log("code451", res.data);
-
-  return IntroductionDto.parseAsync(res?.data);
+  return IntroductionDto.parseAsync(data);
 };
 
 export const createSentenceFeedback = async (
   { feedback, introductionId, sentenceId }: CreateSentenceFeedbackDto,
   userId: string,
 ) => {
-  const modelsAiInstances =
-    eurekaClient.getInstancesByAppId("USER-DATA-SERVICE");
-  console.log("modelsAiInstances", modelsAiInstances);
-
-  const selectedInstance = balance(modelsAiInstances);
-  if (!selectedInstance) {
-    console.error("No user-data instance is available");
-    return null;
-  }
-
-  const url =
-    "http://" +
-    "localhost" +
-    `:${selectedInstance.port["$"]}` +
-    "/introductions/" +
-    introductionId +
-    "/sentences/" +
-    sentenceId +
-    "/feedback/users/" +
-    userId;
-  console.log("url", url);
-  const res = await axios.post(
-    url,
-    { feedback },
-    {
-      withCredentials: true,
-      params: {},
-    },
+  await callService(
+    SERVICE,
+    "post",
+    `/introductions/${introductionId}/sentences/${sentenceId}/feedback/users/${userId}`,
+    { data: { feedback } },
   );
 };
 
 export const getAllAFeedbacks = async () => {
-  try {
-    const modelsAiInstances =
-      eurekaClient.getInstancesByAppId("USER-DATA-SERVICE");
-    console.log("modelsAiInstances", modelsAiInstances);
-
-    const selectedInstance = balance(modelsAiInstances);
-    if (!selectedInstance) {
-      console.error("No user-data instance is available");
-      return null;
-    }
-
-    const url =
-      "http://" +
-      "localhost" +
-      `:${selectedInstance.port["$"]}` +
-      "/introductions/feedbacks/all";
-    console.log("url", url);
-    const res = await axios.get(url, {
-      withCredentials: true,
-    });
-
-    console.log("code451", res.data);
-    const feedbacks = SentenceFeedbacksDto.parse(res?.data);
-    return feedbacks;
-  } catch (err) {
-    console.error("user-data", err);
-    throw new Error("Failed to fetch feedback");
-  }
+  const data = await callService(SERVICE, "get", "/introductions/feedbacks/all");
+  return SentenceFeedbacksDto.parse(data);
 };
+
 export const getFeedbacks = async (
   params: RetrieverParamsDtoType,
   userId?: string,
   role: "Admin" | "User" = "User",
 ) => {
-  const modelsAiInstances =
-    eurekaClient.getInstancesByAppId("USER-DATA-SERVICE");
-  console.log("modelsAiInstances", modelsAiInstances);
-
-  const selectedInstance = balance(modelsAiInstances);
-  if (!selectedInstance) {
-    console.error("No user-data instance is available");
-    return null;
-  }
-
-  const url =
-    "http://" +
-    "localhost" +
-    `:${selectedInstance.port["$"]}` +
-    "/introductions/feedbacks";
-  console.log("url", url);
-  const res = await axios.get(url, {
-    withCredentials: true,
-    params: {
-      ...params,
-      ...(role === "Admin" ? {} : { userId }),
-    },
+  const data = await callService<PaginatedResponse>(SERVICE, "get", "/introductions/feedbacks", {
+    params: { ...params, ...(role === "Admin" ? {} : { userId }) },
   });
-
-  console.log("code451", res.data);
-  return getPaginatedResults(
-    {
-      ...res?.data,
-    },
-    SentenceFeedbackDto,
-  );
+  return getPaginatedResults(data, SentenceFeedbackDto);
 };
 
 export const deleteFeedback = async ({
   introductionId,
   sentenceId,
 }: SentenceFindParamsDtoType) => {
-  const modelsAiInstances =
-    eurekaClient.getInstancesByAppId("USER-DATA-SERVICE");
-  console.log("modelsAiInstances", modelsAiInstances);
-  const selectedInstance = balance(modelsAiInstances);
-  if (!selectedInstance) {
-    console.error("No user-data instance is available");
-    return null;
-  }
-
-  const url =
-    "http://" +
-    "localhost" +
-    `:${selectedInstance.port["$"]}` +
-    "/introductions/" +
-    introductionId +
-    "/sentences/" +
-    sentenceId +
-    "/feedbacks";
-  console.log("url", url);
-  await axios.delete(
-    url,
-
-    {
-      withCredentials: true,
-    },
+  await callService(
+    SERVICE,
+    "delete",
+    `/introductions/${introductionId}/sentences/${sentenceId}/feedbacks`,
   );
 };
 
 export const getDashboardStats = async () => {
-  const modelsAiInstances =
-    eurekaClient.getInstancesByAppId("USER-DATA-SERVICE");
-  console.log("modelsAiInstances", modelsAiInstances);
-  const selectedInstance = balance(modelsAiInstances);
-  if (!selectedInstance) {
-    console.error("No user-data instance is available");
-    return null;
-  }
-
-  const url =
-    "http://" +
-    "localhost" +
-    `:${selectedInstance.port["$"]}` +
-    "/introductions/dashboard/stats";
-
-  console.log("url", url);
-
-  const res = await axios.get(
-    url,
-
-    {
-      withCredentials: true,
-    },
+  const data = await callService(
+    SERVICE,
+    "get",
+    "/introductions/dashboard/stats",
   );
-  return DashboardStatsDto.parseAsync(res?.data);
+  return DashboardStatsDto.parseAsync(data);
 };

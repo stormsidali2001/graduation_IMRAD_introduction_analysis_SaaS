@@ -1,4 +1,5 @@
 import { stripe } from "@/lib/stripe";
+import { AppError } from "@/server/errors";
 
 export const createStripeCustomer = (email: string, name: string) => {
   try {
@@ -21,6 +22,7 @@ export const generateStripeCustomerPortalLink = async (customerId: string) => {
     return session.url;
   } catch (err) {
     console.error(err);
+    throw new AppError("Failed to contact Stripe. Please try again.");
   }
 };
 
@@ -49,6 +51,7 @@ export const generateSubscriptionCheckoutSession = async ({
     return session.url;
   } catch (err) {
     console.error(err);
+    throw new AppError("Failed to contact Stripe. Please try again.");
   }
 };
 

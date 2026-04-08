@@ -1,25 +1,48 @@
 import React from "react";
 import { SentenceRow } from "./_partials/sentenceRow";
 import { ArrowDown } from "lucide-react";
+import { mergeContiguousSentences } from "@/common/groupSentences";
+import type { FeedbackDto } from "@/server/validation/feedbackDto";
 
-export const IntroductionAnalysis = ({ sentences, hideFeedbacks = false }) => (
-  <div className="grid gap-4">
-    {sentences.map((sentence, index) => {
-      return (
-        <>
+interface SentenceItem {
+  sentence: string;
+  move: number | null;
+  subMove: number | null;
+  moveConfidence?: number;
+  subMoveConfidence?: number;
+  sentenceNumber?: number;
+  id?: string;
+  introductionId?: string;
+  feedback?: FeedbackDto;
+}
+
+interface IntroductionAnalysisProps {
+  sentences: SentenceItem[];
+  hideFeedbacks?: boolean;
+}
+
+export const IntroductionAnalysis = ({
+  sentences,
+  hideFeedbacks = false,
+}: IntroductionAnalysisProps) => {
+  const numberedSentences = sentences.map((s: SentenceItem, i: number): SentenceItem & { sentenceNumber: number } => ({ ...s, sentenceNumber: i + 1 }));
+  const merged = mergeContiguousSentences(numberedSentences);
+
+  return (
+    <div className="grid gap-4">
+      {merged.map((sentence, index) => (
+        <React.Fragment key={index}>
           <SentenceRow
-            sentenceNumber={index + 1}
             {...sentence}
-            key={index}
             hideFeedbacks={hideFeedbacks}
           />
-          {index !== sentences.length - 1 && (
+          {index !== merged.length - 1 && (
             <div className="w-full items-center flex justify-center">
               <ArrowDown className="w-6 h-6" />
             </div>
           )}
-        </>
-      );
-    })}
-  </div>
-);
+        </React.Fragment>
+      ))}
+    </div>
+  );
+};

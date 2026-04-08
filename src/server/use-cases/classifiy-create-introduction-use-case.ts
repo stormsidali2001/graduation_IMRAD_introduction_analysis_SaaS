@@ -16,7 +16,7 @@ export const classifyCreateIntroductionUsecase = async ({
     const sha = await hashPassword(sentences.join("."));
 
     const predictions = await makePrediction(sentences);
-    createIntroduction(
+    await createIntroduction(
       {
         sha,
         userId,

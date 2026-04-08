@@ -14,12 +14,17 @@ import { pdfExtractorAction } from "@/server/actions/pdf-extractor";
 import { ArrowDown, FileText, RefreshCw } from "lucide-react";
 import Lottie from "lottie-react";
 import loadingAnimation from "@/assets/loading-lottie.json";
-import { PredictionOutputItemDtoType } from "@/server/validation/PredictionDto";
-import { useToast } from "@/components/ui/use-toast";
+import { useActionToast } from "@/hooks/use-action-toast";
 import ImradMovesSubmovesInfoCard from "@/components/ui/Imrad-moves-sub-moves-card";
 import { motion, AnimatePresence } from "framer-motion";
 
-interface Sentence extends PredictionOutputItemDtoType {}
+interface Sentence {
+  sentence: string;
+  move: number | null;
+  subMove: number | null;
+  moveConfidence?: number;
+  subMoveConfidence?: number;
+}
 
 export const Converter = () => {
   const [sentences, setSentences] = useState<Sentence[]>([]);
@@ -65,16 +70,8 @@ export const Converter = () => {
     const res = await executeAsyncGetMoveSubMove({
       sentences: sentences.map((s) => s.sentence),
     });
-    if (res?.serverError) {
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: res.serverError,
-      });
-      return;
-    }
+    if (handleError(res)) return;
     const predictions = res.data ?? [];
-    console.log(predictions);
     setSentences((sentences) => {
       const transformedSentences = sentences.map((s, index) => {
         return {
@@ -90,7 +87,7 @@ export const Converter = () => {
     });
   };
 
-  const { toast } = useToast();
+  const { handleError } = useActionToast();
 
   return (
     <motion.section
@@ -118,20 +115,13 @@ export const Converter = () => {
             maxFiles={1}
             value={files}
             onValueChange={async (files: any) => {
-              console.log("files", files);
               setFiles(files);
               const formData = new FormData();
               const file = files[0];
               if (!file) return;
               formData.append("file", file);
               const res = await executeAsync(formData);
-              const error = res?.serverError;
-              if (error) {
-                toast({
-                  variant: "destructive",
-                  title: "Error",
-                  description: error,
-                });
+              if (handleError(res)) {
                 setFiles(null);
                 return;
               }

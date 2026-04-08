@@ -1,6 +1,7 @@
 "use client";
 import React from "react";
 import { motion } from "framer-motion";
+import { staggerContainerVariants } from "@/lib/animation-variants";
 
 import {
   Card,
@@ -14,15 +15,6 @@ import UpdatePasswordForm from "../_partials/UpdatePasswordForm";
 
 const MotionCard = motion(Card);
 
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.1,
-    },
-  },
-};
 
 const cardVariants = {
   hidden: { opacity: 0, y: 20 },
@@ -45,7 +37,7 @@ const SettingsWrapper = ({ user }) => {
   return (
     <motion.div
       className="container mx-auto p-4 space-y-6"
-      variants={containerVariants}
+      variants={staggerContainerVariants}
       initial="hidden"
       animate="visible"
     >

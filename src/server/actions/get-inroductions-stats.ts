@@ -1,3 +1,5 @@
+"use server";
+
 import { authActionClient } from "@/lib/safe-action";
 import { getIntroductionsStats } from "../services/user-data";
 

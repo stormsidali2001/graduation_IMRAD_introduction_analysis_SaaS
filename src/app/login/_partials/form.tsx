@@ -17,7 +17,7 @@ import {
   Form as ValidationForm,
 } from "@/components/ui/form";
 import { signIn, useSession } from "next-auth/react";
-import { useToast } from "@/components/ui/use-toast";
+import { useActionToast } from "@/hooks/use-action-toast";
 import { DevTool } from "@hookform/devtools";
 import { useRouter } from "next/navigation";
 import { getUserRedirectUrl } from "@/lib/utils";
@@ -33,30 +33,20 @@ export const Form = () => {
   });
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
-  const { toast } = useToast();
+  const { handleError, handleSuccess } = useActionToast();
   const session = useSession();
 
   const onSubmit = async (data: SigninSchemaType) => {
     setIsLoading(true);
     const res = await signIn("credentials", { ...data, redirect: false });
+    setIsLoading(false);
 
     if (res.error) {
-      toast({
-        variant: "destructive",
-        title: "Error :(",
-        description: "Bad Credentials",
-      });
-
-      setIsLoading(false);
+      handleError({ serverError: "Bad Credentials" });
       return;
     }
 
-    setIsLoading(false);
-    toast({
-      variant: "default",
-      title: "Success!",
-      description: `Signed in successfully`,
-    });
+    handleSuccess("Signed in successfully");
   };
 
   useEffect(() => {

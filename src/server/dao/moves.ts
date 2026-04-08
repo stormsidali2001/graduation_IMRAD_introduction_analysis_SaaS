@@ -32,4 +32,3 @@ export const getMoves = async (sentences) => {
 };
 
 //replace localhost by instance hostname if you're moving to production
-

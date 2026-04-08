@@ -14,8 +14,6 @@ const Page = async ({ params: { id } }) => {
   const res = await getIntroductionAction({ id });
   const introduction = res.data;
 
-  console.log(introduction);
-
   return (
     <div className="w-full max-w-5xl mx-auto px-4 md:px-6 py-12 md:py-20">
       <div className="space-y-8">

@@ -7,6 +7,7 @@
     "seed": "tsx ./src/server/seeders/index.ts",
     "build": "next build",
     "start": "next start",
+    "db:push": "npx prisma db push",
     "lint": "next lint"
   },
   "dependencies": {

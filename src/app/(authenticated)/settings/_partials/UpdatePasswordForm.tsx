@@ -11,7 +11,12 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { useToast } from "@/components/ui/use-toast";
+import { useActionToast } from "@/hooks/use-action-toast";
+import {
+  calculatePasswordStrength,
+  STRENGTH_LABELS,
+  STRENGTH_COLORS,
+} from "@/lib/password-strength";
 import { updatePasswordAction } from "@/server/actions/update-password-action";
 import {
   UpdatePasswordDto,
@@ -30,23 +35,13 @@ export default function UpdatePasswordForm({ user }: { user: UserDtoType }) {
   const form = useForm<UpdatePasswordDtoType>({
     resolver: zodResolver(UpdatePasswordDto),
   });
-  const { toast } = useToast();
+  const { handleError, handleSuccess } = useActionToast();
   const [passwordStrength, setPasswordStrength] = useState(0);
 
   const onSubmit = async (data: UpdatePasswordDtoType) => {
     const res = await executeAsync(data);
-    if (res.serverError) {
-      toast({
-        variant: "destructive",
-        title: "Error :(",
-        description: res.serverError,
-      });
-      return;
-    }
-    toast({
-      title: "Success!",
-      description: "Password updated successfully",
-    });
+    if (handleError(res)) return;
+    handleSuccess("Password updated successfully");
   };
 
   useEffect(() => {
@@ -59,29 +54,6 @@ export default function UpdatePasswordForm({ user }: { user: UserDtoType }) {
     }
   }, [form.watch("newPassword")]);
 
-  const calculatePasswordStrength = (password: string) => {
-    let strength = 0;
-    if (password.length >= 8) strength += 1;
-    if (password.match(/[a-z]/) && password.match(/[A-Z]/)) strength += 1;
-    if (password.match(/\d/)) strength += 1;
-    if (password.match(/[^a-zA-Z\d]/)) strength += 1;
-    return strength;
-  };
-
-  const getPasswordStrengthColor = () => {
-    switch (passwordStrength) {
-      case 1:
-        return "bg-red-500";
-      case 2:
-        return "bg-yellow-500";
-      case 3:
-        return "bg-blue-500";
-      case 4:
-        return "bg-green-500";
-      default:
-        return "bg-gray-300";
-    }
-  };
 
   return (
     <Form {...form}>
@@ -122,16 +94,12 @@ export default function UpdatePasswordForm({ user }: { user: UserDtoType }) {
                       Password strength
                     </span>
                     <span className="text-sm text-muted-foreground">
-                      {passwordStrength === 0 && "Too weak"}
-                      {passwordStrength === 1 && "Weak"}
-                      {passwordStrength === 2 && "Fair"}
-                      {passwordStrength === 3 && "Good"}
-                      {passwordStrength === 4 && "Strong"}
+                      {STRENGTH_LABELS[passwordStrength as keyof typeof STRENGTH_LABELS]}
                     </span>
                   </div>
                   <div className="h-2 w-full bg-gray-200 rounded-full overflow-hidden">
                     <motion.div
-                      className={`h-full ${getPasswordStrengthColor()}`}
+                      className={`h-full ${STRENGTH_COLORS[passwordStrength as keyof typeof STRENGTH_COLORS]}`}
                       initial={{ width: 0 }}
                       animate={{ width: `${passwordStrength * 25}%` }}
                       transition={{ duration: 0.3 }}
