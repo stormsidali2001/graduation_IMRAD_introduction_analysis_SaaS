@@ -10,6 +10,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { AlertCircle } from "lucide-react";
+import type { UserDtoType } from "@/server/validation/UserDto";
 import UpdateNameForm from "../_partials/UpdateNameForm";
 import UpdatePasswordForm from "../_partials/UpdatePasswordForm";
 
@@ -33,7 +34,7 @@ const cardVariants = {
   },
 };
 
-const SettingsWrapper = ({ user }) => {
+const SettingsWrapper = ({ user }: { user: UserDtoType }) => {
   return (
     <motion.div
       className="container mx-auto p-4 space-y-6"

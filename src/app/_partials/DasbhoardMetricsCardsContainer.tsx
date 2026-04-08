@@ -11,6 +11,11 @@ const DashboardMetricsCardsContainer = ({
   avgSubMoveConfidence,
   total,
   totalFeedbacks,
+}: {
+  avgMoveConfidence?: number;
+  avgSubMoveConfidence?: number;
+  total?: number;
+  totalFeedbacks?: number;
 }) => {
 const iconVariants = {
     hidden: { scale: 0 },

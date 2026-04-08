@@ -72,7 +72,7 @@ const SubscriptionTableRow = ({
   );
 };
 
-const Form = ({ subscriptions }) => {
+const Form = ({ subscriptions }: { subscriptions?: { data?: SubscriptionDtoType[]; page?: number; per_page?: number; total_pages?: number; total?: number } }) => {
   const next = getNextPage({
     page: subscriptions.page,
     total_pages: subscriptions.total_pages,

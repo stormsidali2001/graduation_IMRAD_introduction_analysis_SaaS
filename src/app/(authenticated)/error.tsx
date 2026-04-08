@@ -94,16 +94,15 @@ export default function Error({
                 {error.message ||
                   "An unexpected error occurred. Please try again."}
               </p>
-              <Button
-                onClick={() => reset()}
-                className="w-full"
-                //@ts-ignore
-                whileHover={{ scale: 1.03 }}
-                whileTap={{ scale: 0.97 }}
-              >
-                <RefreshCw className="mr-2 h-4 w-4" />
-                Try Again
-              </Button>
+              <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
+                <Button
+                  onClick={() => reset()}
+                  className="w-full"
+                >
+                  <RefreshCw className="mr-2 h-4 w-4" />
+                  Try Again
+                </Button>
+              </motion.div>
             </motion.div>
           </AnimatePresence>
         </motion.div>

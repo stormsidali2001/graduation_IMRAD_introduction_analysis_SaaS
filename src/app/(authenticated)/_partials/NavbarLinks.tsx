@@ -4,7 +4,9 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React from "react";
 
-const NavbarLinks = ({ links }: { links: any[] }) => {
+type NavLink = { href: string; label: string };
+
+const NavbarLinks = ({ links }: { links: NavLink[] }) => {
   const pathname = usePathname();
   return (
     <>

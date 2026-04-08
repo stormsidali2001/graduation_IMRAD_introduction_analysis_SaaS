@@ -71,7 +71,10 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
     async session({ session, token }) {
       if (token.user?.id) {
         const user = await findUserById(token.user.id);
-        session.user = user;
+        if (user) {
+          // @ts-ignore — PrismaAdapter version conflict (@auth/core@0.34.1 vs 0.28.1)
+          session.user = user;
+        }
       }
 
       return session;

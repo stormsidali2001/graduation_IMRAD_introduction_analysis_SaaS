@@ -13,8 +13,8 @@ export const getSubmoves = async (
   sentences: string[],
   moveIndex: MoveIndex,
 ) => {
-  const modelsAiInstances = eurekaClient.getInstancesByAppId("AI_MODEL_MOVES");
-  console.log("modelsAiInstances", modelsAiInstances);
+  interface EurekaInstance { port: { "$": number }; hostName?: string }
+  const modelsAiInstances = eurekaClient.getInstancesByAppId("AI_MODEL_MOVES") as EurekaInstance[];
   const selectedInstance = balance(modelsAiInstances);
   if (!selectedInstance) {
     console.error("No AI model instance is available");

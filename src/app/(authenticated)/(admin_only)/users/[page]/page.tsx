@@ -12,8 +12,8 @@ import { UserBanAlertDialogBody } from "../../_partials/UserBanAlertDialogBody";
 import { LockOpen } from "lucide-react";
 import Form from "./_partials/form";
 
-export default async function Page({ params: { page } }) {
-  const users = (await getAllUsersAction({ page: page[0] }))?.data;
+export default async function Page({ params: { page } }: { params: { page: string } }) {
+  const users = (await getAllUsersAction({ page: Number(page) }))?.data;
   return <Form users={users} />;
 }
 

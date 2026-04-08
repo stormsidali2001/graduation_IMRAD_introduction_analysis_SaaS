@@ -285,13 +285,11 @@ export default function FormWrapper() {
                     />
                   </motion.div>
 
-                  <motion.div variants={itemVariants}>
+                  <motion.div variants={itemVariants} whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
                     <Button
                       type="submit"
                       className="w-full bg-gradient-to-r from-purple-500 to-indigo-500 hover:from-purple-600 hover:to-indigo-600 text-white"
                       disabled={isExecuting}
-                      whileHover={{ scale: 1.03 }}
-                      whileTap={{ scale: 0.97 }}
                     >
                       {isExecuting ? (
                         <>

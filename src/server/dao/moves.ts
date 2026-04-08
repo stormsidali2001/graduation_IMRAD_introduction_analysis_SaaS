@@ -3,9 +3,10 @@ import { balance } from "@/lib/server-utils";
 import axios from "axios";
 import { AiModelOutputDto } from "../validation/AiModeOutputDto";
 
+interface EurekaInstance { port: { "$": number }; hostName?: string }
+
 export const getMoves = async (sentences) => {
-  const modelsAiInstances = eurekaClient.getInstancesByAppId("AI_MODEL_MOVES");
-  console.log("modelsAiInstances", modelsAiInstances);
+  const modelsAiInstances = eurekaClient.getInstancesByAppId("AI_MODEL_MOVES") as EurekaInstance[];
   const selectedInstance = balance(modelsAiInstances);
   if (!selectedInstance) {
     console.error("No AI model instance is available");

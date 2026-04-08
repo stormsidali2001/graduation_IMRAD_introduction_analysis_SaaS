@@ -3,6 +3,7 @@ import React from "react";
 import { motion } from "framer-motion";
 import { ThumbsDownIcon, ThumbsUpIcon } from "lucide-react";
 import { movesDict, subMoveDict } from "@/common/moves";
+import type { SentenceFeedbackDtoType } from "@/server/validation/feedbackDto";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -23,7 +24,7 @@ interface TableRowProps {
   index: number;
 }
 
-const AnimatedIcon = ({ isLiked }) => {
+const AnimatedIcon = ({ isLiked }: { isLiked: boolean }) => {
   return (
     <motion.div
       initial={{ scale: 0 }}
@@ -79,7 +80,7 @@ const FeedbackRow = ({
   );
 };
 
-const RecentFeedbacksContainer = ({ feedbacks }) => {
+const RecentFeedbacksContainer = ({ feedbacks }: { feedbacks?: { data?: SentenceFeedbackDtoType[] } }) => {
   return (
     <motion.div
       initial={{ opacity: 0, y: 50 }}

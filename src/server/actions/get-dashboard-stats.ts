@@ -1,7 +1,7 @@
 "use action";
 
 import { adminAction, authActionClient } from "@/lib/safe-action";
-import { getAllFeedbacks, getDashboardStats } from "../services/user-data";
+import { getAllAFeedbacks, getDashboardStats } from "../services/user-data";
 import { RetrieverParamsDto } from "../validation/RetrieverParamsDto";
 
 export const getDashboardStatsAction =

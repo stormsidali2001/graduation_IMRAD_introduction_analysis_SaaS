@@ -131,6 +131,16 @@ const Introduction = ({
   );
 };
 
+interface IntroductionsTableProps {
+  data?: IntroductionDtoType[];
+  total?: number;
+  page?: number;
+  per_page?: number;
+  total_pages?: number;
+  nextPage?: string | null;
+  previousPage?: string | null;
+}
+
 export const IntroductionsTable = ({
   data = [],
   total,
@@ -139,7 +149,7 @@ export const IntroductionsTable = ({
   total_pages,
   nextPage,
   previousPage,
-}: any = {}) => (
+}: IntroductionsTableProps = {}) => (
   <motion.div
     initial={{ opacity: 0, y: 20 }}
     animate={{ opacity: 1, y: 0 }}
@@ -205,7 +215,7 @@ export const IntroductionsTable = ({
   </motion.div>
 );
 
-function MoveVerticalIcon(props) {
+function MoveVerticalIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
     <svg
       {...props}

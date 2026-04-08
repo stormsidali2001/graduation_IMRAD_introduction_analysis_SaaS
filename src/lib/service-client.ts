@@ -19,7 +19,8 @@ export async function callService<T = unknown>(
   path: string,
   options?: { data?: unknown; params?: Record<string, unknown> },
 ): Promise<T> {
-  const instances = eurekaClient.getInstancesByAppId(appId);
+  interface EurekaInstance { port: { "$": number }; hostName?: string }
+  const instances = eurekaClient.getInstancesByAppId(appId) as EurekaInstance[];
   const instance = balance(instances);
   if (!instance) throw new ServiceUnavailableError(appId);
 

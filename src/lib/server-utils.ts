@@ -1,18 +1,13 @@
 
   import * as bcrypt from 'bcrypt';
-export function mockClassifier(sentence){
-  return{
-    move:0,
-    sub_move:0.0
-
-  }
+export function mockClassifier(sentence: string): { move: number; sub_move: number } {
+  return { move: 0, sub_move: 0.0 };
 }
-export function randomBalancer(instances){
-  return instances[Math.floor(Math.random()*instances.length)]
-
+export function randomBalancer<T>(instances: T[]): T | undefined {
+  return instances[Math.floor(Math.random() * instances.length)];
 }
-export function balance(instances){
-  return randomBalancer(instances)
+export function balance<T>(instances: T[]): T | undefined {
+  return randomBalancer(instances);
 }
 
 

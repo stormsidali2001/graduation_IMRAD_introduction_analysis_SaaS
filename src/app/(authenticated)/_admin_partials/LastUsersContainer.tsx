@@ -57,7 +57,7 @@ const UserRow = ({
   );
 };
 
-const LastUsersContainer = ({ users }) => {
+const LastUsersContainer = ({ users }: { users?: { total?: number; data?: UserDtoType[] } }) => {
   return (
     <motion.div initial="hidden" animate="visible" variants={fadeInUpVariants}>
       <Card>

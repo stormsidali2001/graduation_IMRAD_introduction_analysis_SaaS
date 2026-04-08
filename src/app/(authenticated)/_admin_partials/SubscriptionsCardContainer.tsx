@@ -51,7 +51,7 @@ const SubscriptionTableRow = (subscription: SubscriptionDtoType) => {
   );
 };
 
-const SubscriptionsCardContainer = ({ subscriptions }) => {
+const SubscriptionsCardContainer = ({ subscriptions }: { subscriptions?: { data?: SubscriptionDtoType[]; total?: number } }) => {
   return (
     <MotionCard
       className=""

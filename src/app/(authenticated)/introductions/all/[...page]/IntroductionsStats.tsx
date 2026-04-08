@@ -14,6 +14,15 @@ import { ParenthesesIcon } from "lucide-react";
 
 const MotionCard = motion(Card);
 
+interface IntroductionsStatsProps {
+  totalIntroductions?: number;
+  totalIntroductionsByMove?: { count?: number; move?: number }[];
+  averageConfidenceScore?: { avgMoveConfidence?: number; avgSubMoveConfidence?: number };
+  averageConfidenceScoreByMove?: { move?: number; avgMoveConfidence?: number }[];
+  averageSentencePositionScore?: { avgOrder?: number };
+  averageSentencePositionScoreByMove?: { move?: number; avgOrder?: number }[];
+}
+
 export const IntroductionsStats = ({
   averageConfidenceScore,
   averageConfidenceScoreByMove,
@@ -21,7 +30,7 @@ export const IntroductionsStats = ({
   averageSentencePositionScoreByMove,
   totalIntroductions,
   totalIntroductionsByMove,
-}) => {
+}: IntroductionsStatsProps) => {
   const statVariants = {
     hidden: { opacity: 0, x: -20 },
     visible: { opacity: 1, x: 0 },

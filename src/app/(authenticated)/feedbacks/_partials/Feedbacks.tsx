@@ -7,6 +7,7 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 import { UserDtoType } from "@/server/validation/UserDto";
+import type { SentenceFeedbackDtoType } from "@/server/validation/feedbackDto";
 import { motion } from "framer-motion";
 import React from "react";
 import { MasonryGrid } from "./MasonryGrid";
@@ -24,7 +25,7 @@ export const Feedbacks = ({
   nextPage,
 }: {
   user: UserDtoType;
-  feedbacks: any;
+  feedbacks?: { total?: number; data?: SentenceFeedbackDtoType[]; page?: number; total_pages?: number };
   previousPage: string;
   nextPage: string;
 }) => {

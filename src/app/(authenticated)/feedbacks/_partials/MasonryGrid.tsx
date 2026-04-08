@@ -3,8 +3,9 @@ import { movesDict, subMoveDict } from "@/common/moves";
 import FeedbackCard from "@/components/ui/feedback-card";
 import { motion } from "framer-motion";
 import { useEffect, useRef } from "react";
+import type { SentenceFeedbackDtoType } from "@/server/validation/feedbackDto";
 
-export const MasonryGrid = ({ feedbacks }) => {
+export const MasonryGrid = ({ feedbacks }: { feedbacks: SentenceFeedbackDtoType[] }) => {
   const gridRef = useRef(null);
 
   useEffect(() => {

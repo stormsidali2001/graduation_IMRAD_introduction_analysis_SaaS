@@ -30,7 +30,7 @@ export const getUserRedirectUrl = (user: UserDtoType) => {
     return "/dashboard";
   } else return "/generate";
 };
-export const downloadFile = (data: any, filename: string) => {
+export const downloadFile = (data: unknown, filename: string) => {
   const blob = new Blob([JSON.stringify(data)], { type: "text/json" });
   const url = URL.createObjectURL(blob);
   const link = document.createElement("a");

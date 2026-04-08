@@ -28,7 +28,7 @@ interface Sentence {
 
 export const Converter = () => {
   const [sentences, setSentences] = useState<Sentence[]>([]);
-  const [files, setFiles] = useState();
+  const [files, setFiles] = useState<File[]>();
   const {
     executeAsync,
     isExecuting,
@@ -114,7 +114,7 @@ export const Converter = () => {
           <FileUploader
             maxFiles={1}
             value={files}
-            onValueChange={async (files: any) => {
+            onValueChange={async (files: File[]) => {
               setFiles(files);
               const formData = new FormData();
               const file = files[0];

@@ -1,8 +1,9 @@
+import React from "react";
 import { auth } from "@/lib/auth";
 import { Navbar } from "./_partials/navbar";
 import { redirect } from "next/navigation";
 
-export default async function Layout({ children }: any) {
+export default async function Layout({ children }: { children: React.ReactNode }) {
   const session = await auth();
   if (!session) {
     redirect("/login");

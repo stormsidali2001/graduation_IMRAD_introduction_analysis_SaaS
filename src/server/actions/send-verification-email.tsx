@@ -14,6 +14,9 @@ export const sendVerificationEmailAction = actionClient
   .action(async ({ parsedInput: { email } }) => {
     const user = await findUserByEmail(email);
     resend.emails.send({
-      react: <ResetPasswordEmail userFirstname={} resetPasswordLink={} />,
+      from: process.env.EMAIL_FROM ?? "",
+      to: email,
+      subject: "Reset your password",
+      react: <ResetPasswordEmail userFirstname={user?.name ?? ""} resetPasswordLink={""} />,
     });
   });

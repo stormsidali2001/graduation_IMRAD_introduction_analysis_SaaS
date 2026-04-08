@@ -36,9 +36,10 @@ const PaginationItem = React.forwardRef<
 PaginationItem.displayName = "PaginationItem"
 
 type PaginationLinkProps = {
-  isActive?: boolean
+  isActive?: boolean;
+  href: string;
 } & Pick<ButtonProps, "size"> &
-  React.ComponentProps<"a">
+  Omit<React.ComponentProps<"a">, "href">
 
 const PaginationLink = ({
   className,
@@ -46,7 +47,6 @@ const PaginationLink = ({
   size = "icon",
   ...props
 }: PaginationLinkProps) => (
-  //@ts-ignore
   <Link
     aria-current={isActive ? "page" : undefined}
     className={cn(

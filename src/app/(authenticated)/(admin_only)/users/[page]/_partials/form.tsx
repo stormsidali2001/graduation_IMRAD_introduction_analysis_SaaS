@@ -68,7 +68,7 @@ const UserTableRow = ({ user }: { user: UserDtoType }) => {
   );
 };
 
-const Form = ({ users }) => {
+const Form = ({ users }: { users?: { data?: UserDtoType[]; page?: number; per_page?: number; total_pages?: number; total?: number } }) => {
   const next = getNextPage({
     page: users.page,
     total_pages: users.total_pages,

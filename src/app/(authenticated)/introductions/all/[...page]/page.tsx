@@ -19,8 +19,6 @@ export default async function Page({
 
   const stats = (await getIntroductionStatsAction({}))?.data ?? {};
 
-  console.log("introductions", introductions);
-
   const next = getNextPage({
     page: introductions.page,
     total_pages: introductions.total_pages,
@@ -47,7 +45,7 @@ export default async function Page({
   );
 }
 
-function FilterIcon(props) {
+function FilterIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
     <svg
       {...props}
@@ -66,7 +64,7 @@ function FilterIcon(props) {
   );
 }
 
-function ListOrderedIcon(props) {
+function ListOrderedIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
     <svg
       {...props}
@@ -90,7 +88,7 @@ function ListOrderedIcon(props) {
   );
 }
 
-function SearchIcon(props) {
+function SearchIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
     <svg
       {...props}

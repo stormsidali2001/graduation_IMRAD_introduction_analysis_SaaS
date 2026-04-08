@@ -195,14 +195,11 @@ export const Form = () => {
                   </Link>
                 </motion.div>
 
-                <motion.div variants={itemVariants}>
+                <motion.div variants={itemVariants} whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
                   <Button
                     type="submit"
                     className="w-full"
                     disabled={isLoading}
-                    //@ts-ignore
-                    whileHover={{ scale: 1.03 }}
-                    whileTap={{ scale: 0.97 }}
                   >
                     {isLoading ? (
                       <>

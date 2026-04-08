@@ -1,7 +1,7 @@
 "use action";
 
 import { adminAction, authActionClient } from "@/lib/safe-action";
-import { getAllFeedbacks } from "../services/user-data";
+import { getAllAFeedbacks } from "../services/user-data";
 import { RetrieverParamsDto } from "../validation/RetrieverParamsDto";
 import { getUsers } from "../services/user-service";
 
