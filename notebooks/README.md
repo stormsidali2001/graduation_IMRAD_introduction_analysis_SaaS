@@ -59,7 +59,7 @@ The most relevant public corpus available is **unarXive** (Saier & Färber), whi
 
 Because of these gaps, we could not simply download a dataset and start training. We had to build one from scratch.
 
-The approach was to use **Gemini Pro** as an automated annotator: feed it introduction sentences from unarXive, and use a carefully engineered prompt to get it to label each sentence with its IMRaD move and sub-move. This is cheaper and faster than hiring domain experts to annotate 150,000+ sentences by hand, and recent research shows that LLMs can produce annotation quality that is competitive with human annotators when the prompt is well-designed.
+The solution was to use **Gemini Pro** as an automated annotator: feed it introduction sentences from unarXive and use a custom prompt to label each sentence with its IMRaD move and sub-move. This is cheaper and faster than hiring domain experts to annotate 150,000+ sentences by hand, and recent work shows that LLMs can produce annotation quality close to human annotators when the prompt is well designed.
 
 The challenge then became: **how good is the annotation, and how do we verify it?** This is the core question that drove the three-phase approach described in this thesis.
 
@@ -153,7 +153,7 @@ notebooks/
 
 ### [1. Gemini V1 Annotation](v1/1.gemini_moves_generation.ipynb)
 
-**File:** `v1/1.gemini_moves_generation.ipynb` · **Thesis:** Chapter 3 §3.1.1
+Thesis: Chapter 3, Section 3.1.1
 
 The unarXive corpus was used as the raw text source: each paper's introduction was extracted and split into sentences. These sentences were then passed one by one to **Gemini Pro** using a minimal prompt that simply listed the three move names and asked the model to pick one:
 
@@ -172,13 +172,13 @@ The corpus was processed in 1,000-row chunks, with results saved incrementally t
 - **Data source:** unarXive introduction sentences (subset)
 - **Prompt type:** V1 - 3 classes, no definitions, no examples, plain text output
 - **Output format:** One move name per sentence, saved as CSV chunks in `/pfe/gemini-results/`
-- **Limitation:** No sub-move granularity. Output was free-form text (e.g., "establishing a niche"), which required post-processing to normalize. The vague prompt led to ambiguous and inconsistent labels.
+- **Limitation:** No sub-move detail. Output was free-form text (e.g., "establishing a niche"), which needed post-processing to normalize. The vague prompt led to ambiguous and inconsistent labels.
 
 ---
 
 ### [2. V1 BERT Training](v1/2.bert_classification_imrad_moves_latest_v8_new_dataset.ipynb)
 
-**File:** `v1/2.bert_classification_imrad_moves_latest_v8_new_dataset.ipynb` · **Thesis:** Chapter 3 §3.1.2 & §3.2
+Thesis: Chapter 3, Section 3.1.2 and 3.2
 
 Fine-tunes `bert-en-uncased-L-12-H-768-A-12` (from TensorFlow Hub) on the V1 annotated data for 3-class move classification.
 
@@ -210,7 +210,7 @@ This poor result is what made the redesign in Phase 2 necessary.
 
 ### [1. Gemini V2 Annotation](v2/1.generate_moves_predictions.ipynb)
 
-**File:** `v2/1.generate_moves_predictions.ipynb` · **Thesis:** Chapter 4 §4.1.2
+Thesis: Chapter 4, Section 4.1.2
 
 The key insight for V2 was that the V1 prompt was too vague. A human expert classifying sentences would not just know the three move names - they would know exactly what each sub-move looks like, with examples. The V2 prompt gave Gemini that context:
 
@@ -227,7 +227,7 @@ The full corpus was re-processed: ~37,000 introductions were sent to the Gemini 
 
 ### [2. Classifier Benchmarking](v2/2.testing_generated_move_predictions.ipynb)
 
-**File:** `v2/2.testing_generated_move_predictions.ipynb` · **Thesis:** Chapter 4 §4.2
+Thesis: Chapter 4, Section 4.2
 
 This notebook aggregates all the JSON chunks from [Gemini V2 Annotation](v2/1.generate_moves_predictions.ipynb) and uses TF-IDF classifiers to measure whether the improved prompt actually produced better-quality labeled data.
 
@@ -260,7 +260,7 @@ Saves the full dataset as `aggregated_data.csv`, consumed by [Outlier Detection]
 
 ### [1. Outlier Detection](v3/1.outlier-detection.ipynb)
 
-**File:** `v3/1.outlier-detection.ipynb` · **Thesis:** Chapter 5 §5.2.1
+Thesis: Chapter 5, Section 5.2.1
 
 The V2 dataset of 148,220 sentences was annotated from full introduction texts, but those texts were not always clean. Some papers included method descriptions, conclusion sentences, or section headers that found their way into what was labeled as "the introduction." These sentences do not belong to any IMRaD introduction move, and training on them would degrade model quality.
 
@@ -278,9 +278,9 @@ Sentences assigned `-1` were flagged as outliers and excluded from training. The
 
 ### [2. Move 0 Generator](v3/2.move-0-generator.ipynb)
 
-**File:** `v3/2.move-0-generator.ipynb` · **Thesis:** Chapter 5 §5.2.2
+Thesis: Chapter 5, Section 5.2.2
 
-After removing outliers, the V2 data still had an uneven sub-move distribution. More importantly, some sub-moves had too few examples to train a robust classifier. To address this, Gemini Pro was used to generate entirely new, synthetic training sentences for each move and sub-move.
+After removing outliers, the V2 data still had an uneven sub-move distribution. Some sub-moves had too few examples to train a reliable classifier. To fix this, Gemini Pro was used to generate new synthetic sentences for each move and sub-move.
 
 This notebook handles **Move 0: Establishing a Research Territory**. The generation prompt listed both sub-moves with definitions and two concrete example sentences each, then asked Gemini to produce 3 new sentences per sub-move per API call (temperature 0.9 for vocabulary variety). Results were deduplicated and saved in chunks.
 
@@ -294,7 +294,7 @@ The key breakthrough compared to earlier generation attempts was including **con
 
 ### [3. Move 1 Generator](v3/3.move-1-generator.ipynb)
 
-**File:** `v3/3.move-1-generator.ipynb` · **Thesis:** Chapter 5 §5.2.2
+Thesis: Chapter 5, Section 5.2.2
 
 Same generation pipeline for **Move 1: Establishing a Niche**, which has four sub-moves and was historically the most difficult to classify correctly (the distinctions between "claim a flaw," "highlight a gap," "raise an unclear question," and "extend prior research" are subtle).
 
@@ -305,7 +305,7 @@ Same generation pipeline for **Move 1: Establishing a Niche**, which has four su
 
 ### [4. Move 2 Generator](v3/4.move-2-generator.ipynb)
 
-**File:** `v3/4.move-2-generator.ipynb` · **Thesis:** Chapter 5 §5.2.2
+Thesis: Chapter 5, Section 5.2.2
 
 Same generation pipeline for **Move 2: Occupying the Niche**. This move has five sub-moves, the least common of which (`2.4` outline structure, `2.2` share findings) are rarely seen in real introductions, which is why synthetic generation was especially important here.
 
@@ -316,7 +316,7 @@ Same generation pipeline for **Move 2: Occupying the Niche**. This move has five
 
 ### [5. Final Dataset Assembly](v3/5.checker.ipynb)
 
-**File:** `v3/5.checker.ipynb` · **Thesis:** Chapter 5 §5.2.3 & §5.3
+Thesis: Chapter 5, Section 5.2.3 and 5.3
 
 This notebook merges all data sources and runs a series of quality checks before BERT fine-tuning begins.
 
@@ -348,7 +348,7 @@ This notebook merges all data sources and runs a series of quality checks before
 
 ### [6. Overall Move Classifier](<v3/6.pfe_training_moves_bert_model_06_26 (1).ipynb>)
 
-**File:** `v3/6.pfe_training_moves_bert_model_06_26 (1).ipynb` · **Thesis:** Chapter 5 §5.3
+Thesis: Chapter 5, Section 5.3
 
 Fine-tunes BERT on the full 169,729-sentence corpus (from [Final Dataset Assembly](v3/5.checker.ipynb)) to classify any sentence into one of three top-level moves. This is **Model 1**, the first model called by the SaaS platform whenever a user submits an introduction.
 
@@ -373,11 +373,11 @@ This model is served via TensorFlow Serving as a standalone microservice in the 
 
 ### [7. Move 0 Sub-move Classifier](v3/7.pfe_training_sub_moves_0_bert_model_07_1.ipynb)
 
-**File:** `v3/7.pfe_training_sub_moves_0_bert_model_07_1.ipynb` · **Thesis:** Chapter 5 §5.3
+Thesis: Chapter 5, Section 5.3
 
 Fine-tunes BERT on the **Move 0 subset** of the corpus for **binary sub-move classification** (`0.0` vs `0.1`). This is **Model 2**, invoked only when the Overall Move Classifier predicts Move 0.
 
-Using a separate specialist model per move (rather than one single model predicting all 11 sub-moves) was a deliberate design choice: each specialist only needs to distinguish 2-5 closely related categories, which is a simpler task that converges faster and achieves higher accuracy.
+Using a separate specialist model per move (rather than one single model predicting all 11 sub-moves) was a specific choice: each model only needs to separate 2-5 closely related categories, which is a simpler task that trains faster and scores higher.
 
 | | |
 |---|---|
@@ -392,9 +392,9 @@ Invoked when [Overall Move Classifier](<v3/6.pfe_training_moves_bert_model_06_26
 
 ### [8. Move 1 Sub-move Classifier](v3/8.pfe_training_sub_moves_1_bert_model_07_1.ipynb)
 
-**File:** `v3/8.pfe_training_sub_moves_1_bert_model_07_1.ipynb` · **Thesis:** Chapter 5 §5.3
+Thesis: Chapter 5, Section 5.3
 
-Fine-tunes BERT on the **Move 1 subset** for **4-class sub-move classification**. This is **Model 3**. Move 1 has the most nuanced sub-moves - the difference between "there is a flaw in prior work" (1.0), "there is a gap" (1.1), "a question is unclear" (1.2), and "more research would be useful" (1.3) is subtle and requires strong contextual understanding.
+Fine-tunes BERT on the **Move 1 subset** for **4-class sub-move classification**. This is **Model 3**. Move 1 has the most closely related sub-moves - the difference between "there is a flaw in prior work" (1.0), "there is a gap" (1.1), "a question is unclear" (1.2), and "more research would be useful" (1.3) is small and requires the model to understand context well.
 
 | | |
 |---|---|
@@ -409,7 +409,7 @@ Invoked when [Overall Move Classifier](<v3/6.pfe_training_moves_bert_model_06_26
 
 ### [9. Move 2 Sub-move Classifier](v3/9.pfe_training_sub_moves_2_bert_model_07_1.ipynb)
 
-**File:** `v3/9.pfe_training_sub_moves_2_bert_model_07_1.ipynb` · **Thesis:** Chapter 5 §5.3
+Thesis: Chapter 5, Section 5.3
 
 Fine-tunes BERT on the **Move 2 subset** for **5-class sub-move classification**. This is **Model 4**. Move 2 achieved the highest sub-move F1 score of the three specialist models, likely because many Move 2 sub-moves have distinctive vocabulary (e.g., "the purpose of this paper" for 2.0, "we hypothesize" for 2.1, "this paper is organized as follows" for 2.4).
 
