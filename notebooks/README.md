@@ -33,6 +33,7 @@ This directory contains all research notebooks for the thesis:
   - [8. Move 1 Sub-move Classifier](#8-move-1-sub-move-classifier)
   - [9. Move 2 Sub-move Classifier](#9-move-2-sub-move-classifier)
 - [Final Model Performance Summary](#final-model-performance-summary)
+- [Model Deployment](#model-deployment)
 
 ---
 
@@ -433,4 +434,45 @@ Invoked when [Overall Move Classifier](<v3/6.pfe_training_moves_bert_model_06_26
 | [Model 3: Move 1](v3/8.pfe_training_sub_moves_1_bert_model_07_1.ipynb) | Move 1 sub-moves | 4 | **0.9455** | Table 5.6 |
 | [Model 4: Move 2](v3/9.pfe_training_sub_moves_2_bert_model_07_1.ipynb) | Move 2 sub-moves | 5 | **0.9591** | Table 5.6 |
 
-All four models are served via **TensorFlow Serving** as independent microservices. A sentence is first routed through Model 1 to identify its move, then passed to the corresponding specialist model for sub-move classification. This cascaded architecture means each model is trained on a focused, well-defined task, which is why even the most difficult case (Move 1, 4-class) reaches 94.55 % F1.
+A sentence is first routed through Model 1 to identify its move, then passed to the matching specialist model for sub-move classification. Having one model per move (rather than one model for all 11 sub-moves) keeps each task simple and focused, which is why even the hardest case (Move 1, 4 classes) reaches 94.55 % F1.
+
+---
+
+## Model Deployment
+
+After training, all four models were exported in the **SavedModel** format and published on Hugging Face:
+
+| Model | Hugging Face |
+|---|---|
+| Model 1: Overall move classifier | [stormsidali2001/IMRAD_introduction_moves_classifier](https://huggingface.co/stormsidali2001/IMRAD_introduction_moves_classifier) |
+| Model 2: Move 0 sub-move classifier | [stormsidali2001/IMRAD-introduction-move-zero-sub-moves-classifier](https://huggingface.co/stormsidali2001/IMRAD-introduction-move-zero-sub-moves-classifier) |
+| Model 3: Move 1 sub-move classifier | [stormsidali2001/IMRAD-introduction-move-one-sub-moves-classifier](https://huggingface.co/stormsidali2001/IMRAD-introduction-move-one-sub-moves-classifier) |
+| Model 4: Move 2 sub-move classifier | [stormsidali2001/IMRAD-introduction-move-two-sub-moves-classifier](https://huggingface.co/stormsidali2001/IMRAD-introduction-move-two-sub-moves-classifier) |
+
+The platform is built as a set of independent microservices. The four models plug into this architecture through two of them:
+
+**TensorFlow Serving** is a dedicated microservice whose only job is to load the four SavedModel files and expose them over HTTP. It is purpose-built for serving TensorFlow models efficiently, handling batching and hardware acceleration without any custom serving code.
+
+**AI Analysis microservice (FastAPI + Python)** sits between the rest of the platform and TensorFlow Serving. It receives an introduction text (either typed by the user or extracted from a PDF by a separate PDF Extractor microservice), splits it into sentences, and runs the two-stage classification: first calls Model 1 (overall move) for each sentence, then calls the right specialist model (2, 3, or 4) based on the result. This microservice also handles the premium features - introduction summarization and author thought-process generation - by calling the Gemini API (Gemini Pro / Gemini Flash).
+
+The full platform is split across three repositories:
+
+**[graduation_IMRAD_introduction_analysis_SaaS](https://github.com/stormsidali2001/graduation_IMRAD_introduction_analysis_SaaS)** - this repo. Contains the Next.js frontend, the Next.js API (auth, subscriptions, Stripe), Nginx config, and the Prisma/PostgreSQL schema.
+
+**[imrad_intros_moves_submoves_python_microservices](https://github.com/stormsidali2001/imrad_intros_moves_submoves_python_microservices)** - contains two Python services and the TensorFlow Serving Docker Compose setup:
+- AI Analysis microservice (FastAPI) - runs the classification pipeline and premium features
+- PDF Extractor microservice (FastAPI) - pulls introduction text from uploaded PDFs
+- `tensorflow-models/` - Docker Compose file that starts TensorFlow Serving with the four SavedModel files mounted
+
+**[imrad_introduction_moves_sub_moves_express_user_data](https://github.com/stormsidali2001/imrad_introduction_moves_sub_moves_express_user_data)** - the Express.js + TypeScript + MongoDB service that stores introduction predictions, summaries, and user feedback. Also contains the Redis and MongoDB Docker Compose files.
+
+| Microservice | Repo | Tech | Role |
+|---|---|---|---|
+| API Gateway | graduation_IMRAD_introduction_analysis_SaaS | Nginx | Entry point, routes requests, SSL, rate limiting |
+| Service Discovery | (Spring Cloud Eureka server) | Spring Boot | Lets microservices find each other at runtime |
+| Frontend + Auth | graduation_IMRAD_introduction_analysis_SaaS | Next.js + PostgreSQL | UI, authentication, subscription management (Stripe) |
+| PDF Extractor | imrad_intros_moves_submoves_python_microservices | FastAPI (Python) | Extracts introduction text from uploaded PDFs |
+| Model Serving | imrad_intros_moves_submoves_python_microservices | TensorFlow Serving | Serves the 4 BERT models over HTTP (port 8501) |
+| AI Analysis | imrad_intros_moves_submoves_python_microservices | FastAPI (Python) | Runs classification pipeline, calls Gemini for premium features |
+| User Data | imrad_introduction_moves_sub_moves_express_user_data | Express.js + MongoDB | Stores predictions, summaries, and user feedback |
+| Message Broker | imrad_introduction_moves_sub_moves_express_user_data | Redis | Async communication between AI Analysis and User Data |
