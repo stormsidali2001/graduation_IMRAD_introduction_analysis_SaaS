@@ -14,21 +14,21 @@ This directory contains all research notebooks for the thesis:
 - [Pipeline Overview](#pipeline-overview)
 - [Directory Structure](#directory-structure)
 - [Phase 1: Baseline](#phase-1-baseline)
-  - [1. Gemini V1 Annotation](#v111gemini_moves_generationipynb)
-  - [2. V1 BERT Training](#v12bert_classification_imrad_moves_latest_v8_new_datasetipynb)
+  - [1. Gemini V1 Annotation](#1-gemini-v1-annotation)
+  - [2. V1 BERT Training](#2-v1-bert-training)
 - [Phase 2: Refinement](#phase-2-refinement)
-  - [1. Gemini V2 Annotation](#v21generate_moves_predictionsipynb)
-  - [2. Classifier Benchmarking](#v22testing_generated_move_predictionsipynb)
+  - [1. Gemini V2 Annotation](#1-gemini-v2-annotation)
+  - [2. Classifier Benchmarking](#2-classifier-benchmarking)
 - [Phase 3: Final Models](#phase-3-final-models)
-  - [1. Outlier Detection](#v31outlier-detectionipynb)
-  - [2. Move 0 Generator](#v32move-0-generatoripynb)
-  - [3. Move 1 Generator](#v33move-1-generatoripynb)
-  - [4. Move 2 Generator](#v34move-2-generatoripynb)
-  - [5. Dataset Assembly](#v35checkeripynb)
-  - [6. Overall Move Classifier](#v36pfe_training_moves_bert_model_06_26-1ipynb)
-  - [7. Move 0 Sub-move Classifier](#v37pfe_training_sub_moves_0_bert_model_07_1ipynb)
-  - [8. Move 1 Sub-move Classifier](#v38pfe_training_sub_moves_1_bert_model_07_1ipynb)
-  - [9. Move 2 Sub-move Classifier](#v39pfe_training_sub_moves_2_bert_model_07_1ipynb)
+  - [1. Outlier Detection](#1-outlier-detection)
+  - [2. Move 0 Generator](#2-move-0-generator)
+  - [3. Move 1 Generator](#3-move-1-generator)
+  - [4. Move 2 Generator](#4-move-2-generator)
+  - [5. Final Dataset Assembly](#5-final-dataset-assembly)
+  - [6. Overall Move Classifier](#6-overall-move-classifier)
+  - [7. Move 0 Sub-move Classifier](#7-move-0-sub-move-classifier)
+  - [8. Move 1 Sub-move Classifier](#8-move-1-sub-move-classifier)
+  - [9. Move 2 Sub-move Classifier](#9-move-2-sub-move-classifier)
 - [Final Model Performance Summary](#final-model-performance-summary)
 
 ---
@@ -100,9 +100,9 @@ notebooks/
 
 ## Phase 1: Baseline
 
-### [v1/1.gemini_moves_generation.ipynb](v1/1.gemini_moves_generation.ipynb)
+### [1. Gemini V1 Annotation](v1/1.gemini_moves_generation.ipynb)
 
-**Thesis:** Chapter 3 · Data Generation
+**File:** `v1/1.gemini_moves_generation.ipynb` · **Thesis:** Chapter 3 · Data Generation
 
 Annotates the 264,799-sentence unarXive introduction corpus using **Gemini Pro** with a minimal 3-class prompt. The corpus is split into 1,000-row chunks; each sentence is classified as one of the three top-level move names. Results are saved to Google Drive as partial CSVs.
 
@@ -112,9 +112,9 @@ Annotates the 264,799-sentence unarXive introduction corpus using **Gemini Pro**
 
 ---
 
-### [v1/2.bert_classification_imrad_moves_latest_v8_new_dataset.ipynb](v1/2.bert_classification_imrad_moves_latest_v8_new_dataset.ipynb)
+### [2. V1 BERT Training](v1/2.bert_classification_imrad_moves_latest_v8_new_dataset.ipynb)
 
-**Thesis:** Chapter 3 · V1 BERT Baseline Training
+**File:** `v1/2.bert_classification_imrad_moves_latest_v8_new_dataset.ipynb` · **Thesis:** Chapter 3 · V1 BERT Baseline Training
 
 Fine-tunes `bert-en-uncased-L-12-H-768-A-12` on the V1 dataset for 3-class move classification.
 
@@ -130,22 +130,22 @@ The model fails to distinguish moves reliably. Root causes: oversimplified promp
 
 ## Phase 2: Refinement
 
-### [v2/1.generate_moves_predictions.ipynb](v2/1.generate_moves_predictions.ipynb)
+### [1. Gemini V2 Annotation](v2/1.generate_moves_predictions.ipynb)
 
-**Thesis:** Chapter 4 · Enhanced Annotation Prompt
+**File:** `v2/1.generate_moves_predictions.ipynb` · **Thesis:** Chapter 4 · Enhanced Annotation Prompt
 
 Re-annotates the full corpus with a **structured V2 prompt** that includes all 11 sub-moves, definitions, and examples. The prompt requests a JSON object with `sentence`, `move`, and `sub_move` per sentence. Saves ~37,000 processed introductions as chunked JSON files (`processed_{index}.json`).
 
 - **Key change from V1:** Sub-move granularity + explicit definitions -> higher label quality
-- **Output:** `processed_*.json` consumed by [v2/2.testing_generated_move_predictions.ipynb](v2/2.testing_generated_move_predictions.ipynb)
+- **Output:** `processed_*.json` consumed by [Classifier Benchmarking](v2/2.testing_generated_move_predictions.ipynb)
 
 ---
 
-### [v2/2.testing_generated_move_predictions.ipynb](v2/2.testing_generated_move_predictions.ipynb)
+### [2. Classifier Benchmarking](v2/2.testing_generated_move_predictions.ipynb)
 
-**Thesis:** Chapter 4 · Classifier Benchmarking (Table 4.1 & 4.2)
+**File:** `v2/2.testing_generated_move_predictions.ipynb` · **Thesis:** Chapter 4 · Classifier Benchmarking (Table 4.1 & 4.2)
 
-Aggregates all JSON chunks from [v2/1](v2/1.generate_moves_predictions.ipynb), cleans up ~30 inconsistent Gemini label variants, and benchmarks seven TF-IDF classifiers to check data quality.
+Aggregates all JSON chunks from [Gemini V2 Annotation](v2/1.generate_moves_predictions.ipynb), cleans up ~30 inconsistent Gemini label variants, and benchmarks seven TF-IDF classifiers to check data quality.
 
 **Dataset after cleaning:** 148,220 sentences · 11 valid `move_sub_move` labels
 
@@ -159,67 +159,67 @@ Aggregates all JSON chunks from [v2/1](v2/1.generate_moves_predictions.ipynb), c
 | Decision Tree | 51.6 % |
 
 The 60 % ceiling confirms TF-IDF features are insufficient -> BERT fine-tuning required.  
-Saves the cleaned dataset as `aggregated_data.csv`, consumed by [v3/1.outlier-detection.ipynb](v3/1.outlier-detection.ipynb).
+Saves the cleaned dataset as `aggregated_data.csv`, consumed by [Outlier Detection](v3/1.outlier-detection.ipynb).
 
 ---
 
 ## Phase 3: Final Models
 
-### [v3/1.outlier-detection.ipynb](v3/1.outlier-detection.ipynb)
+### [1. Outlier Detection](v3/1.outlier-detection.ipynb)
 
-**Thesis:** Chapter 5 §5.2.1 · Outlier Detection
+**File:** `v3/1.outlier-detection.ipynb` · **Thesis:** Chapter 5 §5.2.1 · Outlier Detection
 
-Re-labels every row in `aggregated_data.csv` (produced by [v2/2](v2/2.testing_generated_move_predictions.ipynb)) using the **full sub-move prompt** (11 sub-moves + confidence score). Sentences that do not fit any move are assigned `-1` and excluded from training. The loop is resumable via the `is_processed` flag.
+Re-labels every row in `aggregated_data.csv` (produced by [Classifier Benchmarking](v2/2.testing_generated_move_predictions.ipynb)) using the **full sub-move prompt** (11 sub-moves + confidence score). Sentences that do not fit any move are assigned `-1` and excluded from training. The loop is resumable via the `is_processed` flag.
 
 - **Outliers identified:** 30,599 of 148,220 sentences (20.6 %)
-- **Output:** Updated `aggregated_data.csv` with `move_sub_move_gemini` column, consumed by [v3/5.checker.ipynb](v3/5.checker.ipynb)
+- **Output:** Updated `aggregated_data.csv` with `move_sub_move_gemini` column, consumed by [Final Dataset Assembly](v3/5.checker.ipynb)
 
 ---
 
-### [v3/2.move-0-generator.ipynb](v3/2.move-0-generator.ipynb)
+### [2. Move 0 Generator](v3/2.move-0-generator.ipynb)
 
-**Thesis:** Chapter 5 §5.2.2 · Move 0 Data Augmentation
+**File:** `v3/2.move-0-generator.ipynb` · **Thesis:** Chapter 5 §5.2.2 · Move 0 Data Augmentation
 
 Generates synthetic training sentences for **Move 0: Establishing a Research Territory** using a move-specific Gemini prompt (temperature 0.9 for diversity). Runs 10,000 API calls, requesting 3 sentences per sub-move per call.
 
 - **Sub-moves covered:** `0.0` Show importance · `0.1` Review prior research
-- **Output:** ~46,000 unique sentences saved to `generated_move0/`, consumed by [v3/5.checker.ipynb](v3/5.checker.ipynb)
+- **Output:** ~46,000 unique sentences saved to `generated_move0/`, consumed by [Final Dataset Assembly](v3/5.checker.ipynb)
 
 ---
 
-### [v3/3.move-1-generator.ipynb](v3/3.move-1-generator.ipynb)
+### [3. Move 1 Generator](v3/3.move-1-generator.ipynb)
 
-**Thesis:** Chapter 5 §5.2.2 · Move 1 Data Augmentation
+**File:** `v3/3.move-1-generator.ipynb` · **Thesis:** Chapter 5 §5.2.2 · Move 1 Data Augmentation
 
 Same generation pipeline for **Move 1: Establishing a Niche**.
 
 - **Sub-moves covered:** `1.0` Claim flaw · `1.1` Gap · `1.2` Unclear · `1.3` Extend
-- **Output:** ~54,000 unique sentences saved to `generated_move1/`, consumed by [v3/5.checker.ipynb](v3/5.checker.ipynb)
+- **Output:** ~54,000 unique sentences saved to `generated_move1/`, consumed by [Final Dataset Assembly](v3/5.checker.ipynb)
 
 ---
 
-### [v3/4.move-2-generator.ipynb](v3/4.move-2-generator.ipynb)
+### [4. Move 2 Generator](v3/4.move-2-generator.ipynb)
 
-**Thesis:** Chapter 5 §5.2.2 · Move 2 Data Augmentation
+**File:** `v3/4.move-2-generator.ipynb` · **Thesis:** Chapter 5 §5.2.2 · Move 2 Data Augmentation
 
 Same generation pipeline for **Move 2: Occupying the Niche**.
 
 - **Sub-moves covered:** `2.0` Purpose · `2.1` Hypothesis · `2.2` Findings · `2.3` Value · `2.4` Structure
-- **Output:** ~48,000 unique sentences saved to `generated_move2/`, consumed by [v3/5.checker.ipynb](v3/5.checker.ipynb)
+- **Output:** ~48,000 unique sentences saved to `generated_move2/`, consumed by [Final Dataset Assembly](v3/5.checker.ipynb)
 
 ---
 
-### [v3/5.checker.ipynb](v3/5.checker.ipynb)
+### [5. Final Dataset Assembly](v3/5.checker.ipynb)
 
-**Thesis:** Chapter 5 §5.2.3 & §5.3 · Dataset Assembly & Quality Check
+**File:** `v3/5.checker.ipynb` · **Thesis:** Chapter 5 §5.2.3 & §5.3 · Dataset Assembly & Quality Check
 
 Merges all data sources into the final training corpus and checks quality before BERT fine-tuning.
 
 **Inputs:**
-- `generated_move0/` from [v3/2.move-0-generator.ipynb](v3/2.move-0-generator.ipynb)
-- `generated_move1/` from [v3/3.move-1-generator.ipynb](v3/3.move-1-generator.ipynb)
-- `generated_move2/` from [v3/4.move-2-generator.ipynb](v3/4.move-2-generator.ipynb)
-- `aggregated_data.csv` from [v3/1.outlier-detection.ipynb](v3/1.outlier-detection.ipynb)
+- `generated_move0/` from [Move 0 Generator](v3/2.move-0-generator.ipynb)
+- `generated_move1/` from [Move 1 Generator](v3/3.move-1-generator.ipynb)
+- `generated_move2/` from [Move 2 Generator](v3/4.move-2-generator.ipynb)
+- `aggregated_data.csv` from [Outlier Detection](v3/1.outlier-detection.ipynb)
 
 **Final dataset composition:**
 
@@ -237,15 +237,15 @@ Merges all data sources into the final training corpus and checks quality before
 - LaTeX artifact audit: 1,505 equations · 22,031 citations · 2,918 non-language tokens
 - Feature-engineered LR (TF-IDF + citation/equation/non-language counts) as final quality gate
 
-**Output:** `processed_data_with_outliers.csv`, consumed by [v3/6](v3/6.pfe_training_moves_bert_model_06_26%20(1).ipynb), [v3/7](v3/7.pfe_training_sub_moves_0_bert_model_07_1.ipynb), [v3/8](v3/8.pfe_training_sub_moves_1_bert_model_07_1.ipynb), [v3/9](v3/9.pfe_training_sub_moves_2_bert_model_07_1.ipynb)
+**Output:** `processed_data_with_outliers.csv`, consumed by [Overall Move Classifier](<v3/6.pfe_training_moves_bert_model_06_26 (1).ipynb>), [Move 0 Sub-move Classifier](v3/7.pfe_training_sub_moves_0_bert_model_07_1.ipynb), [Move 1 Sub-move Classifier](v3/8.pfe_training_sub_moves_1_bert_model_07_1.ipynb), [Move 2 Sub-move Classifier](v3/9.pfe_training_sub_moves_2_bert_model_07_1.ipynb)
 
 ---
 
-### [v3/6.pfe_training_moves_bert_model_06_26 (1).ipynb](<v3/6.pfe_training_moves_bert_model_06_26 (1).ipynb>)
+### [6. Overall Move Classifier](<v3/6.pfe_training_moves_bert_model_06_26 (1).ipynb>)
 
-**Thesis:** Chapter 5 §5.3 · Model 1: Overall Move Classifier
+**File:** `v3/6.pfe_training_moves_bert_model_06_26 (1).ipynb` · **Thesis:** Chapter 5 §5.3 · Model 1: Overall Move Classifier
 
-Fine-tunes BERT on the full 169,729-sentence corpus (from [v3/5](v3/5.checker.ipynb)) for **3-class move classification**.
+Fine-tunes BERT on the full 169,729-sentence corpus (from [Final Dataset Assembly](v3/5.checker.ipynb)) for **3-class move classification**.
 
 | | |
 |---|---|
@@ -261,11 +261,11 @@ This is the primary model served in the SaaS platform via TensorFlow Serving. Ev
 
 ---
 
-### [v3/7.pfe_training_sub_moves_0_bert_model_07_1.ipynb](v3/7.pfe_training_sub_moves_0_bert_model_07_1.ipynb)
+### [7. Move 0 Sub-move Classifier](v3/7.pfe_training_sub_moves_0_bert_model_07_1.ipynb)
 
-**Thesis:** Chapter 5 §5.3 · Model 2: Move 0 Sub-move Classifier
+**File:** `v3/7.pfe_training_sub_moves_0_bert_model_07_1.ipynb` · **Thesis:** Chapter 5 §5.3 · Model 2: Move 0 Sub-move Classifier
 
-Fine-tunes BERT on the Move 0 subset (from [v3/5](v3/5.checker.ipynb)) for **binary sub-move classification** (`0.0` vs `0.1`).
+Fine-tunes BERT on the Move 0 subset (from [Final Dataset Assembly](v3/5.checker.ipynb)) for **binary sub-move classification** (`0.0` vs `0.1`).
 
 | | |
 |---|---|
@@ -273,15 +273,15 @@ Fine-tunes BERT on the Move 0 subset (from [v3/5](v3/5.checker.ipynb)) for **bin
 | Training data | 41,622 Move 0 sentences |
 | **F1** | **0.8959** |
 
-Invoked by the platform when Model 1 ([v3/6](<v3/6.pfe_training_moves_bert_model_06_26 (1).ipynb>)) predicts Move 0.
+Invoked when the [Overall Move Classifier](<v3/6.pfe_training_moves_bert_model_06_26 (1).ipynb>) predicts Move 0.
 
 ---
 
-### [v3/8.pfe_training_sub_moves_1_bert_model_07_1.ipynb](v3/8.pfe_training_sub_moves_1_bert_model_07_1.ipynb)
+### [8. Move 1 Sub-move Classifier](v3/8.pfe_training_sub_moves_1_bert_model_07_1.ipynb)
 
-**Thesis:** Chapter 5 §5.3 · Model 3: Move 1 Sub-move Classifier
+**File:** `v3/8.pfe_training_sub_moves_1_bert_model_07_1.ipynb` · **Thesis:** Chapter 5 §5.3 · Model 3: Move 1 Sub-move Classifier
 
-Fine-tunes BERT on the Move 1 subset (from [v3/5](v3/5.checker.ipynb)) for **4-class sub-move classification**.
+Fine-tunes BERT on the Move 1 subset (from [Final Dataset Assembly](v3/5.checker.ipynb)) for **4-class sub-move classification**.
 
 | | |
 |---|---|
@@ -289,15 +289,15 @@ Fine-tunes BERT on the Move 1 subset (from [v3/5](v3/5.checker.ipynb)) for **4-c
 | Training data | 38,371 Move 1 sentences |
 | **F1** | **> 0.89** |
 
-Invoked by the platform when Model 1 ([v3/6](<v3/6.pfe_training_moves_bert_model_06_26 (1).ipynb>)) predicts Move 1.
+Invoked when the [Overall Move Classifier](<v3/6.pfe_training_moves_bert_model_06_26 (1).ipynb>) predicts Move 1.
 
 ---
 
-### [v3/9.pfe_training_sub_moves_2_bert_model_07_1.ipynb](v3/9.pfe_training_sub_moves_2_bert_model_07_1.ipynb)
+### [9. Move 2 Sub-move Classifier](v3/9.pfe_training_sub_moves_2_bert_model_07_1.ipynb)
 
-**Thesis:** Chapter 5 §5.3 · Model 4: Move 2 Sub-move Classifier
+**File:** `v3/9.pfe_training_sub_moves_2_bert_model_07_1.ipynb` · **Thesis:** Chapter 5 §5.3 · Model 4: Move 2 Sub-move Classifier
 
-Fine-tunes BERT on the Move 2 subset (from [v3/5](v3/5.checker.ipynb)) for **5-class sub-move classification**.
+Fine-tunes BERT on the Move 2 subset (from [Final Dataset Assembly](v3/5.checker.ipynb)) for **5-class sub-move classification**.
 
 | | |
 |---|---|
@@ -305,7 +305,7 @@ Fine-tunes BERT on the Move 2 subset (from [v3/5](v3/5.checker.ipynb)) for **5-c
 | Training data | 40,272 Move 2 sentences |
 | **F1** | **> 0.89** |
 
-Invoked by the platform when Model 1 ([v3/6](<v3/6.pfe_training_moves_bert_model_06_26 (1).ipynb>)) predicts Move 2.
+Invoked when the [Overall Move Classifier](<v3/6.pfe_training_moves_bert_model_06_26 (1).ipynb>) predicts Move 2.
 
 ---
 
@@ -313,9 +313,9 @@ Invoked by the platform when Model 1 ([v3/6](<v3/6.pfe_training_moves_bert_model
 
 | Model | Notebook | Task | Classes | F1 / Accuracy |
 |---|---|---|---|---|
-| Model 1 | [v3/6](<v3/6.pfe_training_moves_bert_model_06_26 (1).ipynb>) | Overall move classification | 3 | **98.21 %** |
-| Model 2 | [v3/7](v3/7.pfe_training_sub_moves_0_bert_model_07_1.ipynb) | Move 0 sub-moves | 2 | **89.59 %** |
-| Model 3 | [v3/8](v3/8.pfe_training_sub_moves_1_bert_model_07_1.ipynb) | Move 1 sub-moves | 4 | **> 89 %** |
-| Model 4 | [v3/9](v3/9.pfe_training_sub_moves_2_bert_model_07_1.ipynb) | Move 2 sub-moves | 5 | **> 89 %** |
+| Model 1 | [Overall Move Classifier](<v3/6.pfe_training_moves_bert_model_06_26 (1).ipynb>) | Overall move classification | 3 | **98.21 %** |
+| Model 2 | [Move 0 Sub-move Classifier](v3/7.pfe_training_sub_moves_0_bert_model_07_1.ipynb) | Move 0 sub-moves | 2 | **89.59 %** |
+| Model 3 | [Move 1 Sub-move Classifier](v3/8.pfe_training_sub_moves_1_bert_model_07_1.ipynb) | Move 1 sub-moves | 4 | **> 89 %** |
+| Model 4 | [Move 2 Sub-move Classifier](v3/9.pfe_training_sub_moves_2_bert_model_07_1.ipynb) | Move 2 sub-moves | 5 | **> 89 %** |
 
 All four models are served via **TensorFlow Serving** as independent microservices. A sentence is first classified by Model 1 to identify its move, then routed to the corresponding sub-move model for a more detailed classification.
