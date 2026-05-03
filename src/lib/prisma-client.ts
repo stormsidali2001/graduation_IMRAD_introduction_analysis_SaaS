@@ -9,12 +9,9 @@ function getPrismaClient(): PrismaClient {
       },
     });
   }
-  const prisma = new PrismaClient();
-  prisma.$connect();
-  return prisma;
+  return new PrismaClient();
 }
 const prismaClient: PrismaClient = global.prismaClient ?? getPrismaClient();
 
 global.prismaClient = prismaClient;
-console.log("seeed.....................................");
 export default prismaClient;
