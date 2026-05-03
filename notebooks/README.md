@@ -1,478 +1,478 @@
-# IMRaD Introduction Analysis - Notebook Reference
+IMRaD Introduction Analysis - Notebook Reference
 
-This directory contains all research notebooks for the thesis:
+This directory contains all research notebooks for the thesis: 
 
-> **"Leveraging Gemini Pro and BERT for Automated IMRaD Classification:  
-> A Novel Dataset and SaaS Platform"**  
-> Sid Ali Assoul, École Supérieure en Informatique, SIW · 2022-2023
+> **"Automated IMRaD Classification with BERT and Gemini Pro:  
+> A Novel Dataset and SaaS Platform”**  
+Sid Ali Assoul SIW · École Supérieure en Informatique 2022-2023
 
----
+--- 
 
-## Table of Contents
+## Contents
 
-- [Research Background and Motivation](#research-background-and-motivation)
-- [The Dataset Problem: Why We Built Our Own](#the-dataset-problem-why-we-built-our-own)
-- [The Three-Phase Strategy](#the-three-phase-strategy)
-- [IMRaD Move Reference](#imrad-move-reference)
-- [Pipeline Overview](#pipeline-overview)
-- [Directory Structure](#directory-structure)
-- [Phase 1: Baseline](#phase-1-baseline)
-  - [1. Gemini V1 Annotation](#1-gemini-v1-annotation)
-  - [2. V1 BERT Training](#2-v1-bert-training)
-- [Phase 2: Refinement](#phase-2-refinement)
-  - [1. Gemini V2 Annotation](#1-gemini-v2-annotation)
-  - [2. Classifier Benchmarking](#2-classifier-benchmarking)
-- [Phase 3: Final Models](#phase-3-final-models)
-  - [1. Outlier Detection](#1-outlier-detection)
-  - [2. Move 0 Generator](#2-move-0-generator)
-  - [3. Move 1 Generator](#3-move-1-generator)
-  - [4. Move 2 Generator](#4-move-2-generator)
-  - [5. Final Dataset Assembly](#5-final-dataset-assembly)
-  - [6. Overall Move Classifier](#6-overall-move-classifier)
-  - [7. Move 0 Sub-move Classifier](#7-move-0-sub-move-classifier)
-  - [8. Move 1 Sub-move Classifier](#8-move-1-sub-move-classifier)
-  - [9. Move 2 Sub-move Classifier](#9-move-2-sub-move-classifier)
-- [Final Model Performance Summary](#final-model-performance-summary)
-- [Model Deployment](#model-deployment)
+- [Motivation and Background of the Research](#motivation-and-background-of-the-research)
+- [The Dataset Problem: Why We Created Our Own](#the-dataset-problem-why-we-built-our-own)
+- [The Three-Phase Strategy](#three-phase-strategy)
+- [IMRaD Move Reference](#imrad-move-reference) 
+- [Pipeline Overview](#pipeline-overview) 
+- [Directory Structure](#directory-structure) 
+- [Phase 1: Baseline](#phase-1-baseline) 
+- [1.  Gemini V1 Annotation](#1-gemini-v1-annotation) 
+- [2.  [2. V1 BERT Training](#2-v1-bert-training)
+- [Phase 2: Refinement](#phase-2-refinement-1)
+- [1.  # 1. Gemini V2 Note
+- [2.  Classifier Benchmarking](#2-classifier-benchmarking) 
+- [Phase 3: Final Models](#phase-3-final-models) 
+- [1.  Outlier Detection](#1-outlier-detection) 
+- [2.  [Move 0 Generator](#2-move-0-generator)
+- [3.  3. Swap 1 Generator
+- [4.  Move 2 Generator](#4-move-2-generator) 
+- [5.  Final Dataset Assembly </a>
+- [6.  # Move Classifier #6 Overall
+- [7.  [7. Move 0 Sub-move Classifier](#7-move-0-sub-move-classifier)
+- [8.  [8. Move 1 Sub-move Classifier](#8-move-1-sub-move-classifier)
+- [9.  [Move 2 Sub-move Classifier](#9-move-2-sub-move-classifier)
+- [Summary of Final Model Performance](#final-model-performance-summary)
+- [Deploying Models](#model-deployment)
 
----
-
-## Research Background and Motivation
-
-Scientific papers follow the **IMRaD** format (Introduction, Methods, Results, Discussion), and the introduction in particular has a well-studied rhetorical structure described by Swales' CARS model. Every sentence in an introduction serves a specific purpose: it might be establishing why the topic matters, pointing out a gap in the literature, or announcing what the paper contributes. These purposes are organized into three top-level **moves** and eleven **sub-moves**.
-
-Being able to automatically identify these moves and sub-moves at the sentence level is useful in several ways:
-- Students can see whether their introduction follows the expected structure before submitting
-- Researchers can quickly map the rhetorical strategy of papers they are reviewing
-- Educators can provide structured, automated feedback on drafts
-
-However, building a reliable classifier for this task requires a large, cleanly labeled dataset at the **sentence level** - and at the start of this research, no such dataset existed publicly.
-
----
-
-## The Dataset Problem: Why We Built Our Own
-
-The most relevant public corpus available is **unarXive** (Saier & Färber), which contains hundreds of thousands of scientific paper introductions extracted from arXiv. However, unarXive has two limitations that make it unsuitable for direct use:
-
-1. **Section-level labels only.** unarXive labels entire sections as "Introduction," "Methods," etc. It does not label individual sentences within an introduction with their rhetorical move or sub-move. There is no column that says "this sentence is sub-move 1.1 (highlight a gap)."
-
-2. **LaTeX artifacts.** The corpus contains raw LaTeX text, including citation commands like `\cite{...}`, equation environments, table and figure references, and other formatting symbols. These artifacts add noise and must be cleaned before training.
+--- 
+
+## Background and Motivation
+
+The scientific papers are written in the **IMRaD** format (Introduction, Methods, Results, Discussion) and the introduction has a well-studied rhetorical structure described by Swales' CARS model. Every sentence in an introduction has a purpose; it may be to establish why the topic matters, to point out a gap in the literature, or to announce what the paper contributes. These purposes are organized into three top-level **moves** and eleven **sub-moves**. 
+
+Automated identification of these moves and sub-moves at the sentence level has several uses:
+- Students can verify that their introduction has the expected structure before they submit it.
+- Reviewers can easily map the rhetorical strategy of papers they are reviewing
+- Automated, structured feedback on drafts by teachers possible
+
+However, to develop a reliable classifier for this task, we need a large and clean dataset labeled at the **sentence level**, and no such dataset was publicly available at the beginning of this research.
+
+--- 
+
+## The Dataset Problem: Why We Created Our Own Dataset
+
+The most relevant public corpus available is **unarXive** (Saier & Färber), which contains hundreds of thousands of introductions to scientific papers extracted from arXiv. However, unarXive has two drawbacks that make it not usable directly:
+
+1.  Section-level labels only. unarXive labels whole sections as "Introduction", "Methods", etc. It does not label each sentence in an introduction with its rhetorical move or sub-move. There is no column saying "this sentence is sub-move 1.1 (highlight a gap)".
+
+2.  **Latex artifacts.** The corpus contains raw LaTeX text, including citation commands (e.g. \cite{...}), equation environments, table and figure references, and other formatting symbols. Artifacts add noise and must be cleaned before training.
 
-Because of these gaps, we could not simply download a dataset and start training. We had to build one from scratch.
+Because of these gaps, we couldn’t just download a dataset and start training. We had to make one for ourselves.
 
-The solution was to use **Gemini Pro** as an automated annotator: feed it introduction sentences from unarXive and use a custom prompt to label each sentence with its IMRaD move and sub-move. This is cheaper and faster than hiring domain experts to annotate 150,000+ sentences by hand, and recent work shows that LLMs can produce annotation quality close to human annotators when the prompt is well designed.
+We addressed this by employing **Gemini Pro** as an automatic annotator: we provided it with introduction sentences extracted from unarXive, and applied a custom prompt to annotate each sentence with its IMRaD move and sub-move. This is cheaper and faster than hiring domain experts to manually annotate 150,000+ sentences and recent work shows that LLMs can achieve annotation quality close to human annotators when the prompt is well designed.
 
-The challenge then became: **how good is the annotation, and how do we verify it?** This is the core question that drove the three-phase approach described in this thesis.
-
----
-
-## The Three-Phase Strategy
-
-Because we were both generating the data and training models on it, we could not verify quality in the usual way (comparing to a gold-standard test set) at the start. Instead, we used an iterative strategy:
+So then the challenge was how good is the annotation and how do we verify it?This is the central question of the three-phase approach developed in this thesis.
+
+--- 
+
+## The Three Stage Approach
+
+We were both generating the data and training models on it, so we could not check quality in the usual way (against a gold-standard test set) at the outset. Instead, we adopted an iterative approach:
 
-| Phase | Goal | Data size | Best result |
-|---|---|---|---|
-| **V1** | Establish a baseline; prove the idea works | Small subset of unarXive sentences | 44.61 % accuracy (BERT) |
-| **V2** | Improve prompt quality; measure data quality with cheap classifiers | 148,220 sentences | 60.7 % accuracy (Random Forest) |
-| **V3** | Clean V2 data, generate synthetic sentences, fine-tune final BERT models | 169,729 sentences | 98.21 % F1 (overall move BERT) |
+| Phase | Ziel | Datenmenge | Bestes Ergebnis |
+|---|---|---|---| 
+| **V1** | Show that the idea works; establish a baseline | A small subset of unarXive sentences | 44.61 % accuracy (BERT) |
+| **V2** | Enhance prompt quality; assess data quality using inexpensive classifiers | 148,220 sentences | 60.7 % accuracy (Random Forest) |
+| **V3** | Clean V2 data, create synthetic sentences, fine-tune final BERT models | 169,729 sentences | 98.21 % F1 (overall move BERT) |
 
-Each phase exposed specific weaknesses in the previous one. V1 showed that a vague 3-class prompt produces noisy labels that BERT cannot learn from reliably. V2 showed that adding sub-move definitions to the prompt genuinely improved label quality (TF-IDF classifiers went from random-chance performance to 60 %), but TF-IDF hit a ceiling and the data still contained non-introduction sentences. V3 removed those outliers, balanced the dataset with synthetic generation, and fine-tuned BERT models that achieve over 95 % F1 on sub-move tasks.
+In each phase the weaknesses of the previous one were made apparent. In V1, the study showed that a vague 3-class prompt results in noisy labels that BERT cannot learn from reliably. V2 showed that adding sub-move definitions to the prompt improved label quality (TF-IDF classifiers went from random-chance performance to 60 %), but TF-IDF hit a ceiling and the data still contained non-introduction sentences. V3 eliminated outliers, balanced the dataset with synthetic generation, and improved BERT models with over 95 % F1 on the sub-move tasks.
 
----
+--- 
 
-## IMRaD Move Reference
+## IMRaD Move Citation
 
-Every sentence in a scientific introduction belongs to one of three rhetorical **moves**, each subdivided into **sub-moves**:
+A scientific introduction contains three kinds of rhetorical **moves**, which are further divided into **sub-moves**:
 
-| Move | Name | Sub-moves |
-|---|---|---|
-| **0** | Establishing a Research Territory | `0.0` Show importance/relevance · `0.1` Review prior research |
-| **1** | Establishing a Niche | `1.0` Claim flaw in prior work · `1.1` Highlight a gap · `1.2` Raise an unclear question · `1.3` Extend prior research |
-| **2** | Occupying the Niche | `2.0` State purpose · `2.1` Hypothesis/research question · `2.2` Share findings · `2.3` Elaborate value · `2.4` Outline structure |
-| **-1** | Outlier | Does not belong to any move (e.g. method description, conclusion sentence, section header) |
+| Move | Name | Sub-moves | 
+|---|---|---| 
+| **0** | Establishing a Research Domain | `0.0` Show significance/relevance · `0.1` Examine prior research |
+| **1** | Establishing a Niche | `1.0` Claim flaw in prior work · `1.1` Highlight a gap · `1.2` Raise an unclear question · `1.3` Extend prior research | 
+| **2** | Filling the Niche | `2.0` State aim · `2.1` Hypothesis/research question · `2.2` Present findings · `2.3` Develop value · `2.4` Sketch structure |
+| **-1** | Outlier | Not part of any move (e.g. method description, sentence of conclusion, section header) |
 
-> **Note:** The thesis uses a numbering system that starts moves at 0 (Move 0, 1, 2). Some referenced literature starts at Move 1. The concepts are identical; only the numbering differs.
+**Note:** The numbering of moves in the thesis starts from 0 (Move 0, 1, 2). Some cited literature begins at Move 1. The concepts are the same, only the numbering is different.
 
----
+--- 
 
-## Pipeline Overview
+## Pipelines Overview
 
-```
-unarXive corpus (264,799 introductions from arXiv)
-│  (section-level labels only; no sentence-level sub-move annotations)
-│
-├─ v1/  -- Phase 1: Baseline
-│   ├─ 1. Annotate each sentence with a simple 3-class prompt (Gemini Pro)  ->  raw chunks
-│   └─ 2. Fine-tune BERT on V1 data  ->  44.61 % accuracy  <- noisy labels, redesign
-│
-├─ v2/  -- Phase 2: Refinement
-│   ├─ 1. Re-annotate with enhanced 11-sub-move prompt  ->  148,220 labeled sentences
-│   └─ 2. Benchmark TF-IDF classifiers to measure data quality  ->  RF 60.7 %  <- TF-IDF ceiling -> need BERT
-│
-└─ v3/  -- Phase 3: Final Models
-    ├─ 1. Outlier detection: re-label V2 with full prompt, discard -1 rows  ->  -30,599 outliers removed
-    ├─ 2. Synthetic generation (Move 0)  ->  ~46,000 new sentences
-    ├─ 3. Synthetic generation (Move 1)  ->  ~54,000 new sentences
-    ├─ 4. Synthetic generation (Move 2)  ->  ~48,000 new sentences
-    ├─ 5. Merge all sources, run quality checks  ->  169,729 clean training sentences
-    ├─ 6. BERT: Overall move classifier (3 classes)  ->  F1 0.9821  ✓ deployed
-    ├─ 7. BERT: Move 0 sub-move classifier (2 classes)  ->  F1 0.8959  ✓ deployed
-    ├─ 8. BERT: Move 1 sub-move classifier (4 classes)  ->  F1 0.9455  ✓ deployed
-    └─ 9. BERT: Move 2 sub-move classifier (5 classes)  ->  F1 0.9591  ✓ deployed
-```
-
----
+``` 
+unarXive corpus (264,799 intros from arXiv)
+(section-level labels only, no sentence-level sub-move annotations)
+│ 
+├─ v1/ -- Phase 1: Base Line
+│ ├─ 1.  Prompt: Gemini Pro -> raw chunks Each sentence is annotated with a simple 3-class prompt (Gemini Pro) -> raw chunks
+│ └─ 2.  Fine-tune BERT on V1 data -> 44.61 % accuracy <- redesign, noisy labels
+│ 
+├─ v2/ -- Phase 2: Refinement 
+│ ├─ 1.  Re-annotated with improved 11-sub-move prompt -> 148,220 annotated sentences
+│ └─ 2.  Need BERT Benchmark TF-IDF classifiers for data quality assessment <- RF 60.7 % <- TF-IDF ceiling >
+│ 
+└── v3/ ├── Phase 3: Final Models
+├─ 1.  Outlier detection: Re-label V2 with full prompt, discard -1 rows -> -30,599 outliers removed
+├─ 2.  Synthetic generation (Move 0) -> ~46k new sentences
+├─ 3.  Synthetic generation (Move 1) -> ~54K new sentences
+├─ 4.  Synthetic generation (Move 2) -> ~48000 new sentences
+├─ 5.  169,729 clean training sentencesMerge all sources, perform quality checks
+├─ 6.  BERT: overall move classifier (3 classes) -> F1 0.9821 ✓ deployed
+├─ 7.  BERT: Move 0 sub-move classifier (2 classes) -> F1 0.8959 ✓ deployed
+├─ 8.  BERT: 1 sub-move classifier (4 classes) -> F1 0.9455 ✓ deployed
+└─ 9.  BERT: Move 2 sub-move classifier (5 classes) -> F1 0.9591 ✓ deployed 
+``` 
+
+--- 
 
-## Directory Structure
+## File Structure
 
-```
-notebooks/
-├── README.md                          <- this file
-├── v1/                                <- Phase 1: Baseline
-│   ├── 1.gemini_moves_generation.ipynb
-│   └── 2.bert_classification_imrad_moves_latest_v8_new_dataset.ipynb
-├── v2/                                <- Phase 2: Refinement
-│   ├── 1.generate_moves_predictions.ipynb
-│   └── 2.testing_generated_move_predictions.ipynb
-└── v3/                                <- Phase 3: Final Models
-    ├── 1.outlier-detection.ipynb
-    ├── 2.move-0-generator.ipynb
-    ├── 3.move-1-generator.ipynb
-    ├── 4.move-2-generator.ipynb
-    ├── 5.checker.ipynb
-    ├── 6.pfe_training_moves_bert_model_06_26 (1).ipynb
-    ├── 7.pfe_training_sub_moves_0_bert_model_07_1.ipynb
-    ├── 8.pfe_training_sub_moves_1_bert_model_07_1.ipynb
-    └── 9.pfe_training_sub_moves_2_bert_model_07_1.ipynb
-```
+``` 
+notebooks/ 
+├── README.md <- this file
+├── v1/ <- Phase 1 : Baseline
+│ ├── 1.gemini_moves_generation.ipynb 
+│ └── 2.bert_classification_imrad_moves_latest_v8_new_dataset.ipynb
+├── v2/ <- Phase 2: Refinement 
+│ ├── 1.generate_moves_predictions.ipynb 
+│ └── 2.testing_generated_move_predictions.ipynb
+└── v3/ <- Phase 3: Final Models 
+├── 2.outlier-detection.ipynb
+├── 2.move-0-generator.ipynb 
+├── 3.move-1-generator.ipynb 
+4.move-2-generator.ipynb
+├── 5.checker.ipynb 
+├── 6.pfe_training_moves_bert_model_06_26 (1).ipynb 
+7.pfe_training_sub_moves_0_bert_model_07.1.ipynb
+├── 8.pfe_training_sub_moves_1_bert_model_07_1.ipynb 
+└── 9.pfe_training_sub_moves_2_bert_model_09.1.ipynb
+``` 
 
----
+--- 
 
-## Phase 1: Baseline
+## Stage 1: Foundation
 
-**Goal:** Prove the concept. Use Gemini Pro to annotate introduction sentences and train a first BERT model. Accept that this baseline will be imperfect.
+**Objective:** Show the idea. Annotate first sentences of introduction with Gemini Pro Train first BERT model Realise that this baseline will be wrong.
 
-### [1. Gemini V1 Annotation](v1/1.gemini_moves_generation.ipynb)
+### [1.  [Gemini V1 Annotation](v1/1.gemini_moves_generation.html)
 
-Thesis: Chapter 3, Section 3.1.1
+THESIS: CHAPTER 3: SECTION 3.1.1
 
-The unarXive corpus was used as the raw text source: each paper's introduction was extracted and split into sentences. These sentences were then passed one by one to **Gemini Pro** using a minimal prompt that simply listed the three move names and asked the model to pick one:
+The raw text source is the unarXive corpus: the introduction of every paper was extracted and split into sentences. These sentences were then provided one-by-one to **Gemini Pro** with a minimal prompt that just listed the three move names and asked the model to pick one:
 
-```
-analyze the provided text {sentence}, which represents a sentence of an
-introduction of an imrad formatted scientific paper. classify the sentence
-into an imrad introduction move, knowing that the imrad moves are:
-(establishing a research territory, establishing a niche, occupying the niche).
-the output should be the corresponding imrad move without anything extra
-```
+``` 
+analyze the given text {sentence}, which is a sentence of a
+introduction of an imrad formatted scientific paper categorize the sentence
+move into an imrad introduction, knowing that the imrad moves are:
+(establishing a territory, establishing a niche, taking over the niche).
+The output should be the corresponding imrad move and nothing else
+``` 
 
-The prompt is intentionally concise: no definitions, no examples, no JSON schema. The goal at this stage was to get labeled data quickly and test whether the overall pipeline worked before investing in prompt engineering.
+The prompt is intentionally short: no definitions, no examples, no json schema. The goal here was to get labeled data quickly and test that the overall pipeline worked before investing in prompt engineering.
 
-The corpus was processed in 1,000-row chunks, with results saved incrementally to Google Drive to guard against session interruptions.
+The corpus was processed in chunks of 1,000 rows, and results were saved incrementally to Google Drive to prevent interruption of the session.
 
-- **Data source:** unarXive introduction sentences (subset)
-- **Prompt type:** V1 - 3 classes, no definitions, no examples, plain text output
-- **Output format:** One move name per sentence, saved as CSV chunks in `/pfe/gemini-results/`
-- **Limitation:** No sub-move detail. Output was free-form text (e.g., "establishing a niche"), which needed post-processing to normalize. The vague prompt led to ambiguous and inconsistent labels.
+- **Source of data:** unarXive intro sentences (subset)
+- **Prompt type:** V1 - 3 classes, no definitions, no examples, text output
+- **Output format:** CSV chunks with a single move name per sentence, saved in `/pfe/gemini-results/`
+- **Limitation** No details of sub moves. Output was free-form text (e.g., “establishing a niche”) that needed to be normalized in post-processing. The ambiguity in the prompt led to ambiguous and inconsistent labels.
 
----
+--- 
 
-### [2. V1 BERT Training](v1/2.bert_classification_imrad_moves_latest_v8_new_dataset.ipynb)
+### [2.  V1 BERT Training](v1/2.bert_classification_imrad_moves_latest_v8_new_dataset.ipynb) 
 
-Thesis: Chapter 3, Section 3.1.2 and 3.2
+Thesis: Chapter 3, Section 3.1.2 and 3.2 
 
-Fine-tunes `bert-en-uncased-L-12-H-768-A-12` (from TensorFlow Hub) on the V1 annotated data for 3-class move classification.
+Fine-tune `bert-en-uncased-L-12-H-768-A-12` (from TensorFlow Hub) on V1 annotated data for 3-class move classification.
 
-The architecture adds a small classification head on top of BERT's `[CLS]` token output:
+The architecture adds a small classification head on top of BERT’s representation of the `[CLS]` token:
 
-| | |
-|---|---|
-| Architecture | BERT -> Dropout(0.3) -> Dense(3, softmax) |
-| Optimizer | AdamW, LR 3e-5 |
-| Batch size | 32 |
-| Epochs | Up to 15 with early stopping |
-| Data split | 80 % train / 10 % val / 10 % test |
-| **Accuracy** | **44.61 %** |
+| | | 
+|---|---| 
+| Architecture | BERT -> Dropout(0.3) -> Dense(3, softmax) | 
+Optimizer | AdamW, LR 3e-5 |
+Batch size | 32 |
+Epochs 15 (Early Stopping)
+Data split | 80% training / 10% validation / 10% test |
+| **Accuracy** | **44.61** |
 
-A random baseline for 3 classes would be 33.3 %, so the model is learning something, but the 44.61 % accuracy is far too low for practical use. The training and validation loss barely moved across 15 epochs (train loss ~1.96, val loss ~1.94 for every epoch), which strongly suggests the data labels are too noisy for the model to find a reliable signal.
+So the model is learning something, but 44.61 % accuracy is way too low for practical use (the random baseline for 3 classes would be 33.3 %). Over 15 epochs, the train loss hovered around ~1.96, and the val loss around ~1.94 for every epoch, which is a very strong indication that the data labels are too noisy for the model to find any kind of reliable signal.
 
-**Root causes identified:**
-- The V1 prompt had no definitions or examples, so Gemini applied inconsistent criteria when choosing between the three moves
-- No sub-move structure meant all the nuance within each move was collapsed into one label
-- The resulting label distribution was skewed and unreliable
+**Root Cause Analyses:**
+- There were no definitions or examples in the V1 prompt, so Gemini used inconsistent criteria to choose among the three moves
+- Without sub-move structure, all the nuance in each move was squashed down to a single label
+- The distribution of the labels obtained was skewed and unreliable
 
-This poor result is what made the redesign in Phase 2 necessary.
+This bad result made the redesign in phase 2 necessary.
 
----
+--- 
 
-## Phase 2: Refinement
+## Phase 2: Polish
 
-**Goal:** Improve annotation quality by redesigning the prompt around sub-moves. Use lightweight TF-IDF classifiers (not BERT) to measure whether the new prompt produced better data, before investing GPU time in a second BERT run.
+**Goal:** Re-architect prompt using sub-moves to improve annotation quality Before spending GPU time on a second BERT run, measure if the new prompt produced better data using lightweight TF-IDF classifiers (not BERT).
 
-### [1. Gemini V2 Annotation](v2/1.generate_moves_predictions.ipynb)
+### [1.  [Gemini V2 Annotation](v2/1.generate_moves_predictions.ipynb)
 
-Thesis: Chapter 4, Section 4.1.2
+Thesis: Chapter 4, Section 4.1.2.
 
-The key insight for V2 was that the V1 prompt was too vague. A human expert classifying sentences would not just know the three move names - they would know exactly what each sub-move looks like, with examples. The V2 prompt gave Gemini that context:
+The key insight for V2 was that the V1 prompt was too generic. A human expert doing sentence classification would not only know the three move names, but would know exactly what each sub-move looks like, with examples. The V2 prompt provided Gemini with that context:
 
-- All 11 sub-moves were listed with descriptions and concrete example sentences
-- The output format was changed from free text to a structured JSON schema with `sentence`, `move`, and `sub_move` fields for every sentence in the introduction
-- The entire introduction was passed at once (instead of sentence by sentence), so Gemini could use surrounding context to classify each sentence
+- All 11 sub-moves were listed, with descriptions and concrete example sentences.
+- The output format has changed from free text to a structured JSON schema, with `sentence`, `move` and `sub_move` fields for every sentence in the introduction.
+- The whole intro was passed in one go (not sentence by sentence) so Gemini could use surrounding context to classify each sentence
 
-The full corpus was re-processed: ~37,000 introductions were sent to the Gemini API, each producing a JSON array of classified sentences. Results were saved as `processed_{index}.json` chunks.
+The full corpus was reprocessed. ~37,000 introductions were sent to the Gemini API, each resulting in a JSON array of classified sentences. Results were saved in chunks of processed_{index}.json.
 
-- **Key change from V1:** 11 sub-move definitions + examples + JSON output -> significantly cleaner labels
-- **Output:** ~37,000 JSON files, each containing one introduction's sentences with move and sub-move labels, consumed by [Classifier Benchmarking](v2/2.testing_generated_move_predictions.ipynb)
+Major change vs V1: 11 sub-move definitions + examples + JSON output -> much cleaner labels
+~37,000 JSON files, each with one introduction's sentences with move and sub-move labels used by [Classifier Benchmarking](v2/2.testing_generated_move_predictions.ipynb)
 
----
+--- 
 
-### [2. Classifier Benchmarking](v2/2.testing_generated_move_predictions.ipynb)
+### [2.  Classifier Benchmarking](v2/2.testing_generated_move_predictions.ipynb) 
 
-Thesis: Chapter 4, Section 4.2
+Thesis: Chapter 4, sub-section 4.2
 
-This notebook aggregates all the JSON chunks from [Gemini V2 Annotation](v2/1.generate_moves_predictions.ipynb) and uses TF-IDF classifiers to measure whether the improved prompt actually produced better-quality labeled data.
+This notebook aggregates all the JSON chunks from [Gemini V2 Annotation](v2/1.generate_moves_predictions.ipynb) and uses TF-IDF classifiers to check if the improved prompt actually resulted in better quality labeled data.
 
-The rationale for using TF-IDF instead of BERT here: training a BERT model takes hours. TF-IDF classifiers train in minutes and can serve as a quick quality gate. If even a fast classifier can reach 55-60 % on 11-class sub-move classification, that is evidence the labels are meaningful.
+The reason for using TF-IDF instead of BERT here: training a BERT model takes hours. TF-IDF classifiers can be trained in minutes and serve as a fast quality gate. If a fast classifier can get 55-60% accuracy on 11-class sub-move classification, that is evidence the labels are meaningful.
 
-**Data cleaning:** Gemini returned approximately 30 different label variants across all runs (e.g., `"0.1"`, `"0_1"`, `"move_0.1"`, `"sub-move 0.1"`, etc.). Mapping functions were written to normalize all variants to the canonical `0.0`, `0.1`, ..., `2.4` format. After cleaning:
+**Data cleaning:** In all runs, Gemini generated approximately 30 different variants of the labels (e.g., `"0.1"`, `"0_1"`, `"move_0.1"`, `"sub-move 0.1"`, etc.). Mapping functions were written to convert all variants to the canonical format of `0.0`, `0.1`, ..., `2.4`. After cleaning: 
 
-**Dataset: 148,220 sentences, 11 valid sub-move labels**
+**Dataset: 148,220 sentences, 11 valid sub-move tags**
 
-| Classifier | Accuracy |
-|---|---|
-| Random Forest | **60.7 %** |
-| Logistic Regression | 60.0 % |
-| Neural Network (Keras) | 57.5 % |
-| Naive Bayes | 55.6 % |
-| K-Nearest Neighbors | 54.0 % |
-| Decision Tree | 51.6 % |
+Classifier | Accuracy |
+|---|---| 
+Random Forest | **60.7%** |
+| Logistic Regression | 60.0% |
+Neural Network (Keras) | 57.5% |
+| Naive Bayes | 55.6 |
+| K-Nearest Neighbors | 54.0% |
+Decision Tree | 51.6 % |
 
-Compared to a random baseline of ~9 % for 11 classes, 60 % is a strong signal that the labels are meaningful. The improvement over V1 (where BERT itself only hit 44 % on 3 classes) confirms that the enhanced sub-move prompt produced significantly better annotations.
+60% is a strong signal that the labels are meaningful as compared to a random baseline of ~9% for 11 classes. The improvement over V1 (where BERT itself only reached 44 % on 3 classes) confirms that the enhanced sub-move prompt produced significantly better annotations.
 
-However, 60 % is also clearly a ceiling for TF-IDF on this task. TF-IDF treats each word independently and ignores sentence structure, so it cannot capture the rhetorical nuance needed for sub-move classification. The next step was to use BERT, but first the data needed further cleaning.
+However 60 % is also clearly a ceiling for TF-IDF on this task. TF-IDF does not consider sentence structure, each word is an independent feature. It is not able to capture the rhetorical nuance of the sub-move classification. Next was to use BERT, but the data had to be cleaned up further.
 
-Saves the full dataset as `aggregated_data.csv`, consumed by [Outlier Detection](v3/1.outlier-detection.ipynb).
+Saves full dataset as `aggregated_data.csv`, used by [Outlier Detection](v3/1.outlier-detection.ipynb).
 
----
+--- 
 
-## Phase 3: Final Models
+## Phase 3: Final Models 
 
-**Goal:** Remove non-introduction sentences from V2, balance the dataset by generating synthetic sentences for each sub-move, and fine-tune four BERT models for final deployment.
+**Objective:** Remove non-introduction sentences from V2, balance the dataset by generating synthetic sentences for each sub-move, and fine-tune four BERT models for final deployment.
 
-### [1. Outlier Detection](v3/1.outlier-detection.ipynb)
+### [1.  [Outlier Detection](v3/1.outlier-detection.ipynb)
 
-Thesis: Chapter 5, Section 5.2.1
+Chapter 5 Section 5.2.1 Thesis:
 
-The V2 dataset of 148,220 sentences was annotated from full introduction texts, but those texts were not always clean. Some papers included method descriptions, conclusion sentences, or section headers that found their way into what was labeled as "the introduction." These sentences do not belong to any IMRaD introduction move, and training on them would degrade model quality.
+The V2 dataset contains 148,220 annotated sentences from complete introduction texts, but the texts were not always clean. Some papers had method descriptions, conclusion sentences or section headers that found their way into what was labeled as “the introduction.” These sentences do not belong to any IMRaD introduction move and training on them would hurt model quality.
 
-To find and remove them, every sentence in `aggregated_data.csv` (from [Classifier Benchmarking](v2/2.testing_generated_move_predictions.ipynb)) was re-analyzed by Gemini Pro using the **full outlier detection prompt**: all 11 sub-moves, definitions, examples, and a `-1` class for anything that does not fit. Gemini also returned a confidence score and a short explanation for each label.
+To find and remove them, Gemini Pro reprocessed every sentence in `aggregated_data.csv` (from [Classifier Benchmarking](v2/2.testing_generated_move_predictions.ipynb)) with the **full outlier detection prompt**: all 11 sub-moves, definitions, examples, and a `-1` class for anything that does not fit. Gemini also gave a confidence score and a short explanation for each label.
 
-Sentences assigned `-1` were flagged as outliers and excluded from training. The loop was designed to be resumable (an `is_processed` flag was saved per row) so that API failures mid-run did not mean starting over.
+We removed from training the sentences that were labeled as outliers by label `-1`. The loop was designed to be resumable (an `is_processed` flag was saved per row) so that API failures mid-run didn't mean starting over.
 
-**Results:**
-- **30,599 outliers found out of 148,220 sentences (20.6 %)**
-- Remaining clean sentences: 117,621 with updated sub-move labels
+**Outcomes**
+- **20.6 % (30,599 outliers in 148,220 sentences)**
+- Sentences left to clean: 117,621 with updated sub-move labels
 
-- **Output:** Updated `aggregated_data.csv` with a `move_sub_move_gemini` column, consumed by [Final Dataset Assembly](v3/5.checker.ipynb)
+- **Output:** Updated `aggregated_data.csv` with `move_sub_move_gemini` column, used by [Final Dataset Assembly](v3/5.checker.ipynb)
 
----
+--- 
 
-### [2. Move 0 Generator](v3/2.move-0-generator.ipynb)
+### [2.  [Move 0 Generator](v3/2.move-0-generator.ipynb)
 
-Thesis: Chapter 5, Section 5.2.2
+Thesis Chapter 5, Section 5.2.2
 
-After removing outliers, the V2 data still had an uneven sub-move distribution. Some sub-moves had too few examples to train a reliable classifier. To fix this, Gemini Pro was used to generate new synthetic sentences for each move and sub-move.
+The distribution of the sub-moves in the V2 data was still not even after removing the outliers. Some sub-moves did not have enough training data for a reliable classifier. To mitigate this, new synthetic sentences for each move and sub-move were generated using Gemini Pro.
 
-This notebook handles **Move 0: Establishing a Research Territory**. The generation prompt listed both sub-moves with definitions and two concrete example sentences each, then asked Gemini to produce 3 new sentences per sub-move per API call (temperature 0.9 for vocabulary variety). Results were deduplicated and saved in chunks.
+This notebook covers **Move 0: Setting up a Place to Do Research**. The generation prompt included both sub-moves and definitions, plus two concrete example sentences each, and then asked Gemini to generate 3 new sentences per sub-move per API call (temperature 0.9 for vocabulary variety). Results were de-duplicated and chunked.
 
-The key breakthrough compared to earlier generation attempts was including **concrete examples** in the prompt. Without examples, Gemini tended to produce generic, repetitive sentences. With examples, the output was more varied and linguistically natural.
+The key breakthrough compared to earlier generation attempts was to include **concrete examples** in the prompt. In the absence of examples, Gemini often wrote generic, repetitive sentences. The output was more varied and linguistically natural, with examples.
 
-- **Sub-moves:** `0.0` Show importance/relevance · `0.1` Review prior research
-- **API calls:** 10,000 iterations
-- **Output:** ~46,000 unique synthetic sentences in `generated_move0/`, consumed by [Final Dataset Assembly](v3/5.checker.ipynb)
+- **Sub-moves:** `0.0` Indicate importance/relevance · `0.1` Review prior research
+- **API calls:** 10 thousand iterations
+~46k unique synthetic sentences in `generated_move0/` used by [Final Dataset Assembly](v3/5.checker.ipynb)
 
----
+--- 
 
-### [3. Move 1 Generator](v3/3.move-1-generator.ipynb)
+### [3.  [Move 1 Generator](v3/3.move-1-generator.ipynb)
 
-Thesis: Chapter 5, Section 5.2.2
+Chap. 5, 5.2.2, Thesis
 
-Same generation pipeline for **Move 1: Establishing a Niche**, which has four sub-moves and was historically the most difficult to classify correctly (the distinctions between "claim a flaw," "highlight a gap," "raise an unclear question," and "extend prior research" are subtle).
+Same generation pipeline for **Move 1: Establishing a Niche**. This move has four sub-moves, and has been the hardest to classify correctly (the differences between “claim a flaw”, “highlight a gap”, “raise an unclear question” and “extend prior research” are subtle).
 
-- **Sub-moves:** `1.0` Claim flaw · `1.1` Gap · `1.2` Unclear question · `1.3` Extend
-- **Output:** ~54,000 unique synthetic sentences in `generated_move1/`, consumed by [Final Dataset Assembly](v3/5.checker.ipynb)
+- **Sub-moves:** `1.0` Claim flaw · `1.1` Gap · `1.2` Unclear question · `1.3` Extend 
+- **Output:** ~54k unique synthetic sentences in `generated_move1/`, utilized by [Final Dataset Assembly](v3/5.checker.ipynb)
 
----
+--- 
 
-### [4. Move 2 Generator](v3/4.move-2-generator.ipynb)
+### [4.  [Move 2 Generator](v3/4.move-2-generator.ipynb)
 
-Thesis: Chapter 5, Section 5.2.2
+Thesis: Section: 5.2.2 Chapter: 5
 
-Same generation pipeline for **Move 2: Occupying the Niche**. This move has five sub-moves, the least common of which (`2.4` outline structure, `2.2` share findings) are rarely seen in real introductions, which is why synthetic generation was especially important here.
+Same generation pipeline for **Move 2: Fill the Niche**. The least common of these moves (`2.4` outline structure, `2.2` share findings) are rarely seen in real introductions, so synthetic generation was especially important here.
 
-- **Sub-moves:** `2.0` Purpose · `2.1` Hypothesis · `2.2` Findings · `2.3` Value · `2.4` Structure
-- **Output:** ~48,000 unique synthetic sentences in `generated_move2/`, consumed by [Final Dataset Assembly](v3/5.checker.ipynb)
+2.0 Purpose · 2.1 Hypothesis · 2.2 Findings · 2.3 Value · 2.4 Structure
+~48,000 unique synthetic sentences in `generated_move2/`, used by [Final Dataset Assembly](v3/5.checker.ipynb)
 
----
+--- 
 
-### [5. Final Dataset Assembly](v3/5.checker.ipynb)
+### [5.  Final Dataset Compilation](v3/5.checker.ipynb)
 
-Thesis: Chapter 5, Section 5.2.3 and 5.3
+**Thesis** Chapter 5 5.2.3 5.3
 
-This notebook merges all data sources and runs a series of quality checks before BERT fine-tuning begins.
+This notebook aggregates all sources of data and performs a set of quality checks before BERT fine tuning is initiated.
 
-**Inputs:**
-- `generated_move0/` from [Move 0 Generator](v3/2.move-0-generator.ipynb)
-- `generated_move1/` from [Move 1 Generator](v3/3.move-1-generator.ipynb)
-- `generated_move2/` from [Move 2 Generator](v3/4.move-2-generator.ipynb)
-- `aggregated_data.csv` from [Outlier Detection](v3/1.outlier-detection.ipynb) (V2 re-labeled, -1 rows kept in the file but excluded at training time)
+Inputs:
+generated_move0/ from Move 0 Generator (v3/2.move-0-generator.ipynb)
+- `generated_move1/` from [Move 1 Generator](v3/3.move-1-generator.ipynb) 
+- `generated_move2/` from Move 2 Generator [v3/4.move-2-generator.ipynb](v3/4.move-2-generator.ipynb)
+- `aggregated_data.csv` from [Outlier Detection](v3/1.outlier-detection.ipynb) (V2 re-labeled, -1 rows kept in the file but not used during training)
 
-**Final dataset composition (from thesis Table 5.1-5.4):**
+**Final dataset composition (Table 5.1-5.4 in thesis):**
 
-| Move | Sentences | Sub-move breakdown |
-|---|---|---|
-| Move 0 | 56,468 | `0.0`: 27,799 · `0.1`: 28,669 |
-| Move 1 | 55,604 | `1.0`: 14,577 · `1.1`: 14,295 · `1.2`: 13,080 · `1.3`: 13,652 |
-| Move 2 | 57,657 | `2.0`: 27,217 · `2.1`: 18,724 · `2.2`: 5,026 · `2.3`: 5,635 · `2.4`: 1,955 |
-| Outliers (-1) | 30,599 | Filtered out before training |
-| **Training corpus** | **169,729** | After removing outliers |
+| Move | Sentences | Sub-move decomposition |
+|---|---|---| 
+| Move 0 | 56,468 | `0.0`: 27,799 · `0.1`: 28,669 | 
+Move 1 | 55,604 | `1.0`: 14,577 · `1.1`: 14,295 · `1.2`: 13,080 · `1.3`: 13,652 |
+| Move 2 | 57,657 | `2.0`: 27,217 · `2.1`: 18,724 · `2.2`: 5,026 · `2.3`: 5,635 · `2.4`: 1,955
+| Outliers (-1) | 30,599 | Removed in the pre-processing step |
+| **Training corpus** | **169,729** | Outlier removal |
 
-**Quality checks:**
-- Label cleaning: ~30 malformed label variants from Gemini output are normalized
-- Logistic Regression + PCA scatter plots per move group to check whether sub-move clusters separate visually
-- LaTeX artifact audit: 1,505 equation tokens · 22,031 citations · 2,918 other non-language tokens identified
-- Feature-engineered LR (TF-IDF + citation/equation/non-language counts) as a final sanity check on label quality
+**Quality Control**
+- Label cleaning: Normalized ~30 malformed variants of labels from Gemini output
+- PCA scatter plots per move group to check whether the sub-move clusters are visually separable (Logistic Regression + PCA)
+- LaTeX artifact audit: 1,505 equation tokens, 22,031 citations, 2,918 other non-language tokens identified
+- Sanity check of the final label quality using a feature-engineered LR (TF-IDF + citation count, equation count, non-language count)
 
-**Output:** `processed_data_with_outliers.csv`, consumed by all four BERT training notebooks: [Overall Move Classifier](<v3/6.pfe_training_moves_bert_model_06_26 (1).ipynb>), [Move 0 Sub-move Classifier](v3/7.pfe_training_sub_moves_0_bert_model_07_1.ipynb), [Move 1 Sub-move Classifier](v3/8.pfe_training_sub_moves_1_bert_model_07_1.ipynb), [Move 2 Sub-move Classifier](v3/9.pfe_training_sub_moves_2_bert_model_07_1.ipynb)
+**Output:** `processed_data_with_outliers.csv` used as input for the four BERT training notebooks: [Overall Move Classifier](<v3/6.pfe_training_moves_bert_model_06_26 (1).ipynb>), [Move 0 Sub-move Classifier](v3/7.pfe_training_sub_moves_0_bert_model_07_1.ipynb), [Move 1 Sub-move Classifier](v3/8.pfe_training_sub_moves_1_bert_model_07_1.ipynb), [Move 2 Sub-move Classifier](v3/9.pfe_training_sub_moves_2_bert_model_07_1.ipynb)
 
----
+--- 
 
-### [6. Overall Move Classifier](<v3/6.pfe_training_moves_bert_model_06_26 (1).ipynb>)
+### [6.  [Overall Move Classifier](<v3/6.pfe_training_moves_bert_model_06_26 (1).ipynb>)
 
-Thesis: Chapter 5, Section 5.3
+Thesis: Chapter 5: Section 5.3
 
-Fine-tunes BERT on the full 169,729-sentence corpus (from [Final Dataset Assembly](v3/5.checker.ipynb)) to classify any sentence into one of three top-level moves. This is **Model 1**, the first model called by the SaaS platform whenever a user submits an introduction.
+Fine-tunes BERT on the whole 169,729-sentence corpus (from [Final Dataset Assembly](v3/5.checker.ipynb)) to classify any sentence into one of three top-level moves. This is **Model 1** , the first model that the SaaS platform calls whenever a user submits an introduction.
 
-The input sentence is tokenized by `bert_en_uncased_l-12_h-768_a-12`, the `[CLS]` pooled output is passed through a Dropout(0.3) layer, and a Dense(3, softmax) head produces the final probabilities. All BERT parameters were unfrozen during fine-tuning.
+The input sentence is tokenized by `bert_en_uncased_l-12_h-768_a-12`, `[CLS]` pooled output is fed into a Dropout(0.3) layer, and a Dense(3, softmax) head produces the final probabilities. We unfreeze all BERT parameters during fine-tuning.
 
-| | |
-|---|---|
-| Classes | Move 0 · Move 1 · Move 2 |
-| Training data | 169,729 sentences (outliers removed) |
-| Split | 135,783 train / 16,973 val / 16,973 test (80/10/10) |
-| Optimizer | AdamW, LR 3e-5, batch size 32 |
-| Epochs | 3 (2 initial + 1 continued from checkpoint) |
-| **Accuracy** | **98.21 %** |
-| **Precision** | **98.35 %** |
-| **F1** | **98.21 %** |
+| | | 
+|---|---| 
+| Classes | Move 0 | Move 1 | Move 2 |
+| Outliers | 169,729 sentences (excluding outliers) |
+| Split | 135,783 train / 16,973 val / 16,973 test (80/10/10)
+| Optimizer | AdamW with learning rate 3e-5 and batch size 32 |
+Epochs | 3 (2 initial + 1 from checkpoint) |
+| **Accuracy** | 98.21% |
+| **Precision** | 98.35% |
+| **F1** | **98.21%** |
 
-The jump from 44.61 % (V1) to 98.21 % is explained by the combination of three things: a much larger and cleaner dataset, BERT's ability to capture sentence meaning rather than just word frequencies, and removing the outlier sentences that would have confused the model.
+The reason why it jumped from 44.61 % (V1) to 98.21 % is due to a combination of three things: a much larger and cleaner dataset, BERT's ability to understand sentence meaning instead of just word frequencies and getting rid of the outlier sentences that would have confused the model.
 
-This model is served via TensorFlow Serving as a standalone microservice in the SaaS platform.
+This model is deployed as a single microservice on the SaaS platform using TensorFlow Serving.
 
----
+--- 
 
-### [7. Move 0 Sub-move Classifier](v3/7.pfe_training_sub_moves_0_bert_model_07_1.ipynb)
+### [7.  [Move 0 Sub-move Classifier](v3/7.pfe_training_sub_moves_0_bert_model_07_1.ipynb)
 
-Thesis: Chapter 5, Section 5.3
+Thesis: Chapter Five, Section Five-Point-Three
 
-Fine-tunes BERT on the **Move 0 subset** of the corpus for **binary sub-move classification** (`0.0` vs `0.1`). This is **Model 2**, invoked only when the Overall Move Classifier predicts Move 0.
+Fine-tunes BERT on the **Move 0 subset** of the corpus for **binary sub-move classification** (`0.0` vs `0.1`).  This is **Model 2** which is only used when the Overall Move Classifier predicts Move 0.
 
-Using a separate specialist model per move (rather than one single model predicting all 11 sub-moves) was a specific choice: each model only needs to separate 2-5 closely related categories, which is a simpler task that trains faster and scores higher.
+We made a specific choice to use a separate specialist model for each move instead of a single model predicting all 11 sub-moves. The reason is that each model only needs to separate 2-5 closely related categories, which is a simpler task that trains faster and scores higher.
 
-| | |
-|---|---|
-| Classes | `0.0` Show importance · `0.1` Review prior research |
-| Training data | Move 0 subset (56,468 sentences total, 80 % for training) |
-| Optimizer | AdamW, LR 3e-5, batch size 32 |
-| **F1** | **0.8959** |
+| | | 
+|---|---| 
+| Classes | Importance `0.0` Review `0.1` Previous work
+| Training data | Move 0 subset (total 56,468 sentences, 80% for training) |
+| Optimizer | AdamW, learning rate 3e-5, batch size 32 |
+| **F1** | 0.8959 |
 
-Invoked when [Overall Move Classifier](<v3/6.pfe_training_moves_bert_model_06_26 (1).ipynb>) predicts Move 0.
+Called when [Overall Move Classifier](<v3/6.pfe_training_moves_bert_model_06_26 (1).ipynb>) outputs Move 0.
 
----
+--- 
 
-### [8. Move 1 Sub-move Classifier](v3/8.pfe_training_sub_moves_1_bert_model_07_1.ipynb)
+### [8.  [Sub-move Classifier for Move 1](v3/8.pfe_training_sub_moves_1_bert_model_07_1.ipynb)
 
-Thesis: Chapter 5, Section 5.3
+Thesis: Section 5.3, Chapter 5
 
-Fine-tunes BERT on the **Move 1 subset** for **4-class sub-move classification**. This is **Model 3**. Move 1 has the most closely related sub-moves - the difference between "there is a flaw in prior work" (1.0), "there is a gap" (1.1), "a question is unclear" (1.2), and "more research would be useful" (1.3) is small and requires the model to understand context well.
+Fine-tune BERT on ** Move 1 subset ** for ** 4-class sub-move classification ** . This is, **Model 3**. The sub-moves of Move 1 are the most similar – the difference between “there is a flaw in prior work” (1.0), “there is a gap” (1.1), “a question is unclear” (1.2), and “more research would be useful” (1.3) is small and requires the model to have a good understanding of context.
 
-| | |
-|---|---|
-| Classes | `1.0` Claim flaw · `1.1` Gap · `1.2` Unclear question · `1.3` Extend |
-| Training data | Move 1 subset (55,604 sentences total, 80 % for training) |
-| Optimizer | AdamW, LR 3e-5, batch size 32 |
-| **F1** | **0.9455** |
+| | | 
+|---|---| 
+| Classes | `1.0` Claim flaw · `1.1` Gap · `1.2` Unclear question · `1.3` Extend | 
+| Training data | Move 1 subset (Total: 55,604 sentences – 80% used for training) |
+| Optimizer | AdamW, LR 3e-5, batch size 32 | 
+| **F1** | **0.9455** | 
 
-Invoked when [Overall Move Classifier](<v3/6.pfe_training_moves_bert_model_06_26 (1).ipynb>) predicts Move 1.
+Called when Move 1 is predicted by [Overall Move Classifier](<v3/6.pfe_training_moves_bert_model_06_26 (1).ipynb>).
 
----
+--- 
 
-### [9. Move 2 Sub-move Classifier](v3/9.pfe_training_sub_moves_2_bert_model_07_1.ipynb)
+### [9.  Move 2 Sub-move Classifier](v3/9.pfe_training_sub_moves_2_bert_model_07_1.ipynb) 
 
-Thesis: Chapter 5, Section 5.3
+Thesis: Sec. 5.3 of Chap. 5
 
-Fine-tunes BERT on the **Move 2 subset** for **5-class sub-move classification**. This is **Model 4**. Move 2 achieved the highest sub-move F1 score of the three specialist models, likely because many Move 2 sub-moves have distinctive vocabulary (e.g., "the purpose of this paper" for 2.0, "we hypothesize" for 2.1, "this paper is organized as follows" for 2.4).
+Fine-tune BERT on **Move 2 subset** for **5-class sub-move classification**. This is **Model 4** Move 2 had the highest sub-move F1 score of the three specialist models, likely because many of the Move 2 sub-moves have distinctive vocabulary (e.g., “the purpose of this paper” for 2.0, “we hypothesize” for 2.1, “this paper is organized as follows” for 2.4).
 
-| | |
-|---|---|
-| Classes | `2.0` Purpose · `2.1` Hypothesis · `2.2` Findings · `2.3` Value · `2.4` Structure |
-| Training data | Move 2 subset (57,657 sentences total, 80 % for training) |
-| Optimizer | AdamW, LR 3e-5, batch size 32 |
-| **F1** | **0.9591** |
+| | | 
+|---|---| 
+| Classes | `2.0` Purpose · `2.1` Hypothesis · `2.2` Findings · `2.3` Value · `2.4` Structure | 
+| Move 2 training data | 57,657 sentences (80 % for training) |
+| Optimizer | AdamW, LR 3e-5, batch size 32 | 
+| **F1** | **.9591** |
 
-Invoked when [Overall Move Classifier](<v3/6.pfe_training_moves_bert_model_06_26 (1).ipynb>) predicts Move 2.
+Called when [Overall Move Classifier](<v3/6.pfe_training_moves_bert_model_06_26 (1).ipynb>) predicts Move 2.
 
----
+--- 
 
-## Final Model Performance Summary
+## Summary of the performance of the final model
 
-| Model | Task | Classes | F1 / Accuracy | Thesis ref |
-|---|---|---|---|---|
-| [Model 1: Overall](<v3/6.pfe_training_moves_bert_model_06_26 (1).ipynb>) | Move classification | 3 | **0.9821** | Table 5.5 |
-| [Model 2: Move 0](v3/7.pfe_training_sub_moves_0_bert_model_07_1.ipynb) | Move 0 sub-moves | 2 | **0.8959** | Table 5.6 |
-| [Model 3: Move 1](v3/8.pfe_training_sub_moves_1_bert_model_07_1.ipynb) | Move 1 sub-moves | 4 | **0.9455** | Table 5.6 |
-| [Model 4: Move 2](v3/9.pfe_training_sub_moves_2_bert_model_07_1.ipynb) | Move 2 sub-moves | 5 | **0.9591** | Table 5.6 |
+| Model | Task | Classes | F1 / Accuracy | Thesis ref | 
+|---|---|---|---|---| 
+| [Model 1: Overall](<v3/6.pfe_training_moves_bert_model_06_26 (1).ipynb>) | Move classification | 3 | **0.9821** | Table 5.5 | 
+| [Model 2: Move 0](v3/7.pfe_training_sub_moves_0_bert_model_07_1.ipynb) | Move 0 sub-moves | 2 | **0.8959** | Table 5.6 | 
+| [Model 3: Move 1](v3/8.pfe_training_sub_moves_1_bert_model_07_1.ipynb) | Move 1 sub-moves | 4 | **0.9455** | Table 5.6 | 
+| [Model 4: Move 2](v3/9.pfe_training_sub_moves_2_bert_model_07_1.ipynb) | Move 2 sub-moves | 5 | **0.9591** | Table 5.6 | 
 
-A sentence is first routed through Model 1 to identify its move, then passed to the matching specialist model for sub-move classification. Having one model per move (rather than one model for all 11 sub-moves) keeps each task simple and focused, which is why even the hardest case (Move 1, 4 classes) reaches 94.55 % F1.
+First, a sentence is passed through Model 1 to identify its move. Then, the matching specialist model is used for sub-move classification. There is one model per move (not one model for all 11 sub-moves), so each task is kept simple and focused. This is why even the hardest case (Move 1, 4 classes) reaches 94.55 % F1.
 
----
+--- 
 
-## Model Deployment
+### Running the Model
 
-After training, all four models were exported in the **SavedModel** format and published on Hugging Face:
+All four models were trained and exported in the **SavedModel** format and published on Hugging Face:
 
-| Model | Hugging Face |
-|---|---|
-| Model 1: Overall move classifier | [stormsidali2001/IMRAD_introduction_moves_classifier](https://huggingface.co/stormsidali2001/IMRAD_introduction_moves_classifier) |
-| Model 2: Move 0 sub-move classifier | [stormsidali2001/IMRAD-introduction-move-zero-sub-moves-classifier](https://huggingface.co/stormsidali2001/IMRAD-introduction-move-zero-sub-moves-classifier) |
-| Model 3: Move 1 sub-move classifier | [stormsidali2001/IMRAD-introduction-move-one-sub-moves-classifier](https://huggingface.co/stormsidali2001/IMRAD-introduction-move-one-sub-moves-classifier) |
-| Model 4: Move 2 sub-move classifier | [stormsidali2001/IMRAD-introduction-move-two-sub-moves-classifier](https://huggingface.co/stormsidali2001/IMRAD-introduction-move-two-sub-moves-classifier) |
+| Model | Hugging Face | 
+|---|---| 
+Model 1: Overall move classifier | [stormsidali2001/IMRAD_introduction_moves_classifier](https://huggingface.co/stormsidali2001/IMRAD_introduction_moves_classifier) |
+| Move 0 sub-move classifier | Model 2 | [stormsidali2001/IMRAD-introduction-move-zero-sub-moves-classifier](https://huggingface.co/stormsidali2001/IMRAD-introduction-move-zero-sub-moves-classifier) |
+| Model 3: Move 1 sub-move classifier | [stormsidali2001/IMRAD-introduction-move-one-sub-moves-classifier]( https://huggingface.co/stormsidali2001/IMRAD-introduction-move-one-sub-moves-classifier) |
+| Model 4: Move 2 sub-move classifier | [stormsidali2001/IMRAD-introduction-move-two-sub-moves-classifier](https://huggingface.co/stormsidali2001/IMRAD-introduction-move-two-sub-moves-classifier) | 
 
-The platform is built as a set of independent microservices. The four models plug into this architecture through two of them:
+The platform is built as a collection of independent microservices. Two of the four models are plugged into this architecture:
 
-**TensorFlow Serving** is a dedicated microservice whose only job is to load the four SavedModel files and expose them over HTTP. It is purpose-built for serving TensorFlow models efficiently, handling batching and hardware acceleration without any custom serving code.
+**TensorFlow Serving** is a dedicated microservice that loads the four SavedModel files and serves them over HTTP. It is designed to serve TensorFlow models efficiently, with batching and hardware acceleration without custom serving code.
 
-**AI Analysis microservice (FastAPI + Python)** sits between the rest of the platform and TensorFlow Serving. It receives an introduction text (either typed by the user or extracted from a PDF by a separate PDF Extractor microservice), splits it into sentences, and runs the two-stage classification: first calls Model 1 (overall move) for each sentence, then calls the right specialist model (2, 3, or 4) based on the result. This microservice also handles the premium features - introduction summarization and author thought-process generation - by calling the Gemini API (Gemini Pro / Gemini Flash).
+**AI Analysis microservice (FastAPI + Python)** is the component between the rest of the platform and TensorFlow Serving. The service accepts an introduction text (either typed in by the user or extracted from a PDF by a separate PDF Extractor microservice), splits it into sentences, and performs the two-stage classification: first calling Model 1 (overall move) for each sentence, then calling the right specialist model (2, 3, or 4) depending on the result. This microservice also manages the premium features - introduction summarization and author thought-process generation - by calling the Gemini API (Gemini Pro / Gemini Flash)
 
-The full platform is split across three repositories:
+The full platform is divided into three repositories:
 
-**[graduation_IMRAD_introduction_analysis_SaaS](https://github.com/stormsidali2001/graduation_IMRAD_introduction_analysis_SaaS)** - this repo. Contains the Next.js frontend, the Next.js API (auth, subscriptions, Stripe), Nginx config, and the Prisma/PostgreSQL schema.
+[graduation_IMRAD_introduction_analysis_SaaS](https://github.com/stormsidali2001/graduation_IMRAD_introduction_analysis_SaaS) - the repo. Includes the Next.js frontend, Next.js API (auth, subscriptions, Stripe), Nginx configuration, and Prisma/PostgreSQL schema.
 
-**[imrad_intros_moves_submoves_python_microservices](https://github.com/stormsidali2001/imrad_intros_moves_submoves_python_microservices)** - contains two Python services and the TensorFlow Serving Docker Compose setup:
-- AI Analysis microservice (FastAPI) - runs the classification pipeline and premium features
-- PDF Extractor microservice (FastAPI) - pulls introduction text from uploaded PDFs
-- `tensorflow-models/` - Docker Compose file that starts TensorFlow Serving with the four SavedModel files mounted
+**[imrad_intros_moves_submoves_python_microservices](https://github.com/stormsidali2001/imrad_intros_moves_submoves_python_microservices)** - two Python services and TensorFlow Serving Docker Compose setup.
+- AI Analysis microservice (FastAPI) - runs the classification pipeline and premium features 
+- PDF Extractor microservice (FastAPI) - extracts introduction text from uploaded PDFs
+- `tensorflow-models/` - Docker Compose file to run TensorFlow Serving with the four SavedModel files mounted
 
-**[imrad_introduction_moves_sub_moves_express_user_data](https://github.com/stormsidali2001/imrad_introduction_moves_sub_moves_express_user_data)** - the Express.js + TypeScript + MongoDB service that stores introduction predictions, summaries, and user feedback. Also contains the Redis and MongoDB Docker Compose files.
+[imrad_introduction_moves_sub_moves_express_user_data](https://github.com/stormsidali2001/imrad_introduction_moves_sub_moves_express_user_data) - A service using Express.js, TypeScript, and MongoDB to store introduction predictions, summaries, and user feedback. Also includes the docker-compose files for Redis and MongoDB.
 
-| Microservice | Repo | Tech | Role |
-|---|---|---|---|
-| API Gateway | graduation_IMRAD_introduction_analysis_SaaS | Nginx | Entry point, routes requests, SSL, rate limiting |
-| Service Discovery | (Spring Cloud Eureka server) | Spring Boot | Lets microservices find each other at runtime |
-| Frontend + Auth | graduation_IMRAD_introduction_analysis_SaaS | Next.js + PostgreSQL | UI, authentication, subscription management (Stripe) |
-| PDF Extractor | imrad_intros_moves_submoves_python_microservices | FastAPI (Python) | Extracts introduction text from uploaded PDFs |
-| Model Serving | imrad_intros_moves_submoves_python_microservices | TensorFlow Serving | Serves the 4 BERT models over HTTP (port 8501) |
-| AI Analysis | imrad_intros_moves_submoves_python_microservices | FastAPI (Python) | Runs classification pipeline, calls Gemini for premium features |
-| User Data | imrad_introduction_moves_sub_moves_express_user_data | Express.js + MongoDB | Stores predictions, summaries, and user feedback |
-| Message Broker | imrad_introduction_moves_sub_moves_express_user_data | Redis | Async communication between AI Analysis and User Data |
+| Microservice | Repo | Tech | Role | 
+|---|---|---|---| 
+| API Gateway | graduation_IMRAD_introduction_analysis_SaaS | Nginx | Entry point, route requests, SSL, rate limiting |
+| Service Discovery | (Spring Cloud Eureka server) | Spring Boot | Allows microservices to discover each other at runtime |
+| Frontend + Auth | graduation_IMRAD_introduction_analysis_SaaS | Next.js + PostgreSQL | UI, authentication, subscription management (Stripe) | 
+| PDF Extractor | imrad_intros_moves_submoves_python_microservices | FastAPI (Python) | Extracts introduction text from PDFs that are uploaded |
+| Model Serving | imrad_intros_moves_submoves_python_microservices | TensorFlow Serving | Serve the 4 BERT models over HTTP (port 8501) |
+| AI Analysis | imrad_intros_moves_submoves_python_microservices | FastAPI (Python) | Executes classification pipeline, invokes Gemini for premium features |
+| User Data | imrad_introduction_moves_sub_moves_express_user_data | Express.js + MongoDB | Store predictions, summaries, and user feedback |
+| Message Broker | imrad_introduction_moves_sub_moves_express_user_data | Redis | Asynchronous communication between AI Analysis and User Data |
