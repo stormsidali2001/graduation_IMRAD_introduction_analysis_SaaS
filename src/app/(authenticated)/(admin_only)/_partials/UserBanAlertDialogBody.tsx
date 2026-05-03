@@ -32,9 +32,9 @@ export const UserBanAlertDialogBody = ({ user }: { user: UserDtoType }) => {
         <AlertDialogAction
           onClick={async (e) => {
             if (!user.isBanned) {
-              await banUser({ userId: user.id });
+              await banUser({ userId: String(user.id) });
             } else {
-              await unbanUser({ userId: user.id });
+              await unbanUser({ userId: String(user.id) });
             }
           }}
         >
