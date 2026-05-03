@@ -6,7 +6,7 @@ import { ThemeProvider as NextThemesProvider } from "next-themes";
 import { type ThemeProviderProps } from "next-themes/dist/types";
 import { Toaster } from "@/components/ui/toaster";
 import { SessionProvider } from "next-auth/react";
-import { auth } from "@/lib/auth";
+import { getSession } from "@/lib/get-session";
 import { cn } from "@/lib/utils";
 import { eurekaClient } from "@/lib/eureka-client";
 
@@ -22,7 +22,7 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const session = await auth();
+  const session = await getSession();
   return (
     <html lang="en">
       <body
