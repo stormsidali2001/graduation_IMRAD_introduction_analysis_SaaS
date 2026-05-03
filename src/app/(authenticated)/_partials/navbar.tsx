@@ -14,7 +14,6 @@ import { Input } from "@/components/ui/input";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { getSession } from "@/lib/get-session";
 import { getCustomerPortalLinkAction } from "@/server/actions/get-customer-bortal-link";
-import { $Enums } from "@prisma/client";
 import {
   BookOpenIcon,
   CircleUserIcon,
@@ -35,7 +34,7 @@ export const Navbar = async () => {
   const { user } = session;
   let customerPortalLink: string = "#";
   const isPremium = user.plan === "premium";
-  const isAdmin = user.role === $Enums.Role.Admin;
+  const isAdmin = user.role === "Admin";
 
   if (isPremium && !isAdmin) {
     customerPortalLink = (await getCustomerPortalLinkAction({})).data;

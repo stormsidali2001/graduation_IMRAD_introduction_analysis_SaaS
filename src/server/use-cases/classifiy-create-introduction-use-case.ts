@@ -1,8 +1,6 @@
 import { hashPassword } from "@/lib/server-utils";
 import { createIntroduction } from "../services/user-data";
 import { makePrediction } from "../services/predictions";
-import { $Enums } from "@prisma/client";
-
 export const classifyCreateIntroductionUsecase = async ({
   sentences,
   plan,
@@ -10,7 +8,7 @@ export const classifyCreateIntroductionUsecase = async ({
 }: {
   sentences: string[];
   userId: string;
-  plan: $Enums.Plan;
+  plan: "free" | "premium";
 }) => {
   try {
     const sha = await hashPassword(sentences.join("."));

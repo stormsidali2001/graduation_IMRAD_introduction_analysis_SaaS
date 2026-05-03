@@ -12,7 +12,6 @@ import {
   UserDto,
   UserDtoType,
 } from "../validation/UserDto";
-import { $Enums } from "@prisma/client";
 import { SubscriptionDto } from "../validation/SubscriptionDto";
 import { ActionError } from "@/lib/safe-action";
 import { isPreviewMode } from "@/lib/preview-mode";
@@ -86,7 +85,7 @@ export const createUser = async (
     name,
     customerId,
   }: Omit<RegisterUserInput, "passwordConfirmation"> & { customerId: string },
-  role: $Enums.Role = "User",
+  role: "Admin" | "User" = "User",
 ) => {
   const hashedPassword = await hashPassword(password);
   try {
@@ -97,7 +96,7 @@ export const createUser = async (
         name,
         role,
         customerId,
-        plan: $Enums.Plan.free,
+        plan: "free",
       },
     });
 

@@ -1,4 +1,3 @@
-import { $Enums } from "@prisma/client";
 import { z } from "zod";
 export const UserDto = z.object({
   id: z.string(),
@@ -8,8 +7,8 @@ export const UserDto = z.object({
   createdAt: z.date(),
   customerId: z.string(),
   isBanned: z.boolean(),
-  role: z.enum([$Enums.Role.Admin, $Enums.Role.User]),
-  plan: z.enum([$Enums.Plan.free, $Enums.Plan.premium]),
+  role: z.enum(["Admin", "User"]),
+  plan: z.enum(["free", "premium"]),
   emailVerified: z.date().optional().nullable(),
 });
 
@@ -18,8 +17,8 @@ export const PrivateUserDto = z.object({
   name: z.string(),
   email: z.string(),
   image: z.string().optional().nullable(),
-  role: z.enum([$Enums.Role.Admin, $Enums.Role.User]),
-  plan: z.enum([$Enums.Plan.free, $Enums.Plan.premium]),
+  role: z.enum(["Admin", "User"]),
+  plan: z.enum(["free", "premium"]),
   createdAt: z.date(),
   isBanned: z.boolean(),
   password: z.string(),

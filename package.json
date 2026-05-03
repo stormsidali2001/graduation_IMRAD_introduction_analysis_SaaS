@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "seed": "tsx ./src/server/seeders/index.ts",
-    "build": "next build",
+    "build": "prisma generate && next build",
     "start": "next start",
     "db:push": "npx prisma db push",
     "lint": "next lint"

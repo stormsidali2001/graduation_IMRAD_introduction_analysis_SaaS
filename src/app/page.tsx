@@ -291,7 +291,7 @@ export default function LandingPage() {
                 </motion.div>
                 <motion.h1
                   variants={slideUp}
-                  className="text-4xl font-extrabold tracking-tight sm:text-5xl xl:text-6xl text-gray-900 leading-tight"
+                  className="text-4xl font-bold tracking-tight sm:text-5xl xl:text-6xl text-gray-800 leading-tight"
                 >
                   Understand the Structure of Any Scientific Introduction,{" "}
                   <span className="bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-indigo-500">
@@ -631,9 +631,8 @@ export default function LandingPage() {
                   </Link>
                 </Button>
                 <Button
-                  variant="outline"
                   size="lg"
-                  className="h-11 px-8 border-white text-white hover:bg-white/10"
+                  className="h-11 px-8 bg-transparent border-2 border-white text-white hover:bg-white/10 font-semibold"
                   asChild
                 >
                   <Link href="#pricing">View Pricing</Link>

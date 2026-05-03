@@ -1,12 +1,11 @@
 import { RegisterUserParams } from "@/schema/validation/register-user.schema";
 import { createStripeCustomer } from "../services/stripe";
 import { createUser, findUserByEmail } from "../services/user-service";
-import { $Enums } from "@prisma/client";
 import { isPreviewMode } from "@/lib/preview-mode";
 
 export const registerUserUseCase = async (
   { email, name, password }: RegisterUserParams,
-  role: $Enums.Role = $Enums.Role.User,
+  role: "Admin" | "User" = "User",
 ) => {
   if (isPreviewMode()) return;
   try {
