@@ -1,10 +1,12 @@
 import Link from "next/link";
-import { BookOpenIcon, UserIcon, ShieldCheckIcon, EyeIcon } from "lucide-react";
+import { BookOpenIcon, UserIcon, ShieldCheckIcon, EyeIcon, ExternalLinkIcon, ServerIcon } from "lucide-react";
 import { setPreviewRole } from "@/server/actions/set-preview-role";
+
+const REPO_URL = "https://github.com/stormsidali2001/graduation_IMRAD_introduction_analysis_SaaS/";
 
 export function PreviewModeNotice() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-100 to-indigo-200">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-100 to-indigo-200 py-10">
       <div className="max-w-lg w-full mx-4 space-y-4">
 
         {/* Header card */}
@@ -87,6 +89,29 @@ export function PreviewModeNotice() {
               </span>
             </button>
           </form>
+        </div>
+
+        {/* Why mock data — microservices context */}
+        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-5 space-y-3">
+          <div className="flex items-center gap-2 text-gray-700">
+            <ServerIcon className="h-4 w-4 text-purple-500 flex-shrink-0" />
+            <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">Why mock data?</p>
+          </div>
+          <p className="text-xs text-gray-500 leading-relaxed">
+            The full platform is an <span className="font-semibold text-gray-700">8-node microservices architecture</span> — including
+            a fine-tuned NLP model server, a Eureka service registry, a PostgreSQL database, Stripe billing, and a Resend email service.
+            Running all nodes continuously has real infrastructure costs and maintenance overhead, so this public demo
+            uses simulated data to let you explore every feature without spinning up the full stack.
+          </p>
+          <Link
+            href={REPO_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-2 text-xs font-semibold text-purple-700 hover:text-purple-900 transition-colors group"
+          >
+            <ExternalLinkIcon className="h-4 w-4" />
+            <span className="underline underline-offset-2">View source &amp; run locally on GitHub</span>
+          </Link>
         </div>
 
         <p className="text-center text-xs text-gray-400">

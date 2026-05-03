@@ -19,6 +19,7 @@ export const IntroductionDto = z.object({
   sentences: z.array(SentenceDto),
   summary: z.string().optional(),
   classBasedSummary: z.string().optional(),
+  authorHypotheticalThoughtProcess: z.string().optional(),
   averageSubMoveConfidence: z.number().optional(),
   averageMoveConfidence: z.number().optional(),
 });

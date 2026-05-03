@@ -58,6 +58,21 @@ const Page = async ({ params: { id } }) => {
           </div>
         ) : null}
 
+        {(user.role === "Admin" || user.plan === "premium") &&
+        introduction.authorHypotheticalThoughtProcess ? (
+          <div className="bg-white/70 backdrop-blur-sm border border-gray-100 shadow-md rounded-xl p-6 md:p-8 space-y-6">
+            <div className="flex items-center justify-between">
+              <h2 className="text-2xl font-semibold text-gray-800">Author&apos;s Hypothetical Thought Process</h2>
+              <Badge variant="outline" className="bg-purple-100 text-purple-700 border-purple-200 font-semibold">
+                Premium
+              </Badge>
+            </div>
+            <Markdown className="text-gray-600 prose prose-sm max-w-none">
+              {introduction.authorHypotheticalThoughtProcess}
+            </Markdown>
+          </div>
+        ) : null}
+
         <IntroductionAnalysis
           hideFeedbacks={user.role === "Admin"}
           sentences={introduction.sentences.map((s) => ({
