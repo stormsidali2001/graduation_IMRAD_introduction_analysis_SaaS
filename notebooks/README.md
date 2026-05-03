@@ -17,21 +17,21 @@ Sid Ali Assoul SIW · École Supérieure en Informatique 2022-2023
 - [Pipeline Overview](#pipeline-overview) 
 - [Directory Structure](#directory-structure) 
 - [Phase 1: Baseline](#phase-1-baseline) 
-- [1.  Gemini V1 Annotation](#1-gemini-v1-annotation) 
-- [2.  [2. V1 BERT Training](#2-v1-bert-training)
-- [Phase 2: Refinement](#phase-2-refinement-1)
-- [1.  # 1. Gemini V2 Note
-- [2.  Classifier Benchmarking](#2-classifier-benchmarking) 
+- [1. Gemini V1 Annotation](#1-gemini-v1-annotation) 
+- [2. V1 BERT Training](#2-v1-bert-training)
+- [Phase 2: Refinement](#phase-2-refinement)
+- [1. Gemini V2 Annotation](#1-gemini-v2-annotation)
+- [2. Classifier Benchmarking](#2-classifier-benchmarking) 
 - [Phase 3: Final Models](#phase-3-final-models) 
-- [1.  Outlier Detection](#1-outlier-detection) 
-- [2.  [Move 0 Generator](#2-move-0-generator)
-- [3.  3. Swap 1 Generator
-- [4.  Move 2 Generator](#4-move-2-generator) 
-- [5.  Final Dataset Assembly </a>
-- [6.  # Move Classifier #6 Overall
-- [7.  [7. Move 0 Sub-move Classifier](#7-move-0-sub-move-classifier)
-- [8.  [8. Move 1 Sub-move Classifier](#8-move-1-sub-move-classifier)
-- [9.  [Move 2 Sub-move Classifier](#9-move-2-sub-move-classifier)
+- [1. Outlier Detection](#1-outlier-detection) 
+- [2. Move 0 Generator](#2-move-0-generator)
+- [3. Move 1 Generator](#3-move-1-generator)
+- [4. Move 2 Generator](#4-move-2-generator) 
+- [5. Final Dataset Assembly](#5-final-dataset-assembly)
+- [6. Overall Move Classifier](#6-overall-move-classifier)
+- [7. Move 0 Sub-move Classifier](#7-move-0-sub-move-classifier)
+- [8. Move 1 Sub-move Classifier](#8-move-1-sub-move-classifier)
+- [9. Move 2 Sub-move Classifier](#9-move-2-sub-move-classifier)
 - [Summary of Final Model Performance](#final-model-performance-summary)
 - [Deploying Models](#model-deployment)
 
@@ -152,7 +152,7 @@ notebooks/
 
 **Objective:** Show the idea. Annotate first sentences of introduction with Gemini Pro Train first BERT model Realise that this baseline will be wrong.
 
-### [1.  [Gemini V1 Annotation](v1/1.gemini_moves_generation.html)
+### [1. Gemini V1 Annotation](v1/1.gemini_moves_generation.ipynb)
 
 THESIS: CHAPTER 3: SECTION 3.1.1
 
@@ -173,11 +173,11 @@ The corpus was processed in chunks of 1,000 rows, and results were saved increme
 - **Source of data:** unarXive intro sentences (subset)
 - **Prompt type:** V1 - 3 classes, no definitions, no examples, text output
 - **Output format:** CSV chunks with a single move name per sentence, saved in `/pfe/gemini-results/`
-- **Limitation** No details of sub moves. Output was free-form text (e.g., “establishing a niche”) that needed to be normalized in post-processing. The ambiguity in the prompt led to ambiguous and inconsistent labels.
+- **Limitation:** No details of sub moves. Output was free-form text (e.g., “establishing a niche”) that needed to be normalized in post-processing. The ambiguity in the prompt led to ambiguous and inconsistent labels.
 
 --- 
 
-### [2.  V1 BERT Training](v1/2.bert_classification_imrad_moves_latest_v8_new_dataset.ipynb) 
+### [2. V1 BERT Training](v1/2.bert_classification_imrad_moves_latest_v8_new_dataset.ipynb) 
 
 Thesis: Chapter 3, Section 3.1.2 and 3.2 
 
@@ -188,10 +188,10 @@ The architecture adds a small classification head on top of BERT’s representat
 | | | 
 |---|---| 
 | Architecture | BERT -> Dropout(0.3) -> Dense(3, softmax) | 
-Optimizer | AdamW, LR 3e-5 |
-Batch size | 32 |
-Epochs 15 (Early Stopping)
-Data split | 80% training / 10% validation / 10% test |
+| Optimizer | AdamW, LR 3e-5 |
+| Batch size | 32 |
+| Epochs | 15 (Early Stopping) |
+| Data split | 80% training / 10% validation / 10% test |
 | **Accuracy** | **44.61** |
 
 So the model is learning something, but 44.61 % accuracy is way too low for practical use (the random baseline for 3 classes would be 33.3 %). Over 15 epochs, the train loss hovered around ~1.96, and the val loss around ~1.94 for every epoch, which is a very strong indication that the data labels are too noisy for the model to find any kind of reliable signal.
@@ -209,7 +209,7 @@ This bad result made the redesign in phase 2 necessary.
 
 **Goal:** Re-architect prompt using sub-moves to improve annotation quality Before spending GPU time on a second BERT run, measure if the new prompt produced better data using lightweight TF-IDF classifiers (not BERT).
 
-### [1.  [Gemini V2 Annotation](v2/1.generate_moves_predictions.ipynb)
+### [1. Gemini V2 Annotation](v2/1.generate_moves_predictions.ipynb)
 
 Thesis: Chapter 4, Section 4.1.2.
 
@@ -226,7 +226,7 @@ Major change vs V1: 11 sub-move definitions + examples + JSON output -> much cle
 
 --- 
 
-### [2.  Classifier Benchmarking](v2/2.testing_generated_move_predictions.ipynb) 
+### [2. Classifier Benchmarking](v2/2.testing_generated_move_predictions.ipynb) 
 
 Thesis: Chapter 4, sub-section 4.2
 
@@ -238,14 +238,14 @@ The reason for using TF-IDF instead of BERT here: training a BERT model takes ho
 
 **Dataset: 148,220 sentences, 11 valid sub-move tags**
 
-Classifier | Accuracy |
+| Classifier | Accuracy |
 |---|---| 
-Random Forest | **60.7%** |
+| Random Forest | **60.7%** |
 | Logistic Regression | 60.0% |
-Neural Network (Keras) | 57.5% |
+| Neural Network (Keras) | 57.5% |
 | Naive Bayes | 55.6 |
 | K-Nearest Neighbors | 54.0% |
-Decision Tree | 51.6 % |
+| Decision Tree | 51.6 % |
 
 60% is a strong signal that the labels are meaningful as compared to a random baseline of ~9% for 11 classes. The improvement over V1 (where BERT itself only reached 44 % on 3 classes) confirms that the enhanced sub-move prompt produced significantly better annotations.
 
@@ -259,7 +259,7 @@ Saves full dataset as `aggregated_data.csv`, used by [Outlier Detection](v3/1.ou
 
 **Objective:** Remove non-introduction sentences from V2, balance the dataset by generating synthetic sentences for each sub-move, and fine-tune four BERT models for final deployment.
 
-### [1.  [Outlier Detection](v3/1.outlier-detection.ipynb)
+### [1. Outlier Detection](v3/1.outlier-detection.ipynb)
 
 Chapter 5 Section 5.2.1 Thesis:
 
@@ -277,7 +277,7 @@ We removed from training the sentences that were labeled as outliers by label `-
 
 --- 
 
-### [2.  [Move 0 Generator](v3/2.move-0-generator.ipynb)
+### [2. Move 0 Generator](v3/2.move-0-generator.ipynb)
 
 Thesis Chapter 5, Section 5.2.2
 
@@ -293,7 +293,7 @@ The key breakthrough compared to earlier generation attempts was to include **co
 
 --- 
 
-### [3.  [Move 1 Generator](v3/3.move-1-generator.ipynb)
+### [3. Move 1 Generator](v3/3.move-1-generator.ipynb)
 
 Chap. 5, 5.2.2, Thesis
 
@@ -304,27 +304,27 @@ Same generation pipeline for **Move 1: Establishing a Niche**. This move has fou
 
 --- 
 
-### [4.  [Move 2 Generator](v3/4.move-2-generator.ipynb)
+### [4. Move 2 Generator](v3/4.move-2-generator.ipynb)
 
 Thesis: Section: 5.2.2 Chapter: 5
 
 Same generation pipeline for **Move 2: Fill the Niche**. The least common of these moves (`2.4` outline structure, `2.2` share findings) are rarely seen in real introductions, so synthetic generation was especially important here.
 
-2.0 Purpose · 2.1 Hypothesis · 2.2 Findings · 2.3 Value · 2.4 Structure
-~48,000 unique synthetic sentences in `generated_move2/`, used by [Final Dataset Assembly](v3/5.checker.ipynb)
+- **Sub-moves:** 2.0 Purpose · 2.1 Hypothesis · 2.2 Findings · 2.3 Value · 2.4 Structure
+- **Output:** ~48,000 unique synthetic sentences in `generated_move2/`, used by [Final Dataset Assembly](v3/5.checker.ipynb)
 
 --- 
 
-### [5.  Final Dataset Compilation](v3/5.checker.ipynb)
+### [5. Final Dataset Assembly](v3/5.checker.ipynb)
 
 **Thesis** Chapter 5 5.2.3 5.3
 
 This notebook aggregates all sources of data and performs a set of quality checks before BERT fine tuning is initiated.
 
 Inputs:
-generated_move0/ from Move 0 Generator (v3/2.move-0-generator.ipynb)
+- `generated_move0/` from [Move 0 Generator](v3/2.move-0-generator.ipynb)
 - `generated_move1/` from [Move 1 Generator](v3/3.move-1-generator.ipynb) 
-- `generated_move2/` from Move 2 Generator [v3/4.move-2-generator.ipynb](v3/4.move-2-generator.ipynb)
+- `generated_move2/` from [Move 2 Generator](v3/4.move-2-generator.ipynb)
 - `aggregated_data.csv` from [Outlier Detection](v3/1.outlier-detection.ipynb) (V2 re-labeled, -1 rows kept in the file but not used during training)
 
 **Final dataset composition (Table 5.1-5.4 in thesis):**
@@ -332,8 +332,8 @@ generated_move0/ from Move 0 Generator (v3/2.move-0-generator.ipynb)
 | Move | Sentences | Sub-move decomposition |
 |---|---|---| 
 | Move 0 | 56,468 | `0.0`: 27,799 · `0.1`: 28,669 | 
-Move 1 | 55,604 | `1.0`: 14,577 · `1.1`: 14,295 · `1.2`: 13,080 · `1.3`: 13,652 |
-| Move 2 | 57,657 | `2.0`: 27,217 · `2.1`: 18,724 · `2.2`: 5,026 · `2.3`: 5,635 · `2.4`: 1,955
+| Move 1 | 55,604 | `1.0`: 14,577 · `1.1`: 14,295 · `1.2`: 13,080 · `1.3`: 13,652 |
+| Move 2 | 57,657 | `2.0`: 27,217 · `2.1`: 18,724 · `2.2`: 5,026 · `2.3`: 5,635 · `2.4`: 1,955 |
 | Outliers (-1) | 30,599 | Removed in the pre-processing step |
 | **Training corpus** | **169,729** | Outlier removal |
 
@@ -347,7 +347,7 @@ Move 1 | 55,604 | `1.0`: 14,577 · `1.1`: 14,295 · `1.2`: 13,080 · `1.3`: 13,6
 
 --- 
 
-### [6.  [Overall Move Classifier](<v3/6.pfe_training_moves_bert_model_06_26 (1).ipynb>)
+### [6. Overall Move Classifier](<v3/6.pfe_training_moves_bert_model_06_26 (1).ipynb>)
 
 Thesis: Chapter 5: Section 5.3
 
@@ -357,11 +357,11 @@ The input sentence is tokenized by `bert_en_uncased_l-12_h-768_a-12`, `[CLS]` po
 
 | | | 
 |---|---| 
-| Classes | Move 0 | Move 1 | Move 2 |
-| Outliers | 169,729 sentences (excluding outliers) |
-| Split | 135,783 train / 16,973 val / 16,973 test (80/10/10)
+| Classes | Move 0, Move 1, Move 2 |
+| Total sentences | 169,729 sentences (excluding outliers) |
+| Split | 135,783 train / 16,973 val / 16,973 test (80/10/10) |
 | Optimizer | AdamW with learning rate 3e-5 and batch size 32 |
-Epochs | 3 (2 initial + 1 from checkpoint) |
+| Epochs | 3 (2 initial + 1 from checkpoint) |
 | **Accuracy** | 98.21% |
 | **Precision** | 98.35% |
 | **F1** | **98.21%** |
@@ -372,7 +372,7 @@ This model is deployed as a single microservice on the SaaS platform using Tenso
 
 --- 
 
-### [7.  [Move 0 Sub-move Classifier](v3/7.pfe_training_sub_moves_0_bert_model_07_1.ipynb)
+### [7. Move 0 Sub-move Classifier](v3/7.pfe_training_sub_moves_0_bert_model_07_1.ipynb)
 
 Thesis: Chapter Five, Section Five-Point-Three
 
@@ -382,7 +382,7 @@ We made a specific choice to use a separate specialist model for each move inste
 
 | | | 
 |---|---| 
-| Classes | Importance `0.0` Review `0.1` Previous work
+| Classes | Importance `0.0`, Review `0.1` |
 | Training data | Move 0 subset (total 56,468 sentences, 80% for training) |
 | Optimizer | AdamW, learning rate 3e-5, batch size 32 |
 | **F1** | 0.8959 |
@@ -391,15 +391,15 @@ Called when [Overall Move Classifier](<v3/6.pfe_training_moves_bert_model_06_26 
 
 --- 
 
-### [8.  [Sub-move Classifier for Move 1](v3/8.pfe_training_sub_moves_1_bert_model_07_1.ipynb)
+### [8. Move 1 Sub-move Classifier](v3/8.pfe_training_sub_moves_1_bert_model_07_1.ipynb)
 
 Thesis: Section 5.3, Chapter 5
 
-Fine-tune BERT on ** Move 1 subset ** for ** 4-class sub-move classification ** . This is, **Model 3**. The sub-moves of Move 1 are the most similar – the difference between “there is a flaw in prior work” (1.0), “there is a gap” (1.1), “a question is unclear” (1.2), and “more research would be useful” (1.3) is small and requires the model to have a good understanding of context.
+Fine-tune BERT on **Move 1 subset** for **4-class sub-move classification**. This is **Model 3**. The sub-moves of Move 1 are the most similar – the difference between “there is a flaw in prior work” (1.0), “there is a gap” (1.1), “a question is unclear” (1.2), and “more research would be useful” (1.3) is small and requires the model to have a good understanding of context.
 
 | | | 
 |---|---| 
-| Classes | `1.0` Claim flaw · `1.1` Gap · `1.2` Unclear question · `1.3` Extend | 
+| Classes | `1.0` Claim flaw, `1.1` Gap, `1.2` Unclear question, `1.3` Extend | 
 | Training data | Move 1 subset (Total: 55,604 sentences – 80% used for training) |
 | Optimizer | AdamW, LR 3e-5, batch size 32 | 
 | **F1** | **0.9455** | 
@@ -408,7 +408,7 @@ Called when Move 1 is predicted by [Overall Move Classifier](<v3/6.pfe_training_
 
 --- 
 
-### [9.  Move 2 Sub-move Classifier](v3/9.pfe_training_sub_moves_2_bert_model_07_1.ipynb) 
+### [9. Move 2 Sub-move Classifier](v3/9.pfe_training_sub_moves_2_bert_model_07_1.ipynb) 
 
 Thesis: Sec. 5.3 of Chap. 5
 
@@ -416,16 +416,16 @@ Fine-tune BERT on **Move 2 subset** for **5-class sub-move classification**. Thi
 
 | | | 
 |---|---| 
-| Classes | `2.0` Purpose · `2.1` Hypothesis · `2.2` Findings · `2.3` Value · `2.4` Structure | 
+| Classes | `2.0` Purpose, `2.1` Hypothesis, `2.2` Findings, `2.3` Value, `2.4` Structure | 
 | Move 2 training data | 57,657 sentences (80 % for training) |
 | Optimizer | AdamW, LR 3e-5, batch size 32 | 
-| **F1** | **.9591** |
+| **F1** | **0.9591** |
 
 Called when [Overall Move Classifier](<v3/6.pfe_training_moves_bert_model_06_26 (1).ipynb>) predicts Move 2.
 
 --- 
 
-## Summary of the performance of the final model
+## Summary of Final Model Performance
 
 | Model | Task | Classes | F1 / Accuracy | Thesis ref | 
 |---|---|---|---|---| 
@@ -438,15 +438,15 @@ First, a sentence is passed through Model 1 to identify its move. Then, the matc
 
 --- 
 
-### Running the Model
+## Deploying Models
 
 All four models were trained and exported in the **SavedModel** format and published on Hugging Face:
 
 | Model | Hugging Face | 
 |---|---| 
-Model 1: Overall move classifier | [stormsidali2001/IMRAD_introduction_moves_classifier](https://huggingface.co/stormsidali2001/IMRAD_introduction_moves_classifier) |
-| Move 0 sub-move classifier | Model 2 | [stormsidali2001/IMRAD-introduction-move-zero-sub-moves-classifier](https://huggingface.co/stormsidali2001/IMRAD-introduction-move-zero-sub-moves-classifier) |
-| Model 3: Move 1 sub-move classifier | [stormsidali2001/IMRAD-introduction-move-one-sub-moves-classifier]( https://huggingface.co/stormsidali2001/IMRAD-introduction-move-one-sub-moves-classifier) |
+| Model 1: Overall move classifier | [stormsidali2001/IMRAD_introduction_moves_classifier](https://huggingface.co/stormsidali2001/IMRAD_introduction_moves_classifier) |
+| Model 2: Move 0 sub-move classifier | [stormsidali2001/IMRAD-introduction-move-zero-sub-moves-classifier](https://huggingface.co/stormsidali2001/IMRAD-introduction-move-zero-sub-moves-classifier) |
+| Model 3: Move 1 sub-move classifier | [stormsidali2001/IMRAD-introduction-move-one-sub-moves-classifier](https://huggingface.co/stormsidali2001/IMRAD-introduction-move-one-sub-moves-classifier) |
 | Model 4: Move 2 sub-move classifier | [stormsidali2001/IMRAD-introduction-move-two-sub-moves-classifier](https://huggingface.co/stormsidali2001/IMRAD-introduction-move-two-sub-moves-classifier) | 
 
 The platform is built as a collection of independent microservices. Two of the four models are plugged into this architecture:
