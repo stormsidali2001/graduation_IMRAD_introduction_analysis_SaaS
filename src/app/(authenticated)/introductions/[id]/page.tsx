@@ -1,6 +1,5 @@
 import { IntroductionAnalysis } from "@/app/IntroductionAnalysis";
-import { getNextPage } from "@/common/getPage";
-import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { getSession } from "@/lib/get-session";
 import { getIntroductionAction } from "@/server/actions/get-introduction";
 import { redirect } from "next/navigation";
@@ -17,25 +16,28 @@ const Page = async ({ params: { id } }) => {
   return (
     <div className="w-full max-w-5xl mx-auto px-4 md:px-6 py-12 md:py-20">
       <div className="space-y-8">
-        <div className="text-center">
-          <h1 className="text-4xl md:text-5xl font-bold tracking-tight">
+        <div className="text-center space-y-3">
+          <Badge variant="outline" className="bg-purple-100 text-purple-700 border-purple-200 text-xs font-semibold rounded-full">
+            Analysis
+          </Badge>
+          <h1 className="text-4xl md:text-5xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-indigo-500">
             Introduction Details
           </h1>
-          <p className="mt-4 max-w-3xl mx-auto text-muted-foreground md:text-xl">
+          <p className="mt-4 max-w-3xl mx-auto text-gray-500 md:text-xl">
             Explore the details of the introduction and provide feedback on the
             predicted moves and submoves.
           </p>
         </div>
         {(user.role === "Admin" || user.plan === "premium") &&
         introduction.summary ? (
-          <div className="bg-card rounded-lg p-6 md:p-8 space-y-6">
+          <div className="bg-white/70 backdrop-blur-sm border border-gray-100 shadow-md rounded-xl p-6 md:p-8 space-y-6">
             <div className="flex items-center justify-between">
-              <h2 className="text-2xl font-semibold">Summary</h2>
-              <div className="bg-primary text-primary-foreground px-3 py-1 rounded-md text-sm font-medium">
+              <h2 className="text-2xl font-semibold text-gray-800">Summary</h2>
+              <Badge variant="outline" className="bg-purple-100 text-purple-700 border-purple-200 font-semibold">
                 Premium
-              </div>
+              </Badge>
             </div>
-            <Markdown className="text-muted-foreground">
+            <Markdown className="text-gray-600 prose prose-sm max-w-none">
               {introduction.summary}
             </Markdown>
           </div>
@@ -43,14 +45,14 @@ const Page = async ({ params: { id } }) => {
 
         {(user.role === "Admin" || user.plan === "premium") &&
         introduction.classBasedSummary ? (
-          <div className="bg-card rounded-lg p-6 md:p-8 space-y-6">
+          <div className="bg-white/70 backdrop-blur-sm border border-gray-100 shadow-md rounded-xl p-6 md:p-8 space-y-6">
             <div className="flex items-center justify-between">
-              <h2 className="text-2xl font-semibold">Class Based Summary</h2>
-              <div className="bg-primary text-primary-foreground px-3 py-1 rounded-md text-sm font-medium">
+              <h2 className="text-2xl font-semibold text-gray-800">Class Based Summary</h2>
+              <Badge variant="outline" className="bg-purple-100 text-purple-700 border-purple-200 font-semibold">
                 Premium
-              </div>
+              </Badge>
             </div>
-            <Markdown className="text-muted-foreground">
+            <Markdown className="text-gray-600 prose prose-sm max-w-none">
               {introduction.classBasedSummary}
             </Markdown>
           </div>

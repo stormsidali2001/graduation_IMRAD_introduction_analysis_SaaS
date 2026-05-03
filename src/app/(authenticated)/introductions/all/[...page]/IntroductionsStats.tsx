@@ -43,11 +43,11 @@ export const IntroductionsStats = ({
         initial="hidden"
         animate="visible"
         transition={{ duration: 0.5 }}
-        className="overflow-hidden"
+        className="overflow-hidden bg-white/70 backdrop-blur-sm border border-gray-100 shadow-md"
       >
-        <CardHeader>
-          <CardTitle>IMRAD Introduction Moves</CardTitle>
-          <CardDescription className="text-blue-100">
+        <CardHeader className="bg-gradient-to-r from-purple-500/80 to-indigo-500">
+          <CardTitle className="text-white">IMRAD Introduction Moves</CardTitle>
+          <CardDescription className="text-purple-100">
             Total: {totalIntroductions ?? 0}
           </CardDescription>
         </CardHeader>
@@ -83,11 +83,11 @@ export const IntroductionsStats = ({
         initial="hidden"
         animate="visible"
         transition={{ duration: 0.5, delay: 0.2 }}
-        className="overflow-hidden"
+        className="overflow-hidden bg-white/70 backdrop-blur-sm border border-gray-100 shadow-md"
       >
-        <CardHeader className="bg-gradient-to-r from-green-500 to-teal-500 text-white">
-          <CardTitle>Confidence Scores</CardTitle>
-          <CardDescription className="text-green-100">
+        <CardHeader className="bg-gradient-to-r from-purple-500/80 to-indigo-500">
+          <CardTitle className="text-white">Confidence Scores</CardTitle>
+          <CardDescription className="text-purple-100">
             Average:{" "}
             {((averageConfidenceScore?.avgMoveConfidence ?? 0) * 100).toFixed(
               0,
@@ -112,7 +112,7 @@ export const IntroductionsStats = ({
                 <ParenthesesIcon className="h-5 w-5 text-green-500" />
                 <span className="text-sm font-medium">{item.name}</span>
               </div>
-              <div className="text-2xl font-bold text-teal-600">
+              <div className="text-2xl font-bold text-purple-600">
                 {(
                   (averageConfidenceScoreByMove?.find(
                     (m) => m.move === item.move,
@@ -129,11 +129,11 @@ export const IntroductionsStats = ({
         initial="hidden"
         animate="visible"
         transition={{ duration: 0.5, delay: 0.4 }}
-        className="overflow-hidden"
+        className="overflow-hidden bg-white/70 backdrop-blur-sm border border-gray-100 shadow-md"
       >
-        <CardHeader className="bg-gradient-to-r from-orange-500 to-red-500 text-white">
-          <CardTitle>Sentence Order</CardTitle>
-          <CardDescription className="text-orange-100">
+        <CardHeader className="bg-gradient-to-r from-purple-500/80 to-indigo-500">
+          <CardTitle className="text-white">Sentence Order</CardTitle>
+          <CardDescription className="text-purple-100">
             Average: {averageSentencePositionScore?.avgOrder ?? 0}
           </CardDescription>
         </CardHeader>
@@ -155,7 +155,7 @@ export const IntroductionsStats = ({
                 <ParenthesesIcon className="h-5 w-5 text-orange-500" />
                 <span className="text-sm font-medium">{item.name}</span>
               </div>
-              <div className="text-2xl font-bold text-red-600">
+              <div className="text-2xl font-bold text-indigo-600">
                 {(
                   averageSentencePositionScoreByMove?.find(
                     (m) => m.move === item.move,

@@ -96,12 +96,14 @@ export const Converter = () => {
       transition={{ duration: 0.5 }}
       className="container mx-auto mt-16"
     >
-      <h2 className="text-3xl font-bold mb-8">Try It Now</h2>
+      <h2 className="text-3xl font-bold mb-8 bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-indigo-500">
+        Try It Now
+      </h2>
       <motion.div
         initial={{ scale: 0.95 }}
         animate={{ scale: 1 }}
         transition={{ duration: 0.3 }}
-        className="bg-white dark:bg-gray-900 rounded-xl shadow-lg p-6"
+        className="bg-white/70 backdrop-blur-sm rounded-xl shadow-md border border-gray-100 p-6"
       >
         <div className="grid gap-4">
           <Textarea
@@ -182,7 +184,7 @@ export const Converter = () => {
               exit={{ opacity: 0, y: -20 }}
               className="flex items-center justify-center mt-4"
             >
-              <span className="text-blue-500 font-semibold">Uploading...</span>
+              <span className="text-purple-600 font-semibold">Uploading...</span>
             </motion.div>
           )}
         </AnimatePresence>
@@ -200,7 +202,9 @@ export const Converter = () => {
           transition={{ delay: 0.5, duration: 0.5 }}
           className="mt-8"
         >
-          <h3 className="text-xl font-bold mb-4">Introduction Analysis</h3>
+          <h3 className="text-xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-indigo-500">
+            Introduction Analysis
+          </h3>
 
           {!isExecutingMoves ? (
             <IntroductionAnalysis sentences={sentences} hideFeedbacks={true} />

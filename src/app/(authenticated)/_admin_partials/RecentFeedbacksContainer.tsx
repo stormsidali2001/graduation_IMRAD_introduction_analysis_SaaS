@@ -87,9 +87,9 @@ const RecentFeedbacksContainer = ({ feedbacks }: { feedbacks?: { data?: Sentence
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
     >
-      <Card className="col-span-1 lg:col-span-2">
-        <CardHeader>
-          <CardTitle>Recent Feedback</CardTitle>
+      <Card className="col-span-1 lg:col-span-2 bg-white/70 backdrop-blur-sm border border-gray-100 shadow-md overflow-hidden">
+        <CardHeader className="bg-gradient-to-r from-purple-500/80 to-indigo-500">
+          <CardTitle className="text-white">Recent Feedback</CardTitle>
         </CardHeader>
         <CardContent>
           <Table>

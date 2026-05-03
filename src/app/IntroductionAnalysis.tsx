@@ -38,7 +38,7 @@ export const IntroductionAnalysis = ({
           />
           {index !== merged.length - 1 && (
             <div className="w-full items-center flex justify-center">
-              <ArrowDown className="w-6 h-6" />
+              <ArrowDown className="w-6 h-6 text-purple-300" />
             </div>
           )}
         </React.Fragment>

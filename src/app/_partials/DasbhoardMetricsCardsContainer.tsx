@@ -60,9 +60,8 @@ const iconVariants = {
           animate="visible"
           transition={{ duration: 0.5, delay: index * 0.1 }}
         >
-          <Card className="overflow-hidden">
-            <CardHeader className="relative pb-8 pt-6">
-              <div className="absolute inset-0 " />
+          <Card className="overflow-hidden bg-white/70 backdrop-blur-sm border border-gray-100 shadow-md hover:shadow-lg transition-shadow">
+            <CardHeader className="relative pb-8 pt-6 bg-gradient-to-r from-purple-500/80 to-indigo-500">
               <CardTitle className="relative z-10 text-lg font-semibold text-white">
                 {card.title}
               </CardTitle>
@@ -83,7 +82,7 @@ const iconVariants = {
             </CardHeader>
             <CardContent className="pt-4">
               <motion.div
-                className="text-3xl font-bold"
+                className="text-3xl font-bold text-gray-800"
                 variants={numberVariants}
                 initial="hidden"
                 animate="visible"

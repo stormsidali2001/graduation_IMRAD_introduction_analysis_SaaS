@@ -21,6 +21,7 @@ import {
 import { Toggle } from "@/components/ui/toggle";
 import { UserDtoType } from "@/server/validation/UserDto";
 import { LockIcon, LockOpen, Users } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 import { UserBanAlertDialogBody } from "../../../_partials/UserBanAlertDialogBody";
 import {
   Pagination,
@@ -91,10 +92,15 @@ const Form = ({ users }: { users?: { data?: UserDtoType[]; page?: number; per_pa
           transition={{ duration: 0.5 }}
           className="text-center"
         >
-          <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-4 bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-pink-600">
-            User Management Dashboard
+          <div className="flex justify-center mb-3">
+            <Badge variant="outline" className="bg-purple-100 text-purple-700 border-purple-200 text-xs font-semibold rounded-full">
+              Admin
+            </Badge>
+          </div>
+          <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-4 bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-indigo-500">
+            User Management
           </h1>
-          <p className="mt-4 max-w-3xl mx-auto text-muted-foreground md:text-xl">
+          <p className="mt-4 max-w-3xl mx-auto text-gray-500 md:text-xl">
             Monitor and manage all users from one central, intuitive interface.
           </p>
         </motion.div>
@@ -103,13 +109,13 @@ const Form = ({ users }: { users?: { data?: UserDtoType[]; page?: number; per_pa
           initial={{ scale: 0.95, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           transition={{ duration: 0.5 }}
-          className="bg-card rounded-lg p-6 md:p-8 space-y-6 shadow-lg"
+          className="bg-white/70 backdrop-blur-sm border border-gray-100 rounded-xl p-6 md:p-8 space-y-6 shadow-md"
         >
-          <div className="flex items-center space-x-4 text-primary">
+          <div className="flex items-center space-x-4 text-purple-600">
             <Users size={24} />
-            <h2 className="text-2xl font-semibold">User Overview</h2>
+            <h2 className="text-2xl font-semibold text-gray-800">User Overview</h2>
           </div>
-          <p className="text-muted-foreground">
+          <p className="text-gray-500">
             This section provides a high-level summary of user data, including
             key metrics and overall user management strategy. As a premium user,
             you have access to this exclusive content.
@@ -120,12 +126,11 @@ const Form = ({ users }: { users?: { data?: UserDtoType[]; page?: number; per_pa
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.5 }}
-          className="border rounded-lg overflow-hidden shadow-md"
         >
-          <Card>
-            <CardHeader>
-              <CardTitle>User Accounts</CardTitle>
-              <CardDescription>
+          <Card className="bg-white/70 backdrop-blur-sm border border-gray-100 shadow-md overflow-hidden">
+            <CardHeader className="bg-gradient-to-r from-purple-500/80 to-indigo-500">
+              <CardTitle className="text-white">User Accounts</CardTitle>
+              <CardDescription className="text-purple-100">
                 Displaying {users?.per_page} out of {users?.total} total user
                 accounts.
               </CardDescription>

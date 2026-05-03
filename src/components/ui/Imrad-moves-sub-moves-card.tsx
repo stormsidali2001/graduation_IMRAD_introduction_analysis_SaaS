@@ -8,7 +8,9 @@ export default function ImradMovesSubmovesInfoCard() {
   const moves = [
     {
       title: "Establishing the Research Territory",
-      icon: <Flag className="h-5 w-5" />,
+      icon: <Flag className="h-5 w-5 text-blue-600" />,
+      iconBg: "bg-blue-100",
+      borderColor: "border-t-blue-400",
       submoves: [
         "Show importance or relevance of research area",
         "Introduce and review previous research",
@@ -16,7 +18,9 @@ export default function ImradMovesSubmovesInfoCard() {
     },
     {
       title: "Establishing the Niche",
-      icon: <Target className="h-5 w-5" />,
+      icon: <Target className="h-5 w-5 text-amber-600" />,
+      iconBg: "bg-amber-100",
+      borderColor: "border-t-amber-400",
       submoves: [
         "Claim issues with previous research",
         "Highlight gaps in the field",
@@ -26,7 +30,9 @@ export default function ImradMovesSubmovesInfoCard() {
     },
     {
       title: "Occupying the Niche",
-      icon: <Lightbulb className="h-5 w-5" />,
+      icon: <Lightbulb className="h-5 w-5 text-green-600" />,
+      iconBg: "bg-green-100",
+      borderColor: "border-t-green-400",
       submoves: [
         "Outline purposes and nature of research",
         "State hypothesis or research question",
@@ -61,7 +67,9 @@ export default function ImradMovesSubmovesInfoCard() {
 
   return (
     <div className="w-full">
-      <h3 className="text-xl font-bold mb-4">IMRAD Introduction Moves</h3>
+      <h3 className="text-xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-indigo-500">
+        IMRAD Introduction Moves
+      </h3>
       <p className="text-sm text-gray-600 mb-6 text-left">
         IMRAD moves are essential components in structuring academic papers,
         providing a framework for organizing research and presenting findings
@@ -80,11 +88,11 @@ export default function ImradMovesSubmovesInfoCard() {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
-            <Card className="shadow-md h-full">
+            <Card className={`bg-white/70 backdrop-blur-sm border border-gray-100 shadow-md h-full border-t-4 ${move.borderColor}`}>
               <CardHeader className="pb-2">
-                <CardTitle className="flex items-center text-lg font-semibold">
-                  {move.icon}
-                  <span className="ml-2">{move.title}</span>
+                <CardTitle className="flex items-center gap-2 text-lg font-semibold text-gray-800">
+                  <span className={`p-1.5 rounded-lg ${move.iconBg}`}>{move.icon}</span>
+                  <span>{move.title}</span>
                 </CardTitle>
               </CardHeader>
               <CardContent>

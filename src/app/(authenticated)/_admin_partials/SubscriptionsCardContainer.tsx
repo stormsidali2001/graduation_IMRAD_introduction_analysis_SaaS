@@ -54,13 +54,13 @@ const SubscriptionTableRow = (subscription: SubscriptionDtoType) => {
 const SubscriptionsCardContainer = ({ subscriptions }: { subscriptions?: { data?: SubscriptionDtoType[]; total?: number } }) => {
   return (
     <MotionCard
-      className=""
+      className="bg-white/70 backdrop-blur-sm border border-gray-100 shadow-md overflow-hidden"
       initial="hidden"
       animate="visible"
       variants={fadeInUpVariants}
     >
-      <CardHeader>
-        <CardTitle>Last Subscriptions</CardTitle>
+      <CardHeader className="bg-gradient-to-r from-purple-500/80 to-indigo-500">
+        <CardTitle className="text-white">Last Subscriptions</CardTitle>
       </CardHeader>
       <CardContent>
         <Table>

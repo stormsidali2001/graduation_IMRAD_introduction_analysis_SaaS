@@ -9,7 +9,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { AlertCircle } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 import type { UserDtoType } from "@/server/validation/UserDto";
 import UpdateNameForm from "../_partials/UpdateNameForm";
 import UpdatePasswordForm from "../_partials/UpdatePasswordForm";
@@ -22,41 +22,38 @@ const cardVariants = {
   visible: {
     opacity: 1,
     y: 0,
-    transition: {
-      duration: 0.5,
-    },
-  },
-  hover: {
-    scale: 1.02,
-    transition: {
-      duration: 0.2,
-    },
+    transition: { duration: 0.5 },
   },
 };
 
 const SettingsWrapper = ({ user }: { user: UserDtoType }) => {
   return (
     <motion.div
-      className="container mx-auto p-4 space-y-6"
+      className="container mx-auto p-4 space-y-6 max-w-2xl"
       variants={staggerContainerVariants}
       initial="hidden"
       animate="visible"
     >
-      <motion.h1 className="text-3xl font-bold mb-6" variants={cardVariants}>
-        Settings
-      </motion.h1>
-      <MotionCard variants={cardVariants} whileHover="hover">
-        <CardHeader>
-          <CardTitle>Update Name</CardTitle>
-          <CardDescription>Change your display name</CardDescription>
+      <motion.div variants={cardVariants} className="space-y-2">
+        <Badge variant="outline" className="bg-purple-100 text-purple-700 border-purple-200 text-xs font-semibold rounded-full">
+          Account
+        </Badge>
+        <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-indigo-500">
+          Settings
+        </h1>
+      </motion.div>
+      <MotionCard variants={cardVariants} className="bg-white/70 backdrop-blur-sm border border-gray-100 shadow-md overflow-hidden">
+        <CardHeader className="bg-gradient-to-r from-purple-500/80 to-indigo-500">
+          <CardTitle className="text-white">Update Name</CardTitle>
+          <CardDescription className="text-purple-100">Change your display name</CardDescription>
         </CardHeader>
         <UpdateNameForm user={user} />
       </MotionCard>
 
-      <MotionCard variants={cardVariants} whileHover="hover">
-        <CardHeader>
-          <CardTitle>Change Password</CardTitle>
-          <CardDescription>Update your account password</CardDescription>
+      <MotionCard variants={cardVariants} className="bg-white/70 backdrop-blur-sm border border-gray-100 shadow-md overflow-hidden">
+        <CardHeader className="bg-gradient-to-r from-purple-500/80 to-indigo-500">
+          <CardTitle className="text-white">Change Password</CardTitle>
+          <CardDescription className="text-purple-100">Update your account password</CardDescription>
         </CardHeader>
         <UpdatePasswordForm user={user} />
       </MotionCard>

@@ -111,15 +111,21 @@ export const SentenceRow = ({
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className="bg-card text-card-foreground shadow-lg rounded-lg p-6 hover:shadow-xl transition-shadow duration-300"
+      className="bg-white/70 backdrop-blur-sm border border-gray-100 shadow-md hover:shadow-lg transition-shadow duration-300 rounded-lg p-6"
     >
       <div className="flex flex-col gap-4">
         <div className="flex flex-wrap items-center gap-2">
           {typeof move === "number" && (
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
               <Badge
-                variant="secondary"
-                className="text-xs font-semibold px-2 py-1"
+                variant="outline"
+                className={`text-xs font-semibold px-2 py-1 border ${
+                  move === 0
+                    ? "bg-blue-100 text-blue-800 border-blue-200"
+                    : move === 1
+                      ? "bg-amber-100 text-amber-800 border-amber-200"
+                      : "bg-green-100 text-green-800 border-green-200"
+                }`}
               >
                 {movesDict[move]} ({(moveConfidence * 100).toFixed(1)}%)
               </Badge>
@@ -128,8 +134,14 @@ export const SentenceRow = ({
           {typeof move === "number" && typeof subMove === "number" && (
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
               <Badge
-                variant="secondary"
-                className="text-xs font-semibold px-2 py-1"
+                variant="outline"
+                className={`text-xs font-semibold px-2 py-1 border ${
+                  move === 0
+                    ? "bg-blue-50 text-blue-700 border-blue-100"
+                    : move === 1
+                      ? "bg-amber-50 text-amber-700 border-amber-100"
+                      : "bg-green-50 text-green-700 border-green-100"
+                }`}
               >
                 {subMoveDict[move]?.[subMove]} (
                 {(subMoveConfidence * 100).toFixed(1)}%)

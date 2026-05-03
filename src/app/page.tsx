@@ -130,7 +130,7 @@ function TestimonialCard({
               <StarIcon key={i} className="h-4 w-4 fill-amber-400 text-amber-400" />
             ))}
           </div>
-          <p className="text-gray-700 text-sm leading-relaxed italic">"{quote}"</p>
+          <p className="text-gray-700 text-sm leading-relaxed italic">&ldquo;{quote}&rdquo;</p>
           <div className="flex items-center gap-3">
             <div className="h-10 w-10 rounded-full bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center text-white text-sm font-bold flex-shrink-0">
               {initials}
@@ -376,7 +376,7 @@ export default function LandingPage() {
                 </h2>
                 <p className="mx-auto max-w-[600px] text-gray-600 md:text-lg">
                   From PDF upload to sentence-level analysis, IMRAD Analyzer gives
-                  you a complete picture of your introduction's rhetorical structure.
+                  you a complete picture of your introduction&apos;s rhetorical structure.
                 </p>
               </motion.div>
               <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
@@ -490,7 +490,7 @@ export default function LandingPage() {
                   IMRAD Moves and Sub-moves
                 </h2>
                 <p className="mx-auto max-w-[580px] text-gray-600 md:text-base">
-                  Based on Swales' CARS (Create A Research Space) model — the
+                  Based on Swales&apos; CARS (Create A Research Space) model — the
                   gold standard framework for analyzing scientific introductions.
                 </p>
               </motion.div>

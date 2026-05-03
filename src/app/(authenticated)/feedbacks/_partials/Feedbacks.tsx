@@ -10,6 +10,7 @@ import { UserDtoType } from "@/server/validation/UserDto";
 import type { SentenceFeedbackDtoType } from "@/server/validation/feedbackDto";
 import { motion } from "framer-motion";
 import React from "react";
+import { Badge } from "@/components/ui/badge";
 import { MasonryGrid } from "./MasonryGrid";
 import { Button } from "@/components/ui/button";
 import { Download } from "lucide-react";
@@ -51,15 +52,20 @@ export const Feedbacks = ({
           initial={{ y: -20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.2, duration: 0.5 }}
-          className="text-center"
+          className="text-center space-y-3"
         >
-          <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-4 bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-pink-600">
+          <div className="flex justify-center">
+            <Badge variant="outline" className="bg-purple-100 text-purple-700 border-purple-200 text-xs font-semibold rounded-full">
+              Feedback
+            </Badge>
+          </div>
+          <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-4 bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-indigo-500">
             Feedbacks
           </h1>
-          <p className="mt-4 max-w-3xl mx-auto text-muted-foreground md:text-xl">
+          <p className="mt-4 max-w-3xl mx-auto text-gray-500 md:text-xl">
             {user.role !== "Admin" && feedbacks.total > 0 ? (
               <>
-                Thanks for your contribution! You've submitted a total of{" "}
+                Thanks for your contribution! You&apos;ve submitted a total of{" "}
                 <span className="font-semibold text-purple-600">
                   {feedbacks.total}
                 </span>{" "}

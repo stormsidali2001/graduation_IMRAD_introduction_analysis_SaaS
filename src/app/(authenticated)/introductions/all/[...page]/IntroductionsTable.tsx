@@ -155,16 +155,16 @@ export const IntroductionsTable = ({
     animate={{ opacity: 1, y: 0 }}
     transition={{ duration: 0.5 }}
   >
-    <Card>
-      <CardHeader>
+    <Card className="bg-white/70 backdrop-blur-sm border border-gray-100 shadow-md overflow-hidden">
+      <CardHeader className="bg-gradient-to-r from-purple-500/80 to-indigo-500">
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2, duration: 0.5 }}
         >
-          <CardTitle>Introductions</CardTitle>
-          <CardDescription>
-            Showing 1-{per_page} of {total} introductions. You're currently on
+          <CardTitle className="text-white">Introductions</CardTitle>
+          <CardDescription className="text-purple-100">
+            Showing 1-{per_page} of {total} introductions. You&apos;re currently on
             page {page}.
           </CardDescription>
         </motion.div>

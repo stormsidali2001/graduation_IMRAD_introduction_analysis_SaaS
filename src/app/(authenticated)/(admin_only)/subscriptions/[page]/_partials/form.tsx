@@ -28,7 +28,7 @@ import {
 import { type SubscriptionDtoType } from "@/server/validation/SubscriptionDto";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { CalendarIcon, UsersIcon } from "lucide-react";
+import { UsersIcon } from "lucide-react";
 import { getNextPage, getPrevPage } from "@/common/getPage";
 
 const SubscriptionTableRow = ({
@@ -97,10 +97,15 @@ const Form = ({ subscriptions }: { subscriptions?: { data?: SubscriptionDtoType[
           transition={{ duration: 0.5 }}
           className="text-center space-y-4"
         >
-          <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-4 bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-pink-600">
+          <div className="flex justify-center mb-3">
+            <Badge variant="outline" className="bg-purple-100 text-purple-700 border-purple-200 text-xs font-semibold rounded-full">
+              Admin
+            </Badge>
+          </div>
+          <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-4 bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-indigo-500">
             Subscription Management
           </h1>
-          <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+          <p className="text-xl text-gray-500 max-w-3xl mx-auto">
             Monitor and manage all active subscriptions from one central
             dashboard.
           </p>
@@ -110,13 +115,13 @@ const Form = ({ subscriptions }: { subscriptions?: { data?: SubscriptionDtoType[
           initial={{ scale: 0.95, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           transition={{ duration: 0.5 }}
-          className="bg-card rounded-lg p-6 md:p-8 space-y-6 shadow-lg"
+          className="bg-white/70 backdrop-blur-sm border border-gray-100 rounded-xl p-6 md:p-8 space-y-6 shadow-md"
         >
-          <div className="flex items-center space-x-4 text-primary">
+          <div className="flex items-center space-x-4 text-purple-600">
             <UsersIcon size={24} />
-            <h2 className="text-2xl font-semibold">Subscription Overview</h2>
+            <h2 className="text-2xl font-semibold text-gray-800">Subscription Overview</h2>
           </div>
-          <p className="text-muted-foreground">
+          <p className="text-gray-500">
             This section provides a high-level summary of subscription data,
             including key metrics and overall subscription management strategy.
           </p>
@@ -127,10 +132,10 @@ const Form = ({ subscriptions }: { subscriptions?: { data?: SubscriptionDtoType[
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.5 }}
         >
-          <Card className="overflow-hidden border-primary/20 shadow-lg">
-            <CardHeader className="bg-primary/5">
-              <CardTitle className="text-2xl">Active Subscriptions</CardTitle>
-              <CardDescription>
+          <Card className="overflow-hidden bg-white/70 backdrop-blur-sm border border-gray-100 shadow-md">
+            <CardHeader className="bg-gradient-to-r from-purple-500/80 to-indigo-500">
+              <CardTitle className="text-white text-2xl">Active Subscriptions</CardTitle>
+              <CardDescription className="text-purple-100">
                 Showing 1-{subscriptions?.per_page} of {subscriptions?.total}{" "}
                 subscriptions.
               </CardDescription>

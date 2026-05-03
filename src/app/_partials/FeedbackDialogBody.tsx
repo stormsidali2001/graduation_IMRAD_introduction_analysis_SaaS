@@ -117,8 +117,8 @@ export default function FeedbackDialogBody({
                         </FormControl>
                         <SelectContent>
                           {Object.entries(movesDict).map(
-                            ([key, value], index) => (
-                              <SelectItem value={key}>{value}</SelectItem>
+                            ([key, value]) => (
+                              <SelectItem key={key} value={key}>{value}</SelectItem>
                             ),
                           )}
                         </SelectContent>
@@ -149,8 +149,8 @@ export default function FeedbackDialogBody({
                         </FormControl>
                         <SelectContent>
                           {Object.entries(subMoves).map(
-                            ([key, value], index) => (
-                              <SelectItem value={key}>{value}</SelectItem>
+                            ([key, value]) => (
+                              <SelectItem key={key} value={key}>{value}</SelectItem>
                             ),
                           )}
                         </SelectContent>

@@ -59,7 +59,7 @@ export default function FeedbackCard({
       transition={{ duration: 0.5 }}
     >
       <Card className="overflow-hidden">
-        <CardHeader className="pb-4 ">
+        <CardHeader className="pb-4">
           <div className="flex items-center justify-between">
             <motion.div
               className="flex items-center gap-3"
@@ -67,33 +67,33 @@ export default function FeedbackCard({
               animate={{ x: 0, opacity: 1 }}
               transition={{ delay: 0.2 }}
             >
-              <Avatar className="h-12 w-12 border-2 border-white/20">
+              <Avatar className="h-12 w-12 border-2 border-purple-100">
                 <AvatarImage src={image} alt={`${username}'s avatar`} />
-                <AvatarFallback className="bg-purple-300 text-purple-800">
+                <AvatarFallback className="bg-purple-100 text-purple-700">
                   {username.at(0)}
                 </AvatarFallback>
               </Avatar>
               <div>
-                <h3 className="text-lg font-semibold text-white">{username}</h3>
-                <p className="text-sm text-purple-200">
+                <h3 className="text-lg font-semibold text-gray-900">{username}</h3>
+                <p className="text-sm text-gray-500">
                   @{userHandle.toLowerCase().replaceAll(" ", "-")}
                 </p>
               </div>
             </motion.div>
             <div className="flex items-center gap-2">
               {isLiked ? (
-                <ThumbsUp className="w-6 h-6 text-green-300" />
+                <ThumbsUp className="w-6 h-6 text-green-500" />
               ) : (
-                <ThumbsDown className="w-6 h-6 text-red-300 " />
+                <ThumbsDown className="w-6 h-6 text-red-500" />
               )}
               <AlertDialog>
                 <AlertDialogTrigger asChild>
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="hover:bg-purple-600/50 text-white transition-colors duration-200"
+                    className="hover:bg-gray-100 text-gray-500 transition-colors duration-200"
                   >
-                    <Trash2 className="w-5 h-5 text-white" />
+                    <Trash2 className="w-5 h-5 text-gray-500" />
                     <span className="sr-only">
                       {isExecuting ? "Deleting..." : "Delete"}
                     </span>

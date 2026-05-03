@@ -113,7 +113,7 @@ export const Form = () => {
             Welcome Back
           </h2>
           <p className="mt-2 text-center text-sm text-muted-foreground">
-            Don't have an account?{" "}
+            Don&apos;t have an account?{" "}
             <Link
               href="/sign-up"
               className="font-medium text-primary hover:text-primary/80 transition-colors"

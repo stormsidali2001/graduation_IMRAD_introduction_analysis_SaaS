@@ -3,6 +3,7 @@ import { IntroductionsTable } from "./IntroductionsTable";
 import { getIntroductionsAction } from "@/server/actions/get-introductions";
 import { getNextPage, getPrevPage } from "@/common/getPage";
 import { getIntroductionStatsAction } from "@/server/actions/get-inroductions-stats";
+import { Badge } from "@/components/ui/badge";
 
 export default async function Page({
   searchParams: { search },
@@ -33,6 +34,15 @@ export default async function Page({
     <div className="flex flex-col h-full">
       <main className="flex-1 overflow-auto">
         <div className="grid gap-4 p-4 sm:p-6">
+          <div className="space-y-2">
+            <Badge variant="outline" className="bg-purple-100 text-purple-700 border-purple-200 text-xs font-semibold rounded-full">
+              History
+            </Badge>
+            <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-indigo-500">
+              Introduction History
+            </h1>
+            <p className="text-gray-500 text-sm">Browse and review all your analyzed introductions.</p>
+          </div>
           <IntroductionsStats {...stats} />
           <IntroductionsTable
             {...introductions}

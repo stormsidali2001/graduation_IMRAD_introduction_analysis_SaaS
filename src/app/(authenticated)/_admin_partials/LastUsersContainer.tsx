@@ -60,9 +60,9 @@ const UserRow = ({
 const LastUsersContainer = ({ users }: { users?: { total?: number; data?: UserDtoType[] } }) => {
   return (
     <motion.div initial="hidden" animate="visible" variants={fadeInUpVariants}>
-      <Card>
-        <CardHeader>
-          <CardTitle>Total Users</CardTitle>
+      <Card className="bg-white/70 backdrop-blur-sm border border-gray-100 shadow-md overflow-hidden">
+        <CardHeader className="bg-gradient-to-r from-purple-500/80 to-indigo-500">
+          <CardTitle className="text-white">Total Users</CardTitle>
         </CardHeader>
         <CardContent>
           <motion.div

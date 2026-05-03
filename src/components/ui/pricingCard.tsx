@@ -57,8 +57,13 @@ export function Pricing({
 }) {
   return (
     <section id="pricing" className="container py-24 sm:py-32">
+      <div className="flex justify-center mb-4">
+        <Badge variant="outline" className="bg-purple-100 text-purple-700 border-purple-200 text-xs font-semibold rounded-full">
+          Pricing
+        </Badge>
+      </div>
       <motion.h2
-        className="text-4xl md:text-5xl font-bold text-center mb-4"
+        className="text-4xl md:text-5xl font-bold text-center mb-4 bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-indigo-500"
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
@@ -66,7 +71,7 @@ export function Pricing({
         Get Unlimited Access
       </motion.h2>
       <motion.p
-        className="text-xl text-center text-muted-foreground max-w-2xl mx-auto mb-16"
+        className="text-xl text-center text-gray-500 max-w-2xl mx-auto mb-16"
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.2 }}
@@ -78,27 +83,27 @@ export function Pricing({
         {pricingList.map((pricing: PricingList, index: number) => (
           <MotionCard
             key={pricing.title}
-            className={`relative overflow-hidden ${
+            className={`relative overflow-hidden bg-white/70 backdrop-blur-sm border shadow-md hover:shadow-lg transition-shadow ${
               pricing.popular === PopularPlanType.YES
-                ? "border-primary shadow-lg"
-                : "hover:border-primary transition-colors duration-300"
+                ? "border-purple-400 ring-2 ring-purple-300/50"
+                : "border-gray-100"
             }`}
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: index * 0.1 }}
             whileHover={{ scale: 1.03, transition: { duration: 0.2 } }}
           >
-            <CardHeader className="text-center p-6">
-              <CardTitle className="text-2xl font-bold mb-2">
+            <CardHeader className="text-center p-6 bg-gradient-to-r from-purple-500/80 to-indigo-500">
+              <CardTitle className="text-2xl font-bold mb-2 text-white">
                 {pricing.title}
               </CardTitle>
               <div className="mb-4">
-                <span className="text-5xl font-extrabold">
+                <span className="text-5xl font-extrabold text-white">
                   ${pricing.price}
                 </span>
-                <span className="text-gray-100 ml-2">{pricing.billing}</span>
+                <span className="text-purple-100 ml-2">{pricing.billing}</span>
               </div>
-              <CardDescription className="text-md">
+              <CardDescription className="text-md text-purple-100">
                 {pricing.description}
               </CardDescription>
             </CardHeader>
@@ -120,7 +125,7 @@ export function Pricing({
                         delay: index * 0.1 + benefitIndex * 0.1,
                       }}
                     >
-                      <Check className="text-primary mr-2 flex-shrink-0 h-5 w-5" />
+                      <Check className="text-green-500 mr-2 flex-shrink-0 h-5 w-5" />
                       <span>{benefit}</span>
                     </motion.li>
                   ),
