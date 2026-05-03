@@ -1,13 +1,13 @@
 import { IntroductionAnalysis } from "@/app/IntroductionAnalysis";
 import { getNextPage } from "@/common/getPage";
 import { Button } from "@/components/ui/button";
-import { auth } from "@/lib/auth";
+import { getSession } from "@/lib/get-session";
 import { getIntroductionAction } from "@/server/actions/get-introduction";
 import { redirect } from "next/navigation";
 import Markdown from "react-markdown";
 
 const Page = async ({ params: { id } }) => {
-  const session = await auth();
+  const session = await getSession();
   if (!session) redirect("/login");
   const { user } = session;
 

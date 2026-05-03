@@ -15,6 +15,8 @@ import {
 import { $Enums } from "@prisma/client";
 import { SubscriptionDto } from "../validation/SubscriptionDto";
 import { ActionError } from "@/lib/safe-action";
+import { isPreviewMode } from "@/lib/preview-mode";
+import { getMockUsers, getMockSubscriptions } from "@/server/mock/mock-data";
 
 export const findUserByEmail = async (email: string) => {
   const user = await prismaClient.user.findUnique({ where: { email } });
@@ -127,6 +129,7 @@ export const getUsers = async (
   { page, search }: RetrieverParamsDtoType,
   expectUserId: string = undefined,
 ) => {
+  if (isPreviewMode()) return getMockUsers();
   const [total, users] = await Promise.all([
     getTotalUsers(),
     prismaClient.user.findMany({
@@ -161,6 +164,7 @@ export const getSubscriptions = async ({
   page,
   search,
 }: RetrieverParamsDtoType) => {
+  if (isPreviewMode()) return getMockSubscriptions();
   const [total, users] = await Promise.all([
     getTotalSubscriptions(),
     prismaClient.subscription.findMany({

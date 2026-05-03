@@ -6,10 +6,11 @@ import {
 } from "next-safe-action";
 import { cookies } from "next/headers";
 import { z } from "zod";
-import { auth } from "./auth";
+import { getSession } from "./get-session";
 import { redirect } from "next/navigation";
 import prismaClient from "./prisma-client";
 import { $Enums } from "@prisma/client";
+import { isPreviewMode } from "./preview-mode";
 
 export class ActionError extends Error {}
 
@@ -44,7 +45,7 @@ export const actionClient = createSafeActionClient({
 export const authActionClient = actionClient
   // Define authorization middleware.
   .use(async ({ next }) => {
-    const session = await auth();
+    const session = await getSession();
 
     if (!session) {
       throw new Error("Session not found!");
@@ -70,7 +71,7 @@ export const authActionClient = actionClient
   });
 
 export const adminAction = authActionClient.use(async ({ next, ctx }) => {
-  if (ctx.userRole !== $Enums.Role.Admin) {
+  if (!isPreviewMode() && ctx.userRole !== $Enums.Role.Admin) {
     throw new ActionError(
       "Only admin Users have the preivileges to execute this action",
     );
@@ -80,7 +81,7 @@ export const adminAction = authActionClient.use(async ({ next, ctx }) => {
 });
 
 export const normalUserAction = authActionClient.use(async ({ next, ctx }) => {
-  if (ctx.userRole !== $Enums.Role.User) {
+  if (!isPreviewMode() && ctx.userRole !== $Enums.Role.User) {
     throw new ActionError("This action can be executed only by normal users");
   }
 

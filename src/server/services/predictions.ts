@@ -4,8 +4,11 @@ import {
   PredictionOutputDto,
   PredictionOutputDtoType,
 } from "../validation/PredictionDto";
+import { isPreviewMode } from "@/lib/preview-mode";
+import { makeMockPredictions } from "@/server/mock/mock-predictions";
 
 export const makePrediction = async (sentences: string[]) => {
+  if (isPreviewMode()) return makeMockPredictions(sentences);
   const movesPredictions: PredictionOutputDtoType = (
     await getMoves(sentences)
   ).map((prediction, index) => ({

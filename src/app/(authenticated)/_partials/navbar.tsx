@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { auth } from "@/lib/auth";
+import { getSession } from "@/lib/get-session";
 import { getCustomerPortalLinkAction } from "@/server/actions/get-customer-bortal-link";
 import { $Enums } from "@prisma/client";
 import {
@@ -30,7 +30,7 @@ import { cn } from "@/lib/utils";
 import NavbarLinks from "./NavbarLinks";
 
 export const Navbar = async () => {
-  const session = await auth();
+  const session = await getSession();
   if (!session) redirect("/login");
   const { user } = session;
   let customerPortalLink: string = "#";

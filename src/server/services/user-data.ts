@@ -13,6 +13,15 @@ import {
   SentenceFindParamsDtoType,
 } from "../validation/feedbackDto";
 import { DashboardStatsDto } from "../validation/DashboardStatsDto";
+import { isPreviewMode } from "@/lib/preview-mode";
+import {
+  getMockIntroductions,
+  getMockIntroductionById,
+  getMockIntroductionStats,
+  getMockDashboardStats,
+  getMockFeedbacks,
+  getMockFeedbacksArray,
+} from "@/server/mock/mock-data";
 
 const SERVICE = "USER-DATA-SERVICE";
 
@@ -28,6 +37,7 @@ export const createIntroduction = async (
   introduction: IntroductionDtoType,
   isPremium: boolean = false,
 ) => {
+  if (isPreviewMode()) return;
   await callService(SERVICE, "post", "/introductions", {
     data: { ...introduction, isPremium },
   });
@@ -37,6 +47,7 @@ export const getIntroductionsStats = async (
   userId: string,
   role: "User" | "Admin",
 ) => {
+  if (isPreviewMode()) return await getMockIntroductionStats();
   const data = await callService(SERVICE, "get", "/introductions/stats", {
     params: { ...(role === "User" ? { userId } : {}) },
   });
@@ -48,6 +59,7 @@ export const getIntroductions = async (
   params: RetrieverParamsDtoType,
   role: "Admin" | "User" = "User",
 ) => {
+  if (isPreviewMode()) return await getMockIntroductions(params);
   const data = await callService<PaginatedResponse>(SERVICE, "get", "/introductions", {
     params: { ...params, ...(role === "User" ? { userId } : {}) },
   });
@@ -59,6 +71,7 @@ export const getIntroduction = async (
   userId: string,
   role: "Admin" | "User" = "User",
 ) => {
+  if (isPreviewMode()) return await getMockIntroductionById(id);
   const data = await callService(SERVICE, "get", `/introductions/${id}`, {
     params: { ...(role === "User" ? { userId } : {}) },
   });
@@ -69,6 +82,7 @@ export const createSentenceFeedback = async (
   { feedback, introductionId, sentenceId }: CreateSentenceFeedbackDto,
   userId: string,
 ) => {
+  if (isPreviewMode()) return;
   await callService(
     SERVICE,
     "post",
@@ -78,6 +92,7 @@ export const createSentenceFeedback = async (
 };
 
 export const getAllAFeedbacks = async () => {
+  if (isPreviewMode()) return getMockFeedbacksArray();
   const data = await callService(SERVICE, "get", "/introductions/feedbacks/all");
   return SentenceFeedbacksDto.parse(data);
 };
@@ -87,6 +102,7 @@ export const getFeedbacks = async (
   userId?: string,
   role: "Admin" | "User" = "User",
 ) => {
+  if (isPreviewMode()) return getMockFeedbacks();
   const data = await callService<PaginatedResponse>(SERVICE, "get", "/introductions/feedbacks", {
     params: { ...params, ...(role === "Admin" ? {} : { userId }) },
   });
@@ -97,6 +113,7 @@ export const deleteFeedback = async ({
   introductionId,
   sentenceId,
 }: SentenceFindParamsDtoType) => {
+  if (isPreviewMode()) return;
   await callService(
     SERVICE,
     "delete",
@@ -105,6 +122,7 @@ export const deleteFeedback = async ({
 };
 
 export const getDashboardStats = async () => {
+  if (isPreviewMode()) return await getMockDashboardStats();
   const data = await callService(
     SERVICE,
     "get",

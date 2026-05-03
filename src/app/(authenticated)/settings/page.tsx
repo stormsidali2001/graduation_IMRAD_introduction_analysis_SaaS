@@ -1,9 +1,9 @@
-import { auth } from "@/lib/auth";
+import { getSession } from "@/lib/get-session";
 import { redirect } from "next/navigation";
 import SettingsWrapper from "./_partials/SettingsWrapper";
 
 export default async function Page() {
-  const session = await auth();
+  const session = await getSession();
   if (!session) {
     redirect("/login");
   }

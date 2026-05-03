@@ -1,6 +1,16 @@
 import Eureka from "eureka-js-client";
+import { isPreviewMode } from "./preview-mode";
 
-function getEureka() {
+function getEureka(): Eureka {
+  if (isPreviewMode()) {
+    return new Proxy({} as Eureka, {
+      get(_, prop) {
+        if (prop === "getInstancesByAppId") return () => [];
+        return () => {};
+      },
+    });
+  }
+
   const client = new Eureka({
     // application instance information
     instance: {

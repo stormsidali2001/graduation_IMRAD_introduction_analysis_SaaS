@@ -1,14 +1,16 @@
 import React from 'react'
 import FormWrapper from './Form'
-import { auth } from '@/lib/auth'
+import { getSession } from '@/lib/get-session'
+import { isPreviewMode } from '@/lib/preview-mode'
+import { PreviewModeNotice } from '@/components/preview-mode-notice'
 import { redirect } from 'next/navigation'
 
 const page = async () => {
-    const session = await auth() 
-    console.log(session)
-    if(session){
-        redirect("/dashboard")
-    }
+  if (isPreviewMode()) return <PreviewModeNotice />
+  const session = await getSession()
+  if (session) {
+    redirect("/dashboard")
+  }
   return (
     <FormWrapper/>
   )

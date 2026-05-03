@@ -1,13 +1,14 @@
-import { auth } from "@/lib/auth";
+import { getSession } from "@/lib/get-session";
+import { isPreviewMode } from "@/lib/preview-mode";
 import { redirect } from "next/navigation";
 import { $Enums } from "@prisma/client";
 const Layout = async ({ children }) => {
-  const session = await auth();
+  const session = await getSession();
   if (!session) {
     redirect("/login");
   }
   const { user } = session;
-  if (user.role !== $Enums.Role.User) {
+  if (!isPreviewMode() && user.role !== $Enums.Role.User) {
     redirect("/login");
   }
 

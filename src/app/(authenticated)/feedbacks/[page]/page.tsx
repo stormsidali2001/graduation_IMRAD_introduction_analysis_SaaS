@@ -4,12 +4,12 @@ import { getAllFeedbacksAction } from "@/server/actions/get-all-feedbacks";
 import { redirect } from "next/navigation";
 import { movesDict, subMoveDict } from "@/common/moves";
 import { getNextPage, getPrevPage } from "@/common/getPage";
-import { auth } from "@/lib/auth";
+import { getSession } from "@/lib/get-session";
 import { MasonryGrid } from "../_partials/MasonryGrid";
 import { Feedbacks } from "../_partials/Feedbacks";
 
 const Page = async ({ params, searchParams: { search } }) => {
-  const session = await auth();
+  const session = await getSession();
   if (!session) {
     redirect("/login");
   }

@@ -1,5 +1,6 @@
 import { stripe } from "@/lib/stripe";
 import { AppError } from "@/server/errors";
+import { isPreviewMode } from "@/lib/preview-mode";
 
 export const createStripeCustomer = (email: string, name: string) => {
   try {
@@ -14,6 +15,7 @@ export const createStripeCustomer = (email: string, name: string) => {
 };
 
 export const generateStripeCustomerPortalLink = async (customerId: string) => {
+  if (isPreviewMode()) return "#";
   try {
     const session = await stripe.billingPortal.sessions.create({
       customer: customerId,
@@ -37,6 +39,7 @@ export const generateSubscriptionCheckoutSession = async ({
   successUrl: string;
   cancelUrl: string;
 }) => {
+  if (isPreviewMode()) return "#";
   try {
     const session = await stripe.checkout.sessions.create({
       line_items: [{ price: priceId, quantity: 1 }],
