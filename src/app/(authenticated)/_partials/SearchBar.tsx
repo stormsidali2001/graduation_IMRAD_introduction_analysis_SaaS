@@ -11,7 +11,7 @@ export const SearchBar = () => {
   const handleSearch = debounce((text: string) => {
     const url = "/introductions/all/1?search=" + encodeURIComponent(text);
     router.push(url);
-  }, 1000);
+  }, 300);
   return (
     <form className="ml-auto flex-1 sm:flex-initial">
       <div className="relative">

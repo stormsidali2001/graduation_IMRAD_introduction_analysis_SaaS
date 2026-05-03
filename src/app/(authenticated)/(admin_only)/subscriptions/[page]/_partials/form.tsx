@@ -12,7 +12,6 @@ import {
 import {
   Pagination,
   PaginationContent,
-  PaginationEllipsis,
   PaginationItem,
   PaginationNext,
   PaginationPrevious,
@@ -28,6 +27,8 @@ import {
 import { type SubscriptionDtoType } from "@/server/validation/SubscriptionDto";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
+import { SectionBadge } from "@/components/ui/section-badge";
+import { GradientHeading } from "@/components/ui/gradient-heading";
 import { UsersIcon } from "lucide-react";
 import { getNextPage, getPrevPage } from "@/common/getPage";
 
@@ -98,13 +99,9 @@ const Form = ({ subscriptions }: { subscriptions?: { data?: SubscriptionDtoType[
           className="text-center space-y-4"
         >
           <div className="flex justify-center mb-3">
-            <Badge variant="outline" className="bg-purple-100 text-purple-700 border-purple-200 text-xs font-semibold rounded-full">
-              Admin
-            </Badge>
+            <SectionBadge>Admin</SectionBadge>
           </div>
-          <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-4 bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-indigo-500">
-            Subscription Management
-          </h1>
+          <GradientHeading className="text-4xl md:text-5xl mb-4">Subscription Management</GradientHeading>
           <p className="text-xl text-gray-500 max-w-3xl mx-auto">
             Monitor and manage all active subscriptions from one central
             dashboard.

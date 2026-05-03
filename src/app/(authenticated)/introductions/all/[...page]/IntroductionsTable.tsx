@@ -24,28 +24,22 @@ import {
   TableBody,
   TableCell,
 } from "@/components/ui/table";
-import { Badge } from "@/components/ui/badge";
 import {
   Pagination,
   PaginationContent,
-  PaginationEllipsis,
   PaginationItem,
-  PaginationLink,
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-import { ArrowLeft, ArrowRight } from "lucide-react";
-import {
-  IntroductionDto,
-  IntroductionDtoType,
-} from "@/server/validation/introductionDto";
+import { BookOpenIcon } from "lucide-react";
+import { IntroductionDtoType } from "@/server/validation/introductionDto";
 import Link from "next/link";
+import { EmptyState } from "@/components/ui/empty-state";
 
 interface IntroductionProps extends IntroductionDtoType {}
 
 const Introduction = ({
   sentences,
-  sha,
   averageMoveConfidence,
   averageSubMoveConfidence,
   id,
@@ -170,23 +164,36 @@ export const IntroductionsTable = ({
         </motion.div>
       </CardHeader>
       <CardContent>
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Introduction</TableHead>
-              <TableHead>Move Confidence</TableHead>
-              <TableHead>Sub Move Confidence</TableHead>
-              <TableHead>Actions</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            <AnimatePresence>
-              {data.map((introduction, index) => (
-                <Introduction key={index} {...introduction} />
-              ))}
-            </AnimatePresence>
-          </TableBody>
-        </Table>
+        {data.length === 0 ? (
+          <EmptyState
+            icon={BookOpenIcon}
+            title="No introductions yet"
+            description="Analyze your first introduction to see it here."
+            action={
+              <Button asChild>
+                <Link href="/generate">Analyze Introduction</Link>
+              </Button>
+            }
+          />
+        ) : (
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Introduction</TableHead>
+                <TableHead>Move Confidence</TableHead>
+                <TableHead>Sub Move Confidence</TableHead>
+                <TableHead>Actions</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              <AnimatePresence>
+                {data.map((introduction, index) => (
+                  <Introduction key={index} {...introduction} />
+                ))}
+              </AnimatePresence>
+            </TableBody>
+          </Table>
+        )}
         {total_pages > 1 && (
           <motion.div
             initial={{ y: 20, opacity: 0 }}

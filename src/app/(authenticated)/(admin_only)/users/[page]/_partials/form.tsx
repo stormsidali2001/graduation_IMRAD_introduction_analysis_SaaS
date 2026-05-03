@@ -21,7 +21,8 @@ import {
 import { Toggle } from "@/components/ui/toggle";
 import { UserDtoType } from "@/server/validation/UserDto";
 import { LockIcon, LockOpen, Users } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
+import { SectionBadge } from "@/components/ui/section-badge";
+import { GradientHeading } from "@/components/ui/gradient-heading";
 import { UserBanAlertDialogBody } from "../../../_partials/UserBanAlertDialogBody";
 import {
   Pagination,
@@ -93,13 +94,9 @@ const Form = ({ users }: { users?: { data?: UserDtoType[]; page?: number; per_pa
           className="text-center"
         >
           <div className="flex justify-center mb-3">
-            <Badge variant="outline" className="bg-purple-100 text-purple-700 border-purple-200 text-xs font-semibold rounded-full">
-              Admin
-            </Badge>
+            <SectionBadge>Admin</SectionBadge>
           </div>
-          <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-4 bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-indigo-500">
-            User Management
-          </h1>
+          <GradientHeading className="text-4xl md:text-5xl mb-4">User Management</GradientHeading>
           <p className="mt-4 max-w-3xl mx-auto text-gray-500 md:text-xl">
             Monitor and manage all users from one central, intuitive interface.
           </p>

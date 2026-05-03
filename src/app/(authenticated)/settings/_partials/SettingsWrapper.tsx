@@ -9,7 +9,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+import { SectionBadge } from "@/components/ui/section-badge";
+import { GradientHeading } from "@/components/ui/gradient-heading";
 import type { UserDtoType } from "@/server/validation/UserDto";
 import UpdateNameForm from "../_partials/UpdateNameForm";
 import UpdatePasswordForm from "../_partials/UpdatePasswordForm";
@@ -35,12 +36,8 @@ const SettingsWrapper = ({ user }: { user: UserDtoType }) => {
       animate="visible"
     >
       <motion.div variants={cardVariants} className="space-y-2">
-        <Badge variant="outline" className="bg-purple-100 text-purple-700 border-purple-200 text-xs font-semibold rounded-full">
-          Account
-        </Badge>
-        <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-indigo-500">
-          Settings
-        </h1>
+        <SectionBadge>Account</SectionBadge>
+        <GradientHeading className="text-3xl">Settings</GradientHeading>
       </motion.div>
       <MotionCard variants={cardVariants} className="bg-white/70 backdrop-blur-sm border border-gray-100 shadow-md overflow-hidden">
         <CardHeader className="bg-gradient-to-r from-purple-500/80 to-indigo-500">

@@ -10,7 +10,8 @@ import { UserDtoType } from "@/server/validation/UserDto";
 import type { SentenceFeedbackDtoType } from "@/server/validation/feedbackDto";
 import { motion } from "framer-motion";
 import React from "react";
-import { Badge } from "@/components/ui/badge";
+import { SectionBadge } from "@/components/ui/section-badge";
+import { GradientHeading } from "@/components/ui/gradient-heading";
 import { MasonryGrid } from "./MasonryGrid";
 import { Button } from "@/components/ui/button";
 import { Download } from "lucide-react";
@@ -55,13 +56,9 @@ export const Feedbacks = ({
           className="text-center space-y-3"
         >
           <div className="flex justify-center">
-            <Badge variant="outline" className="bg-purple-100 text-purple-700 border-purple-200 text-xs font-semibold rounded-full">
-              Feedback
-            </Badge>
+            <SectionBadge>Feedback</SectionBadge>
           </div>
-          <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-4 bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-indigo-500">
-            Feedbacks
-          </h1>
+          <GradientHeading className="text-4xl md:text-5xl mb-4">Feedbacks</GradientHeading>
           <p className="mt-4 max-w-3xl mx-auto text-gray-500 md:text-xl">
             {user.role !== "Admin" && feedbacks.total > 0 ? (
               <>

@@ -1,11 +1,12 @@
 "use client";
 import React from "react";
 import { motion } from "framer-motion";
-import { ThumbsDownIcon, ThumbsUpIcon } from "lucide-react";
+import { ThumbsDownIcon, ThumbsUpIcon, MessageSquareIcon } from "lucide-react";
 import { movesDict, subMoveDict } from "@/common/moves";
 import type { SentenceFeedbackDtoType } from "@/server/validation/feedbackDto";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { EmptyState } from "@/components/ui/empty-state";
 import {
   Table,
   TableBody,
@@ -92,29 +93,37 @@ const RecentFeedbacksContainer = ({ feedbacks }: { feedbacks?: { data?: Sentence
           <CardTitle className="text-white">Recent Feedback</CardTitle>
         </CardHeader>
         <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Name</TableHead>
-                <TableHead>Correct Move</TableHead>
-                <TableHead>Correct Submove</TableHead>
-                <TableHead>Like/Dislike</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {feedbacks.data.map((f, index) => (
-                <FeedbackRow
-                  key={index}
-                  username={f.feedback.username}
-                  image={f.feedback.image}
-                  predictedMove={f.move}
-                  predictedSubMove={f.subMove}
-                  isLiked={f.feedback.liked}
-                  index={index}
-                />
-              ))}
-            </TableBody>
-          </Table>
+          {!feedbacks?.data?.length ? (
+            <EmptyState
+              icon={MessageSquareIcon}
+              title="No feedbacks yet"
+              description="Feedbacks submitted by users will appear here."
+            />
+          ) : (
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Name</TableHead>
+                  <TableHead>Correct Move</TableHead>
+                  <TableHead>Correct Submove</TableHead>
+                  <TableHead>Like/Dislike</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {feedbacks.data.map((f, index) => (
+                  <FeedbackRow
+                    key={index}
+                    username={f.feedback.username}
+                    image={f.feedback.image}
+                    predictedMove={f.move}
+                    predictedSubMove={f.subMove}
+                    isLiked={f.feedback.liked}
+                    index={index}
+                  />
+                ))}
+              </TableBody>
+            </Table>
+          )}
         </CardContent>
       </Card>
     </motion.div>

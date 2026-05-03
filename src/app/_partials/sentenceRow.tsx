@@ -13,6 +13,7 @@ import FeedbackDialogBody from "./FeedbackDialogBody";
 import { movesDict, subMoveDict } from "@/common/moves";
 import { FeedbackDto } from "@/server/validation/feedbackDto";
 import { motion } from "framer-motion";
+import { getMoveColorClasses } from "@/lib/move-colors";
 
 interface SentenceRowProps {
   sentence: string;
@@ -49,7 +50,7 @@ export const SentenceRow = ({
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.95 }}
               >
-                <Button variant="ghost" className="rounded-full p-2">
+                <Button variant="ghost" className="rounded-full p-2" aria-label="Mark as correct">
                   <ThumbsUp
                     size={24}
                     className="text-primary/80 hover:text-primary transition-all duration-300 ease-in-out"
@@ -70,7 +71,7 @@ export const SentenceRow = ({
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.95 }}
               >
-                <Button variant="ghost" className="rounded-full p-2">
+                <Button variant="ghost" className="rounded-full p-2" aria-label="Mark as incorrect">
                   <ThumbsDown
                     size={24}
                     className="text-primary/80 hover:text-primary transition-all duration-300 ease-in-out"
@@ -119,13 +120,7 @@ export const SentenceRow = ({
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
               <Badge
                 variant="outline"
-                className={`text-xs font-semibold px-2 py-1 border ${
-                  move === 0
-                    ? "bg-blue-100 text-blue-800 border-blue-200"
-                    : move === 1
-                      ? "bg-amber-100 text-amber-800 border-amber-200"
-                      : "bg-green-100 text-green-800 border-green-200"
-                }`}
+                className={`text-xs font-semibold px-2 py-1 border ${getMoveColorClasses(move).badge}`}
               >
                 {movesDict[move]} ({(moveConfidence * 100).toFixed(1)}%)
               </Badge>
@@ -135,13 +130,7 @@ export const SentenceRow = ({
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
               <Badge
                 variant="outline"
-                className={`text-xs font-semibold px-2 py-1 border ${
-                  move === 0
-                    ? "bg-blue-50 text-blue-700 border-blue-100"
-                    : move === 1
-                      ? "bg-amber-50 text-amber-700 border-amber-100"
-                      : "bg-green-50 text-green-700 border-green-100"
-                }`}
+                className={`text-xs font-semibold px-2 py-1 border ${getMoveColorClasses(move).badgeSoft}`}
               >
                 {subMoveDict[move]?.[subMove]} (
                 {(subMoveConfidence * 100).toFixed(1)}%)

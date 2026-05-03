@@ -2,6 +2,8 @@
 import React from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { fadeInUpVariants, staggerContainerVariants } from "@/lib/animation-variants";
+import { EmptyState } from "@/components/ui/empty-state";
+import { CreditCardIcon } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -63,27 +65,31 @@ const SubscriptionsCardContainer = ({ subscriptions }: { subscriptions?: { data?
         <CardTitle className="text-white">Last Subscriptions</CardTitle>
       </CardHeader>
       <CardContent>
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>User</TableHead>
-              <TableHead>Period</TableHead>
-              <TableHead>Start Date</TableHead>
-              <TableHead>Expires At</TableHead>
-            </TableRow>
-          </TableHeader>
-          <AnimatePresence>
-            <motion.tbody
-              variants={staggerContainerVariants}
-              initial="hidden"
-              animate="visible"
-            >
-              {subscriptions?.data?.map((s, index) => (
-                <SubscriptionTableRow key={index} {...s} />
-              ))}
-            </motion.tbody>
-          </AnimatePresence>
-        </Table>
+        {!subscriptions?.data?.length ? (
+          <EmptyState icon={CreditCardIcon} title="No subscriptions yet" />
+        ) : (
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>User</TableHead>
+                <TableHead>Period</TableHead>
+                <TableHead>Start Date</TableHead>
+                <TableHead>Expires At</TableHead>
+              </TableRow>
+            </TableHeader>
+            <AnimatePresence>
+              <motion.tbody
+                variants={staggerContainerVariants}
+                initial="hidden"
+                animate="visible"
+              >
+                {subscriptions.data.map((s, index) => (
+                  <SubscriptionTableRow key={index} {...s} />
+                ))}
+              </motion.tbody>
+            </AnimatePresence>
+          </Table>
+        )}
       </CardContent>
     </MotionCard>
   );

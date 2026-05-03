@@ -3,6 +3,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ChevronRight, Flag, Target, Lightbulb } from "lucide-react";
 import { motion } from "framer-motion";
+import { GradientHeading } from "@/components/ui/gradient-heading";
 
 export default function ImradMovesSubmovesInfoCard() {
   const moves = [
@@ -67,9 +68,9 @@ export default function ImradMovesSubmovesInfoCard() {
 
   return (
     <div className="w-full">
-      <h3 className="text-xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-indigo-500">
+      <GradientHeading as="h3" className="text-xl mb-4">
         IMRAD Introduction Moves
-      </h3>
+      </GradientHeading>
       <p className="text-sm text-gray-600 mb-6 text-left">
         IMRAD moves are essential components in structuring academic papers,
         providing a framework for organizing research and presenting findings

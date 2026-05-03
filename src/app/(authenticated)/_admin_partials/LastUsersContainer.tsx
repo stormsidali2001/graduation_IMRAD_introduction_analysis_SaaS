@@ -2,6 +2,8 @@
 import React from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { fadeInUpVariants } from "@/lib/animation-variants";
+import { EmptyState } from "@/components/ui/empty-state";
+import { UsersIcon } from "lucide-react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -73,22 +75,26 @@ const LastUsersContainer = ({ users }: { users?: { total?: number; data?: UserDt
           >
             {users?.total ?? 0}
           </motion.div>
-          <Table className="mt-4">
-            <TableHeader>
-              <TableRow>
-                <TableHead>Name</TableHead>
-                <TableHead>Email</TableHead>
-                <TableHead>Joined</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              <AnimatePresence>
-                {users?.data.map((u, index) => (
-                  <UserRow key={u.email} {...u} index={index} />
-                ))}
-              </AnimatePresence>
-            </TableBody>
-          </Table>
+          {!users?.data?.length ? (
+            <EmptyState icon={UsersIcon} title="No users yet" />
+          ) : (
+            <Table className="mt-4">
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Name</TableHead>
+                  <TableHead>Email</TableHead>
+                  <TableHead>Joined</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                <AnimatePresence>
+                  {users.data.map((u, index) => (
+                    <UserRow key={u.email} {...u} index={index} />
+                  ))}
+                </AnimatePresence>
+              </TableBody>
+            </Table>
+          )}
         </CardContent>
       </Card>
     </motion.div>

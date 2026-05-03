@@ -1,5 +1,7 @@
 import { IntroductionAnalysis } from "@/app/IntroductionAnalysis";
 import { Badge } from "@/components/ui/badge";
+import { SectionBadge } from "@/components/ui/section-badge";
+import { GradientHeading } from "@/components/ui/gradient-heading";
 import { getSession } from "@/lib/get-session";
 import { getIntroductionAction } from "@/server/actions/get-introduction";
 import { redirect } from "next/navigation";
@@ -17,12 +19,8 @@ const Page = async ({ params: { id } }) => {
     <div className="w-full max-w-5xl mx-auto px-4 md:px-6 py-12 md:py-20">
       <div className="space-y-8">
         <div className="text-center space-y-3">
-          <Badge variant="outline" className="bg-purple-100 text-purple-700 border-purple-200 text-xs font-semibold rounded-full">
-            Analysis
-          </Badge>
-          <h1 className="text-4xl md:text-5xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-indigo-500">
-            Introduction Details
-          </h1>
+          <SectionBadge>Analysis</SectionBadge>
+          <GradientHeading className="text-4xl md:text-5xl">Introduction Details</GradientHeading>
           <p className="mt-4 max-w-3xl mx-auto text-gray-500 md:text-xl">
             Explore the details of the introduction and provide feedback on the
             predicted moves and submoves.
