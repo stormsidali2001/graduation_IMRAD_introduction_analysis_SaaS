@@ -2,7 +2,7 @@ import NextAuth, { User, CredentialsSignin } from "next-auth";
 import Google from "next-auth/providers/google";
 import Credentials from "next-auth/providers/credentials";
 import { PrismaAdapter } from "@auth/prisma-adapter";
-import { comparePassword } from "./server-utils";
+import { comparePassword } from "./crypto";
 import {
   findUserByEmail,
   findUserById,

@@ -3,7 +3,7 @@ import {
   getResetRequest,
   updatePasswordAfterReset,
 } from "../services/user-service";
-import { hashPassword } from "@/lib/server-utils";
+import { hashPassword } from "@/lib/crypto";
 
 export const resetPasswordUseCase = async (password: string, token: string) => {
   try {

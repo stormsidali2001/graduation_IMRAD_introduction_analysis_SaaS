@@ -1,4 +1,4 @@
-import { comparePassword, hashPassword } from "@/lib/server-utils";
+import { comparePassword, hashPassword } from "@/lib/crypto";
 import {
   findUserByIdWithCredentials,
   updateUser,

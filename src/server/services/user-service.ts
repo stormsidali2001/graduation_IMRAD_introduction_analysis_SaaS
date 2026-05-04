@@ -1,5 +1,5 @@
 import prismaClient from "@/lib/prisma-client";
-import { hashPassword } from "@/lib/server-utils";
+import { hashPassword } from "@/lib/crypto";
 import { RegisterUserInput } from "@/schema/validation/register-user.schema";
 import { UserAlreadyRegistered } from "../errors";
 import { RetrieverParamsDtoType } from "../validation/RetrieverParamsDto";

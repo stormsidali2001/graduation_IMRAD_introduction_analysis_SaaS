@@ -1,4 +1,4 @@
-import { comparePassword } from "@/lib/server-utils";
+import { comparePassword } from "@/lib/crypto";
 import { findUserByEmailWithCredentials } from "../services/user-service";
 import { UserDto } from "../validation/UserDto";
 

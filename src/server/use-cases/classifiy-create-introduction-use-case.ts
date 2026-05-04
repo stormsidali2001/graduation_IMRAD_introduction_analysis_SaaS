@@ -1,4 +1,4 @@
-import { hashPassword } from "@/lib/server-utils";
+import { hashPassword } from "@/lib/crypto";
 import { createIntroduction } from "../services/user-data";
 import { makePrediction } from "../services/predictions";
 export const classifyCreateIntroductionUsecase = async ({
