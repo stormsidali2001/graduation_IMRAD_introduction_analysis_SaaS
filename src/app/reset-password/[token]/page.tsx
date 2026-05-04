@@ -1,6 +1,6 @@
 import React from "react";
 import Form from "./_partials/form";
-import { auth } from "@/lib/auth";
+import { getSession } from "@/lib/get-session";
 import {
   getUserRedirectUrl,
   verifyResetRequestToken,
@@ -13,7 +13,7 @@ const Page = async ({ params: { token } }) => {
     redirect("/login");
   }
   console.log("token", token);
-  const session = await auth();
+  const session = await getSession();
   if (session) {
     const redirectUrl = getUserRedirectUrl(session.user);
     redirect(redirectUrl);
