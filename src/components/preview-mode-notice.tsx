@@ -12,14 +12,14 @@ export function PreviewModeNotice() {
         {/* Header card */}
         <div className="bg-white rounded-2xl shadow-xl p-8 text-center space-y-3">
           <div className="flex justify-center">
-            <div className="bg-amber-100 rounded-full p-4">
-              <BookOpenIcon className="h-10 w-10 text-amber-600" />
+            <div className="bg-gradient-to-br from-purple-100 to-indigo-100 rounded-full p-4">
+              <BookOpenIcon className="h-10 w-10 text-purple-600" />
             </div>
           </div>
-          <div className="inline-block bg-amber-400 text-amber-900 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wide">
+          <div className="inline-block bg-gradient-to-r from-purple-600 to-indigo-500 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wide">
             Preview Mode
           </div>
-          <h1 className="text-2xl font-bold text-gray-900">Choose How to Explore</h1>
+          <h1 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-indigo-500">Choose How to Explore</h1>
           <p className="text-gray-500 text-sm leading-relaxed">
             This app is running in Preview Mode with mock data — no database,
             Stripe, or AI services required. Choose a role to explore the platform.

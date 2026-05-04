@@ -157,20 +157,20 @@ const PREVIEW_SENTENCES = [
 
 function AppPreview() {
   return (
-    <div className="rounded-2xl border border-gray-200 bg-white shadow-2xl overflow-hidden">
+    <div className="rounded-2xl border border-gray-200 bg-white shadow-xl overflow-hidden">
       <div className="bg-gray-50 border-b border-gray-200 px-4 py-3 flex items-center gap-2">
         <div className="flex gap-1.5">
           <div className="h-3 w-3 rounded-full bg-red-400" />
           <div className="h-3 w-3 rounded-full bg-yellow-400" />
           <div className="h-3 w-3 rounded-full bg-green-400" />
         </div>
-        <div className="flex-1 bg-gray-200 rounded-md h-5 max-w-[200px] mx-auto text-xs text-gray-500 flex items-center justify-center">
+        <div className="flex-1 bg-white border border-gray-200 rounded-md h-5 max-w-[220px] mx-auto text-xs text-gray-400 flex items-center justify-center font-mono">
           imradanalyzer.com/generate
         </div>
       </div>
-      <div className="p-5 space-y-3">
-        <div className="flex items-center justify-between mb-4">
-          <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">
+      <div className="p-5 space-y-2.5">
+        <div className="flex items-center justify-between mb-3">
+          <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
             Sentence Classification
           </p>
           <Badge variant="secondary" className="text-xs">4 sentences</Badge>
@@ -180,18 +180,18 @@ function AppPreview() {
             key={i}
             initial={{ opacity: 0, x: -10 }}
             animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: i * 0.2 + 0.5 }}
+            transition={{ delay: i * 0.15 + 0.4 }}
             className="flex items-start gap-3 p-3 rounded-lg bg-gray-50 border border-gray-100"
           >
             <span className={`shrink-0 text-xs font-semibold px-2 py-0.5 rounded-full border ${s.color}`}>
               {s.label}
             </span>
-            <p className="text-xs text-gray-700 leading-relaxed">{s.text}</p>
+            <p className="text-xs text-gray-600 leading-relaxed">{s.text}</p>
           </motion.div>
         ))}
-        <div className="pt-2 flex items-center gap-2 text-xs text-gray-400">
+        <div className="pt-1 flex items-center gap-2 text-xs text-gray-400">
           <BarChart3Icon className="h-3 w-3" />
-          <span>Avg. confidence: 87%</span>
+          <span>Avg. confidence: <span className="text-green-600 font-semibold">87%</span></span>
         </div>
       </div>
     </div>
@@ -275,49 +275,59 @@ export default function LandingPage() {
       <main className="flex-1 pt-16">
 
         {/* ── Hero ── */}
-        <section className="w-full py-16 md:py-28 lg:py-36 bg-gradient-to-br from-slate-50 via-purple-50 to-indigo-50">
-          <div className="container px-4 md:px-6 max-w-7xl mx-auto">
-            <div className="grid gap-12 lg:grid-cols-2 lg:gap-16 items-center">
+        <section className="relative w-full py-16 md:py-24 lg:py-32 overflow-hidden bg-gradient-to-br from-white via-purple-50 to-indigo-100">
+          {/* Soft decorative blobs — same language as authenticated pages */}
+          <div className="absolute top-0 right-0 w-[480px] h-[480px] bg-indigo-200/40 rounded-full blur-[100px] pointer-events-none -translate-y-1/4 translate-x-1/4" />
+          <div className="absolute bottom-0 left-0 w-[380px] h-[380px] bg-purple-200/40 rounded-full blur-[80px] pointer-events-none translate-y-1/4 -translate-x-1/4" />
+
+          <div className="relative container px-4 md:px-6 max-w-6xl mx-auto">
+            <div className="grid gap-10 lg:grid-cols-2 lg:gap-16 items-center">
+
+              {/* Left: Text */}
               <motion.div
                 initial="hidden"
                 animate="visible"
                 variants={staggerChildren}
-                className="flex flex-col space-y-6"
+                className="flex flex-col space-y-5"
               >
                 <motion.div variants={slideUp}>
-                  <Badge className="bg-purple-100 text-purple-700 border-purple-200 hover:bg-purple-100 text-xs font-semibold px-3 py-1">
-                    Powered by Transformer Models
+                  <Badge className="bg-purple-100 text-purple-700 border border-purple-200 hover:bg-purple-100 text-xs font-semibold px-3 py-1 gap-1.5">
+                    <SparklesIcon className="h-3 w-3" />
+                    Powered by Fine-Tuned Transformer Models
                   </Badge>
                 </motion.div>
+
                 <motion.h1
                   variants={slideUp}
-                  className="text-4xl font-bold tracking-tight sm:text-5xl xl:text-6xl text-gray-800 leading-tight"
+                  className="text-2xl font-bold tracking-tight sm:text-3xl md:text-4xl text-gray-900 leading-snug"
                 >
-                  Understand the Structure of Any Scientific Introduction,{" "}
+                  Understand the Structure of Any{" "}
                   <span className="bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-indigo-500">
-                    Instantly
+                    Scientific Introduction
                   </span>
                 </motion.h1>
+
                 <motion.p
                   variants={slideUp}
-                  className="max-w-[540px] text-gray-600 md:text-lg leading-relaxed"
+                  className="max-w-[480px] text-gray-600 text-sm md:text-base leading-relaxed"
                 >
-                  IMRAD Analyzer uses fine-tuned NLP models to classify every
-                  sentence in your introduction into its rhetorical move —
-                  helping researchers write with precision and reviewers assess
-                  with clarity.
+                  IMRAD Analyzer classifies every sentence in your introduction
+                  into its rhetorical move — helping researchers write with
+                  precision and reviewers assess with clarity.
                 </motion.p>
+
                 <motion.div variants={slideUp} className="flex flex-col gap-3 sm:flex-row">
-                  <Button size="lg" className="h-11 px-8 text-sm" asChild>
+                  <Button size="default" className="px-6 text-sm font-semibold" asChild>
                     <Link href="/sign-up">
                       Analyze Your Introduction
                       <ArrowRightIcon className="ml-2 h-4 w-4" />
                     </Link>
                   </Button>
-                  <Button variant="outline" size="lg" className="h-11 px-8 text-sm" asChild>
-                    <Link href="#how-it-works">Learn More</Link>
+                  <Button variant="outline" size="default" className="px-6 text-sm" asChild>
+                    <Link href="#how-it-works">See How It Works</Link>
                   </Button>
                 </motion.div>
+
                 <motion.div
                   variants={slideUp}
                   className="flex flex-wrap items-center gap-4 text-xs text-gray-500"
@@ -331,12 +341,41 @@ export default function LandingPage() {
                 </motion.div>
               </motion.div>
 
+              {/* Right: App Preview with shadow + floating chips */}
               <motion.div
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.6, delay: 0.2 }}
+                initial={{ opacity: 0, y: 20, scale: 0.97 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                transition={{ duration: 0.6, delay: 0.25, ease: "easeOut" }}
+                className="relative"
               >
-                <AppPreview />
+                {/* Soft shadow halo */}
+                <div className="absolute inset-0 bg-gradient-to-br from-purple-300/30 to-indigo-300/30 rounded-2xl blur-xl scale-[1.03] pointer-events-none" />
+
+                <div className="relative">
+                  <AppPreview />
+                </div>
+
+                {/* Floating chip — top left */}
+                <motion.div
+                  initial={{ opacity: 0, x: -12 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 1.0, duration: 0.35 }}
+                  className="absolute -left-4 top-8 bg-white rounded-xl shadow-lg border border-gray-100 px-3 py-2 flex items-center gap-2 text-xs font-semibold text-gray-700 z-10"
+                >
+                  <div className="h-2 w-2 rounded-full bg-green-500 animate-pulse" />
+                  97% Accuracy
+                </motion.div>
+
+                {/* Floating chip — bottom right */}
+                <motion.div
+                  initial={{ opacity: 0, x: 12 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 1.25, duration: 0.35 }}
+                  className="absolute -right-4 bottom-8 bg-white rounded-xl shadow-lg border border-gray-100 px-3 py-2 flex items-center gap-2 text-xs font-semibold text-gray-700 z-10"
+                >
+                  <ZapIcon className="h-3.5 w-3.5 text-purple-600" />
+                  Instant Analysis
+                </motion.div>
               </motion.div>
             </div>
           </div>
