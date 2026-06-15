@@ -8,7 +8,7 @@ The code that was spread across three separate repositories has been merged into
 
 ## Research Notebooks
 
-Training notebooks and annotation sheets are in [`notebooks/`](./notebooks/). See [NOTEBOOKS.md](./NOTEBOOKS.md) for the full methodology.
+Training notebooks and annotation sheets are in [`notebooks/`](./notebooks/). See the [notebooks README](./notebooks/README.md) for the full methodology.
 
 ---
 
