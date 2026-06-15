@@ -191,6 +191,51 @@ pnpm build   # builds all JS apps via Turborepo in dependency order
 
 ---
 
+## Stripe Setup
+
+The Next.js app uses Stripe for subscription billing (monthly and yearly premium plans). You need a Stripe account and the following env vars in `apps/web/.env`:
+
+```env
+STRIPE_SECRET_KEY=sk_test_...
+STRIPE_WEBHOOK_SECRET=whsec_...
+STRIPE_MONTHLY_PRICE_ID=price_...
+STRIPE_YEARLY_PRICE_ID=price_...
+NEXT_PUBLIC_APP_URL=http://localhost:3000
+```
+
+### 1 — Create products and prices
+
+In the [Stripe Dashboard](https://dashboard.stripe.com/products) create one product with two recurring prices (monthly and yearly). Copy each `price_...` ID into the env vars above.
+
+### 2 — Register the webhook
+
+The webhook endpoint is:
+```
+POST /api/stripe/webhook
+```
+
+#### Local development (Stripe CLI)
+
+```bash
+# Install Stripe CLI, then:
+stripe listen --forward-to http://localhost:3000/api/stripe/webhook
+```
+
+Stripe CLI prints a `whsec_...` signing secret — paste it into `STRIPE_WEBHOOK_SECRET`.
+
+#### Production
+
+In the Stripe Dashboard → **Developers → Webhooks → Add endpoint**:
+
+- **URL**: `https://<your-domain>/api/stripe/webhook`
+- **Events to listen for**:
+  - `checkout.session.completed` — upgrades the user to the premium plan after a successful payment
+  - `customer.subscription.deleted` — resets the user back to the free plan when a subscription is cancelled
+
+Copy the signing secret shown after saving and set it as `STRIPE_WEBHOOK_SECRET`.
+
+---
+
 ## Preview / Mock Mode
 
 Preview mode lets you run the **Next.js frontend without any backend services**. All data comes from in-memory mock fixtures and IndexedDB (browser storage).
