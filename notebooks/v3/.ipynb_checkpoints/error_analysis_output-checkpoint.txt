@@ -1,0 +1,147 @@
+=== MODEL 1 ===
+Total errors: 303 / 16973  (1.8%)
+Overall accuracy: 98.21%
+
+Top confused pairs:
+  True=Move 1 (Establish a Niche)                Pred=Move 0 (Establish Research Territory)     n=  76 (0.4%)
+  True=Move 0 (Establish Research Territory)     Pred=Move 1 (Establish a Niche)                n=  65 (0.4%)
+  True=Move 0 (Establish Research Territory)     Pred=Move 2 (Occupy the Niche)                 n=  61 (0.4%)
+  True=Move 1 (Establish a Niche)                Pred=Move 2 (Occupy the Niche)                 n=  48 (0.3%)
+  True=Move 2 (Occupy the Niche)                 Pred=Move 0 (Establish Research Territory)     n=  38 (0.2%)
+  True=Move 2 (Occupy the Niche)                 Pred=Move 1 (Establish a Niche)                n=  15 (0.1%)
+
+================================================================================
+True: Move 1 (Establish a Niche)
+Pred: Move 0 (Establish Research Territory)  (76 cases)
+================================================================================
+  [1] most of the works for multi-agent systems consider linear or continuous models without the leader.
+  [2] we focus on two groups of languages: 1) spanish, basque, galician, and quechua, and 2) bengali, tamil, and urdu, as these are arguably spoken in culturally related regions, but have very different morphology.
+  [3] note that use of wasserstein generative adversarial network (wgan) for the first time is fairly novel compared to baseline techniques due to its advantages and performance.
+
+================================================================================
+True: Move 0 (Establish Research Territory)
+Pred: Move 1 (Establish a Niche)  (65 cases)
+================================================================================
+  [1] to this date, very few studies have explored how to identify actionable insights from sentiment analysis.
+  [2] although literature highlights the need to focus on improving mental health, a literature gap remains in understanding the relationship between social media use and mental health.
+  [3] in contrast to traditional cfi, even hardware supported proposals, whose purpose is to prevent illegal control flow within the primary architecturally visible control flow of a program, speccfi pushes cfi to the speculation level, where it can be used to determine whether a speculative execution pat
+
+================================================================================
+True: Move 0 (Establish Research Territory)
+Pred: Move 2 (Occupy the Niche)  (61 cases)
+================================================================================
+  [1] to address above issues, we cast sod as a pixel-wise classification task, and propose to solve complementary feature extraction and saliency region classification within a unified framework, as illustrated in fig. ref .
+  [2] cohn2016incorporating introduce extra bidirectional prior regularization to achieve symmetric training from the point view of training objective.
+  [3] this research is significant because it has the potential to lead to new discoveries that could improve our lives.
+
+
+=== MODEL 2 ===
+Total errors: 587 / 5647  (10.4%)
+Overall accuracy: 89.61%
+
+Top confused pairs:
+  True=0.0: Establish importance/relevance       Pred=0.1: Review prior research                n= 346 (6.1%)
+  True=0.1: Review prior research                Pred=0.0: Establish importance/relevance       n= 241 (4.3%)
+
+================================================================================
+True: 0.0: Establish importance/relevance
+Pred: 0.1: Review prior research  (346 cases)
+================================================================================
+  [1] a substantial body of research has demonstrated the critical impact of x on various outcomes.
+  [2] extensive research has demonstrated the crucial role played by x in the field, highlighting its significance and relevance.
+  [3] extensive research conducted demonstrates the crucial role of x in impacting various aspects of human behavior.
+
+================================================================================
+True: 0.1: Review prior research
+Pred: 0.0: Establish importance/relevance  (241 cases)
+================================================================================
+  [1] this paper aims to explore the relationship between x and y, as previous research has not sufficiently examined ...
+  [2] numerous studies have revealed the significance of extensive research in comprehending the intricacies of various phenomena.
+  [3] a recent study has highlighted the key role of x in this field.
+
+
+=== MODEL 3 ===
+Total errors: 302 / 5561  (5.4%)
+Overall accuracy: 94.57%
+
+Top confused pairs:
+  True=1.2: Raise an unclear question            Pred=1.1: Highlight a gap                      n=  55 (1.0%)
+  True=1.1: Highlight a gap                      Pred=1.2: Raise an unclear question            n=  52 (0.9%)
+  True=1.1: Highlight a gap                      Pred=1.0: Claim flaw in prior work             n=  38 (0.7%)
+  True=1.3: Extend prior research                Pred=1.1: Highlight a gap                      n=  35 (0.6%)
+  True=1.2: Raise an unclear question            Pred=1.3: Extend prior research                n=  30 (0.5%)
+  True=1.1: Highlight a gap                      Pred=1.3: Extend prior research                n=  25 (0.4%)
+  True=1.0: Claim flaw in prior work             Pred=1.1: Highlight a gap                      n=  25 (0.4%)
+  True=1.3: Extend prior research                Pred=1.2: Raise an unclear question            n=  15 (0.3%)
+  True=1.0: Claim flaw in prior work             Pred=1.3: Extend prior research                n=  11 (0.2%)
+  True=1.2: Raise an unclear question            Pred=1.0: Claim flaw in prior work             n=   7 (0.1%)
+  True=1.0: Claim flaw in prior work             Pred=1.2: Raise an unclear question            n=   5 (0.1%)
+  True=1.3: Extend prior research                Pred=1.0: Claim flaw in prior work             n=   4 (0.1%)
+
+================================================================================
+True: 1.2: Raise an unclear question
+Pred: 1.1: Highlight a gap  (55 cases)
+================================================================================
+  [1] research has yet to fully examine the mechanisms underlying this phenomenon.
+  [2] the complexities of the underlying mechanisms responsible for cell proliferation are still obscured by an absence of research.
+  [3] the role of environmental factors in influencing the effectiveness of these methods has received surprisingly little attention.
+
+================================================================================
+True: 1.1: Highlight a gap
+Pred: 1.2: Raise an unclear question  (52 cases)
+================================================================================
+  [1] research on the effectiveness of online learning methods remains inconclusive.
+  [2] while this methodology enhanced the performance on the downstream task and helped answer which features perform well, there is a need for methods that can help us understand why certain features are performing better.
+  [3] the research fails to provide information on how these methods actually work in the field.
+
+================================================================================
+True: 1.1: Highlight a gap
+Pred: 1.0: Claim flaw in prior work  (38 cases)
+================================================================================
+  [1] clearly, this is not scalable and warrants the development of natural language processing-based automated tools.
+  [2] however, difficulties like single point of failure (spof) and performance bottlenecks develop owing to the centralized structure of these studies.
+  [3] the existing research has overlooked the crucial role of context in shaping the effectiveness of educational interventions.
+
+
+=== MODEL 4 ===
+Total errors: 158 / 5765  (2.7%)
+Overall accuracy: 97.26%
+
+Top confused pairs:
+  True=2.3: Elaborate value                      Pred=2.2: Share findings                       n=  54 (0.9%)
+  True=2.2: Share findings                       Pred=2.3: Elaborate value                      n=  36 (0.6%)
+  True=2.1: State hypothesis                     Pred=2.0: State purpose/aim                    n=  29 (0.5%)
+  True=2.3: Elaborate value                      Pred=2.0: State purpose/aim                    n=  10 (0.2%)
+  True=2.0: State purpose/aim                    Pred=2.2: Share findings                       n=   7 (0.1%)
+  True=2.2: Share findings                       Pred=2.0: State purpose/aim                    n=   7 (0.1%)
+  True=2.0: State purpose/aim                    Pred=2.1: State hypothesis                     n=   6 (0.1%)
+  True=2.0: State purpose/aim                    Pred=2.3: Elaborate value                      n=   4 (0.1%)
+  True=2.4: Outline structure                    Pred=2.0: State purpose/aim                    n=   2 (0.0%)
+  True=2.1: State hypothesis                     Pred=2.3: Elaborate value                      n=   1 (0.0%)
+  True=2.1: State hypothesis                     Pred=2.2: Share findings                       n=   1 (0.0%)
+  True=2.4: Outline structure                    Pred=2.3: Elaborate value                      n=   1 (0.0%)
+
+================================================================================
+True: 2.3: Elaborate value
+Pred: 2.2: Share findings  (54 cases)
+================================================================================
+  [1] our findings contribute to a deeper understanding of consumer behavior and provide valuable guidance for businesses seeking to enhance customer loyalty.
+  [2] the results provide novel insights into the mechanisms underlying the disease process.
+  [3] our findings provide valuable evidence supporting the notion that regular physical activity can positively impact an individual's mental health.
+
+================================================================================
+True: 2.2: Share findings
+Pred: 2.3: Elaborate value  (36 cases)
+================================================================================
+  [1] this study illuminates, for the first time, the phenomenon of ...
+  [2] to this end, we make the following two key contributions.
+  [3] this research provides new insights into the role of social media in political engagement.
+
+================================================================================
+True: 2.1: State hypothesis
+Pred: 2.0: State purpose/aim  (29 cases)
+================================================================================
+  [1] this study investigates the impact of mindfulness training on students' emotional regulation and academic performance.
+  [2] this study investigates the effects of a novel drug on a particular disease.
+  [3] this research investigates the relationship between job satisfaction and employee performance.
+

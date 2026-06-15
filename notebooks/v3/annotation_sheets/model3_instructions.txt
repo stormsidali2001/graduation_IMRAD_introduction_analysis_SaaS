@@ -1,0 +1,23 @@
+ANNOTATION TASK -- Model 3 (Move 1 Sub-move Classifier)
+=======================================================
+
+All sentences belong to Move 1 (Establishing a Niche).
+In the "your_label" column, write one of: 1.0  1.1  1.2  1.3 (exactly as shown).
+
+VALID LABELS:
+
+  1.0   Claim a flaw in prior work
+        Directly criticises a problem in prior research.
+        Example: "However, these methods fail to consider ..."
+
+  1.1   Highlight a gap in the field
+        Notes that something has not been studied or is insufficient.
+        Example: "Little research has addressed ..."
+
+  1.2   Raise an unclear or unresolved question
+        Notes that something is unclear or poorly understood.
+        Example: "The mechanisms underlying X remain unclear ..."
+
+  1.3   Extend prior research
+        Proposes to build on or extend existing research.
+        Example: "This paper extends the work of ... by ..."

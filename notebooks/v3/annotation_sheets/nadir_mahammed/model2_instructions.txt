@@ -1,0 +1,20 @@
+ANNOTATION TASK -- Model 2 (Move 0 Sub-move Classifier)
+=======================================================
+
+All sentences belong to Move 0 (Establishing a Research Territory).
+In the "your_label" column, write either 0.0 or 0.1 (write exactly as shown).
+
+VALID LABELS:
+
+  0.0   Show that the topic is important / relevant
+        Claims importance, prevalence, or relevance WITHOUT primarily
+        summarising specific prior studies.
+        Examples:
+          "Evidence suggests that X is among the most important factors for ..."
+          "Existing research recognises the critical role played by ..."
+
+  0.1   Introduce and review previous research in the field
+        Mentions, cites, or summarises specific prior studies.
+        Examples:
+          "Extensive research has shown that ..."
+          "Several studies have explored ..."

@@ -1,0 +1,51 @@
+id,sentence,gemini_label,bert_pred_label,full_test_gemini_vs_bert_kappa,annotator_1,annotator_2,annotator_3,annotator_4
+1,we hypothesize that prior methods performed improper interpolation of world parameters or evaluated pitch error in unvoiced regions.,2.1,2.1,0.8565,2.1,2.1,2.1,2.1
+2,"moreover, it matches the performance of autoregressive models on the large moses and guacamol molecular datasets, which were previously too large for one-shot models.",2.3,2.3,0.8565,2.3,2.3,2.3,2.3
+3,"summing up, orkg-assays offers a highly accurate and pragmatic semantification model alleviating unrealistic expectations on scientists to semantify their bioassays from scratch, but instead offers them a mere curatorial role of the automatic annotations.",2.3,2.3,0.8565,2.3,2.3,2.3,2.3
+4,in section  we outline the strategy behind our algorithms.,2.4,2.4,0.8565,2.3,2.3,2.3,2.2
+5,"in these tasks, we hypothesize that the behavior of participants of a group activity are less dependent on self intentions, and instead dominated by how other participants behave.",2.1,2.1,0.8565,2.1,2.1,2.1,2.0
+6,the organization of the rest of the paper is as follows.,2.4,2.4,0.8565,2.3,2.3,2.3,2.2
+7,the ecol-r model achieves a new state of the art on both benchmarks and generalizes well to in-domain images.,2.2,2.3,0.8565,2.3,2.3,2.3,2.3
+8,experimental results show that endemic outperforms nine state-of-the-art models in the task of early fake tweet detection.,2.2,2.2,0.8565,2.2,2.2,2.2,2.2
+9,the main contributions of this paper are:,2.3,2.3,0.8565,2.3,2.3,2.2,2.2
+10,"rq2b technological infrastructure: how do tools, technology and policy support stakeholder groups in performing their roles?",2.1,2.1,0.8565,2.1,2.1,2.1,2.1
+11,"previous works on decoda dialogue summarization reported results of extractive methods and abstractive results, our hypothesis is that by using pre-trained language models, we could get better results in this task.",2.1,2.2,0.8565,2.2,2.2,2.1,2.2
+12,we investigate the use of the proposed dialog acts in an extensive suite of tasks related to language understanding and action prediction for task-driven embodied agents.,2.0,2.0,0.8565,2.0,2.0,1.3,2.0
+13,we believe that such an approach has a high potential to expand our understanding and the applicability of such sensory spaces to different fields of social and cultural analysis.,2.3,2.3,0.8565,2.3,2.3,2.3,2.3
+14,"we propose a new framework, dialguide, to control dialogue response generation using natural language rules which we call guidelines.",2.0,2.0,0.8565,2.0,2.0,2.0,2.0
+15,"in this paper, we present a framework called rocket for efficiently executing all-pairs compute problems on heterogeneous platforms.",2.0,2.0,0.8565,2.0,2.0,2.0,2.0
+16,"trained with patchnet, restorenet is able to achieve the state-of-the-art performance on joint denoising and demosaicing.",2.0,2.3,0.8565,2.3,2.3,2.3,2.3
+17,the remainder of this paper is organized as follows.,2.4,2.4,0.8565,2.3,2.3,2.3,2.3
+18,the remainder of this paper is organized as follows.,2.4,2.4,0.8565,2.3,2.3,2.3,2.2
+19,the rest of the paper is structured as follows:,2.4,2.4,0.8565,2.3,2.3,2.3,2.3
+20,the question we investigate in this paper is how to characterize such rule sets.,2.1,2.1,0.8565,2.1,2.1,2.0,2.1
+21,"in this work, we address the problem of flexible bidirectional translation between robot actions and language.",2.0,2.0,0.8565,2.0,2.0,2.1,2.0
+22,"in this paper, we hypothesize that it is possible to perform imitation learning for vision-based autonomous navigation using video-only demonstrations that have been collected using physically different agents.",2.1,2.1,0.8565,2.1,2.1,2.1,2.1
+23,"our proposed method, called basic, for batch, data and model size combined scaling, achieves drastic improvements over clip and align models.",2.2,2.2,0.8565,2.2,2.2,2.2,2.2
+24,the contribution of this paper lies in the capability of service differentiation of the generalized model.,2.3,2.3,0.8565,2.3,2.3,2.3,2.3
+25,the main contributions of our work include:,2.3,2.3,0.8565,2.3,2.3,2.3,2.3
+26,"it uses a ddc for learning a coarse-level depth map and a cdc for learning a scene depth residual, and then it outputs a fine-level depth map by integrating the obtained coarse-level depth map with the scene depth residual.",2.0,2.0,0.8565,2.0,2.0,2.1,2.0
+27,the remainder of this paper is structured as follows.,2.4,2.4,0.8565,2.3,2.3,2.2,2.3
+28,our experiments show that the pooling layer improves the model capability and generalization performance of resnet.,2.2,2.2,0.8565,2.2,2.2,2.2,2.2
+29,"theoretically, this proposed research could provide insights and con tribute to the literature on av explanations and trust.",2.3,2.3,0.8565,2.3,2.3,2.3,2.3
+30,we assess an1d further improve the perceptual quality of these works.,2.0,2.0,0.8565,2.0,2.0,2.0,2.0
+31,this method significantly increases the performance of the accelerator when compared to the traditional io model.,2.2,2.3,0.8565,2.3,2.3,2.3,2.3
+32,"next, we answer all the research questions and discuss the results in section .",2.1,2.4,0.8565,2.3,2.3,2.3,2.3
+33,"our work demonstrates that region and box annotations can be directly used in the vision-language model pretraining stage, thus bypassing the need for training object detectors.",2.3,2.3,0.8565,2.3,2.3,2.3,2.2
+34,our two-phase optimization approach helps achieve significantly improved temporal consistency while preserving the edited contents.,2.0,2.0,0.8565,2.0,2.0,2.0,2.1
+35,"we further evaluate our approach on four well-known benchmarks (fb15k, fb15k-237, wn18, and wn18rr), showing that trans4e yields competitive performances in several configurations.",2.2,2.2,0.8565,2.2,2.2,2.2,2.2
+36,"the objective of the platform is to maximize profit, while improving the market efficiency.",2.0,2.0,0.8565,2.0,2.0,2.0,2.0
+37,"in section 3, we establish a general framework and propose two solution concepts for two different cases of feasible sets.",2.4,2.4,0.8565,2.3,2.3,2.3,2.3
+38,"in particular, the proposed paper has the following contributions:",2.3,2.3,0.8565,2.3,2.3,2.2,2.3
+39,we obtain some interesting findings by evaluating 14 ssl algorithms (section ref ): (1) introducing diverse tasks from diverse domains can be beneficial to get a comprehensive evaluation of an ssl algorithm; (2) pre-training is more efficient and can improve the generalization; (3) unlabeled data does not consistently improve the performance especially when labeled data is scarce.,2.2,2.2,0.8565,2.2,2.2,2.2,2.1
+40,the rest of this paper is organized as follows.,2.4,2.4,0.8565,2.3,2.3,2.3,2.3
+41,they hypothesize that the inaccuracies in gold summaries give rise to inconsistencies in the generated text.,2.1,2.1,0.8565,2.1,2.1,2.0,2.2
+42,experiments demonstrate the superiority of our model in a quantitative and qualitative manner.,2.2,2.2,0.8565,2.2,2.2,2.2,2.2
+43,"overall, in this work we answer the following research questions.",2.1,2.1,0.8565,2.1,2.1,2.1,2.1
+44,the rest of this paper is organised as follows.,2.4,2.4,0.8565,2.3,2.3,2.3,2.3
+45,"through our experiments, we discover that leveraging transformer models based on attention mechanism [1]} results in better performance even in low context and ambiguous settings.",2.2,2.2,0.8565,2.2,2.2,2.3,2.2
+46,provide a new dataset for both tasks (term recognition and relation extraction) for russian scientific texts and develop a terminator tool for further research experiments.,2.0,2.0,0.8565,2.0,2.0,2.0,2.0
+47,"the paper is articulated as follows: in section the most relevant works, in our opinion, that have dealt with the aspects we have outlined in this paper are presented.",2.4,2.4,0.8565,2.3,2.3,2.3,2.2
+48,the systematic mapping presented in this paper investigates the following questions: (i) the vehicle and dates of publication of the studies; (ii) the contexts of problems that have been addressed in lstm networks related to time series; (iii) the lstm models that are being used to treat problems in time series; (iv) effectiveness of lstm models in predictions; (v) which are the hyperparameter configurations of the networks; (vi) which air quality characteristics are being used the most; (vii) what other neural network methods are being used in conjunction with the lstm.,2.1,2.1,0.8565,2.1,2.1,2.1,2.2
+49,we show consistent improvements over the strong baselines.,2.2,2.2,0.8565,2.2,2.2,2.2,2.2
+50,"we provide visibility to the stakeholder groups' roles, needs and activities, many of which often remain invisible to the external world.",2.3,2.3,0.8565,2.3,2.3,2.3,2.3

@@ -1,0 +1,25 @@
+ANNOTATION TASK -- Model 1 (Overall Move Classifier)
+====================================================
+
+Read each sentence in the CSV. In the "your_label" column, write
+the number (0, 1, or 2) that best matches its rhetorical function.
+
+VALID LABELS:
+
+  0   Move 0: Establishing a Research Territory
+      The sentence shows the topic is important/relevant, or reviews prior research.
+      Examples:
+        "Evidence suggests that X is among the most important factors for ..."
+        "Extensive research has shown that ..."
+
+  1   Move 1: Establishing a Niche
+      The sentence identifies a gap, flaw, or limitation in existing research.
+      Examples:
+        "However, little research has addressed ..."
+        "These methods fail to consider ..."
+
+  2   Move 2: Occupying the Niche
+      The sentence states what the paper does: aims, findings, structure.
+      Examples:
+        "This paper aims to ..."
+        "Our results show that ..."

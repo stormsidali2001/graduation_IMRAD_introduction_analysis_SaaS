@@ -1,0 +1,32 @@
+id,sentence,gemini_label,bert_pred_label,full_test_gemini_vs_bert_kappa,annotator_1,annotator_2,annotator_3,annotator_4
+1,"in particular, we try to answer the following research questions:",2,2,0.9076,2,2,2,1
+2,"currently, no facial pain datasets exists for chronic cancer pain and little research overall has been conducted into machine learning for the identification and evaluation of chronic pain.",1,1,0.9076,1,1,1,0
+3,"the last main contribution of this article is section , where we give our vision regarding the trend of bci and the security challenges that this evolution will generate in the future.",2,2,0.9076,2,2,2,2
+4,the true effect from the video content may be largely overlooked in the prediction.,1,1,0.9076,1,1,2,0
+5,"given the great potential of artificial intelligence, applying ai for software engineering gains encouraging results in software quality [1]}, [2]}, software development [3]}, [4]}, and software project management [5]}, [6]}.",0,0,0.9076,0,0,0,0
+6,word embeddings (we's) are one of the most popular outcomes of deep learning algorithms in the realm of natural language processing.,0,0,0.9076,0,0,1,0
+7,"first, we extract categorical information from unlabeled data in an unsupervised manner by hierarchically clustering features learned by a \(\beta \) -vae.",2,2,0.9076,2,2,2,2
+8,"with our case studies, we demonstrate that data leakage is not only a concern for data in transit but also for data at rest.",2,2,0.9076,2,2,2,2
+9,"we argue that sparse pseudo labels significantly miss meaningful training signals, and thus, the final model may deviate from the optimal solution eventually.",1,1,0.9076,1,1,1,1
+10,the creation of datasets for vqa is a burdensome task as it requires huge human efforts for creating qa pairs and accurate annotations by looking at the visual content.,0,0,0.9076,0,0,0,0
+11,"current benchmark experiments on data-intensive computing tasks[4]} demonstrate that sgx provides data protection against attacks from the host operating system or even system administrators while introducing only moderate computation overhead; therefore, it is widely considered to be suitable for data-intensive computation, including the computing tasks involving personal human genomic data.",0,0,0.9076,0,0,0,0
+12,we extend this line of work by studying adversarially robust streaming algorithms.,1,1,0.9076,1,1,1,2
+13,"we compared sota dp-enabled training frameworks, i.e., dpsgd, dpdfa, dpsgld, and pate, to train a private classifier on the features produced by ssp.",0,0,0.9076,0,0,2,0
+14,"this paper expands significantly from the kd method in , which was proposed for image classification tasks on larger cnns.",1,1,0.9076,1,1,1,1
+15,"despite their state-of-the-art performance, we argue that such a concatenation-based method is suboptimal due to the following two reasons.",1,1,0.9076,1,1,1,1
+16,"this paper presents a generative model for 3d scene perception, called 3dp3.",2,2,0.9076,2,2,2,2
+17,"growing attention has been paid to neural abstractive conversation summarization through a variety of designs including transferring document summarization models [3]}, [4]}, [5]}, utilizing conversational structures [6]}, [7]}, [8]}, [9]}, [10]}, [11]}, [12]}, [13]}, introducing conversational data augmentation [14]}, incorporating controllable signals [15]}, [16]} and pre-training conversation models [17]}.",0,0,0.9076,0,0,0,0
+18,the work by the authors of this paper in [1]} describes a conceptual analysis of factors causing videoconferencing fatigue (vcf).,0,0,0.9076,0,0,0,0
+19,provide a new dataset for both tasks (term recognition and relation extraction) for russian scientific texts and develop a terminator tool for further research experiments.,2,2,0.9076,2,2,2,0
+20,there are domain gaps between the training source data (source domain) and the testing target data (target domain).,0,0,0.9076,0,0,0,0
+21,"this paper introduces parallel context windows (pcw), illustrated in figure ref , a
+new approach for addressing this problem, and shows its efficacy in the in-context learning setup.",2,2,0.9076,2,2,2,2
+22,the purpose of this paper is to provide a comprehensive summary of the latest physical layer security research results for key future wireless network technologies.,2,2,0.9076,2,2,2,2
+23,"different from other rl exploration methods, the proposed exploration method is based on the semantic graph, which is dynamically built during the navigation.",1,0,0.9076,0,0,0,2
+24,"here, we study how different types of randomisation, such as colours and textures, affect the sim-to-real performance.",2,2,0.9076,2,2,2,2
+25,a study of the behavior of metric under different scenarios and a test the limits of the metric to understand its behaviour.,2,2,0.9076,2,2,2,2
+26,"existing proposals for benchmarking fuzzers include lava-m [1]}, a set of open-source program injected with synthetically-generated bugs; google fuzzbench [2]}, a cloud service for running a fuzzer on a set of target programs from the oss-fuzz project; the darpa cyber grand challenge corpus [3]}; and magma [4]}, a benchmark of targets with manually-curated vulnerabilities.",0,0,0.9076,0,0,0,1
+27,"these algorithms mainly involve the use of the barrier synchronization concept, but this has many drawbacks.",1,1,0.9076,1,1,1,1
+28,"finding a pre-existing game satisfying both of these requirements seemed unlikely, so we extended an existing case study to something more akin to a real game, with a view to developing it as a mobile application from which to collect data.",1,1,0.9076,1,1,1,1
+29,"while visual and proprioceptive inputs are common, the modality of touch (as well as acoustics) are relatively underexplored and needs further attention.",1,1,0.9076,1,1,1,1
+30,we examined the necessity of using two cameras in the end-effector design and analyzed the influence of direct teaching.,0,0,0.9076,0,0,0,0

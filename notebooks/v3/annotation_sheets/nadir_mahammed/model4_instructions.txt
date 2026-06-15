@@ -1,0 +1,27 @@
+ANNOTATION TASK -- Model 4 (Move 2 Sub-move Classifier)
+=======================================================
+
+All sentences belong to Move 2 (Occupying the Niche).
+In the "your_label" column, write one of: 2.0  2.1  2.2  2.3  2.4 (exactly as shown).
+
+VALID LABELS:
+
+  2.0   State the purpose / aim of the research
+        Describes what the paper intends to do.
+        Example: "This paper aims to ... / The goal of this work is ..."
+
+  2.1   State the hypothesis or research question
+        Presents an expected result or a formal question.
+        Example: "We hypothesise that ... / We investigate whether ..."
+
+  2.2   Share findings / contributions
+        Describes what was found, built, or achieved.
+        Example: "Our results show ... / We propose a method that ..."
+
+  2.3   Elaborate on the value of the research
+        Explains why the findings matter.
+        Example: "These results contribute to ... / This is significant because ..."
+
+  2.4   Outline the paper structure
+        Describes how the rest of the paper is organised.
+        Example: "The rest of this paper is structured as follows ..."
