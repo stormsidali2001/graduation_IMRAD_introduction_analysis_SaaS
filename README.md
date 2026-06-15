@@ -1,15 +1,14 @@
-# IMRaD Introduction Analysis — Monorepo
+# IMRaD Introduction Analysis
 
-A Micro SaaS platform that uses fine-tuned BERT models to automatically classify sentences in scientific introductions according to their **IMRaD move and sub-move** (Territory → Niche → Occupy the Niche).
+A Micro SaaS that classifies sentences in scientific introductions by their IMRaD move and sub-move (Territory / Niche / Occupy the Niche) using fine-tuned BERT models. Built as part of my graduation thesis.
 
-All services that previously lived in separate repositories have been unified here using **Turborepo** and **pnpm workspaces**.
+The code that was spread across three separate repositories has been merged into this Turborepo monorepo.
 
 ---
 
 ## Research Notebooks
 
-The Jupyter notebooks used to build the dataset and train the BERT models are in [`notebooks/`](./notebooks/).
-See [NOTEBOOKS.md](./NOTEBOOKS.md) for a full walkthrough of the three-phase methodology.
+Training notebooks and annotation sheets are in [`notebooks/`](./notebooks/). See [NOTEBOOKS.md](./NOTEBOOKS.md) for the full methodology.
 
 ---
 
@@ -19,14 +18,14 @@ See [NOTEBOOKS.md](./NOTEBOOKS.md) for a full walkthrough of the three-phase met
 imrad-monorepo/
 ├── apps/
 │   ├── web/                  # Next.js frontend + API (Prisma / PostgreSQL)
-│   ├── user-data/            # Express + MongoDB — stores introductions & feedback
+│   ├── user-data/            # Express + MongoDB (introductions & feedback)
 │   ├── python-services/
-│   │   ├── moves/            # FastAPI — IMRaD classification & summarization
-│   │   └── pdf-extractor/    # FastAPI — extracts introductions from PDFs
-│   └── eureka/               # Spring Boot — service discovery (Eureka Server)
+│   │   ├── moves/            # FastAPI: IMRaD classification & summarization
+│   │   └── pdf-extractor/    # FastAPI: extracts introductions from PDFs
+│   └── eureka/               # Spring Boot: Eureka service registry
 ├── packages/
-│   └── shared/               # Shared Zod DTOs consumed by web + user-data
-├── docker-compose.yml        # Single compose file for all infrastructure
+│   └── shared/               # Shared Zod DTOs used by web + user-data
+├── docker-compose.yml
 ├── turbo.json
 └── pnpm-workspace.yaml
 ```
@@ -37,163 +36,125 @@ imrad-monorepo/
 
 | Tool | Version | Used for |
 |------|---------|----------|
-| Docker & Docker Compose | latest | Infrastructure services |
+| Docker & Docker Compose | latest | Infrastructure |
 | Node.js | 20+ | Next.js, Express |
-| pnpm | 9+ | Monorepo package manager |
+| pnpm | 9+ | JS package manager |
 | Python | 3.13 | FastAPI services |
-| Java JDK | 17+ | Eureka server |
+| Java JDK | 17+ | Eureka |
 
-Install pnpm if needed:
 ```bash
 npm install -g pnpm
 ```
 
 ---
 
-## Infrastructure Setup
+## Infrastructure
 
-All infrastructure (MongoDB, Redis, PostgreSQL, TF-Serving, Nginx) is defined in a single compose file at the repo root.
+All containers are defined in `docker-compose.yml` at the repo root.
 
 ```bash
 # Start everything
 docker compose up -d
 
-# Or start only what you need
-docker compose up -d mongo redis           # for user-data service
-docker compose up -d mongo redis tf-serving  # for full backend
-docker compose up -d postgres              # for web (Prisma)
+# Start only what you need
+docker compose up -d mongo redis             # user-data tests
+docker compose up -d mongo redis tf-serving  # full backend
+docker compose up -d postgres                # web / Prisma
 
-# Stop everything
-docker compose down
-
-# Stop and wipe all data volumes
-docker compose down -v
+docker compose down      # stop
+docker compose down -v   # stop + wipe volumes
 ```
-
-### Service ports
 
 | Container | Port | Purpose |
 |-----------|------|---------|
-| `mongo` | 27017 | MongoDB (user-data & feedback) |
+| `mongo` | 27017 | MongoDB |
 | `mongo-express` | 5311 | MongoDB UI |
 | `redis` | 6379 | Message broker |
-| `tf-serving` | 8501 | TensorFlow model inference |
-| `postgres` | 5432 | PostgreSQL (auth, subscriptions) |
-| `nginx` | 4000 | Optional reverse proxy |
+| `tf-serving` | 8501 | TensorFlow inference |
+| `postgres` | 5432 | PostgreSQL |
+| `nginx` | 4000 | Reverse proxy |
 
-> **TF-Serving note:** model weight files (`variables.data-*`) are not stored in this repo due to size. Download them from Hugging Face before starting TF-Serving:
+> Model weight files (`variables.data-*`) are not in this repo. Download them from Hugging Face and place them under `apps/python-services/tensorflow-models/models/<model_name>/1/variables/`:
 > - [moves classifier](https://huggingface.co/stormsidali2001/IMRAD_introduction_moves_classifier)
 > - [sub-move classifiers (0, 1, 2)](https://huggingface.co/stormsidali2001)
->
-> Place the downloaded files under `apps/python-services/tensorflow-models/models/<model_name>/1/variables/`.
 
 ---
 
-## Running the Platform
+## Running the project
 
-Each runtime manages its own dependencies independently. There is no single command that installs everything — follow the steps below for each language.
+Each language runtime has its own setup. There is no single install command that covers all three.
 
----
+### JavaScript dependencies
 
-### Step 1 — JavaScript / Node.js dependencies
-
-`pnpm install` only installs packages for the JS workspace members: `apps/web`, `apps/user-data`, and `packages/shared`. It does **not** touch Python or Java.
+`pnpm install` covers `apps/web`, `apps/user-data`, and `packages/shared` only. It does not touch Python or Java.
 
 ```bash
-# Run once from the monorepo root
 pnpm install
 ```
 
-For the Next.js app, also push the Prisma schema to PostgreSQL on first run (requires the `postgres` container to be up):
+On first run, push the Prisma schema to PostgreSQL (requires the `postgres` container):
 
 ```bash
 cd apps/web
 pnpm dlx prisma db push
 ```
 
----
+### Python dependencies
 
-### Step 2 — Python dependencies
-
-The two FastAPI services share a single virtual environment at `apps/python-services/.venv`.
+Both FastAPI services share one virtualenv at `apps/python-services/.venv`.
 
 ```bash
 cd apps/python-services
-
-# First time: create the venv and install packages
 python3 -m venv .venv
-source .venv/bin/activate          # Windows: .venv\Scripts\activate
+source .venv/bin/activate        # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
-
-# Subsequent runs: just activate the existing venv
-source .venv/bin/activate
 ```
 
-> Python 3.13 is recommended. The `requirements.txt` file lists every package needed by both the moves and pdf-extractor services.
+### Java dependencies (Eureka)
 
----
-
-### Step 3 — Java dependencies (Eureka)
-
-Maven downloads Java dependencies automatically the first time you run the server. No separate install step is needed.
+Maven fetches everything on first run. Just start the server:
 
 ```bash
 cd apps/eureka
-chmod +x mvnw      # only needed once on macOS / Linux
+chmod +x mvnw    # once, on macOS/Linux
 ./mvnw spring-boot:run
 ```
 
-Maven will fetch all dependencies on first launch (requires internet access). Subsequent starts use the local `~/.m2` cache and are instant.
+Dashboard at [http://localhost:8761](http://localhost:8761). Start Eureka before the Python services so they can register.
 
-Dashboard available at [http://localhost:8761](http://localhost:8761).
+### Starting the Python services
 
-> Eureka must be running before the Python services start so they can register themselves.
-
----
-
-### Step 4 — Start the Python services
-
-With the venv active (Step 2):
+With the venv active:
 
 ```bash
-# AI moves + summarization service  (port 8000)
 cd apps/python-services/moves
 uvicorn main:app --reload --port 8000
 
-# PDF extractor service             (port 8010)
 cd apps/python-services/pdf-extractor
 uvicorn main:app --reload --port 8010
 ```
 
----
-
-### Step 5 — Start the JS services
-
-From the monorepo root:
+### Starting the JS services
 
 ```bash
-# Development (hot-reload for all JS services)
-pnpm dev
+pnpm dev           # all JS services with hot reload
 
-# Or start individual services
-pnpm dev:web          # Next.js only       → http://localhost:3000
-pnpm dev:user-data    # Express only       → http://localhost:8011
-pnpm dev:js           # Both JS services
+pnpm dev:web       # Next.js only        → http://localhost:3000
+pnpm dev:user-data # Express only        → http://localhost:8011
+pnpm dev:js        # both
+```
+
+### Production build
+
+```bash
+pnpm build
 ```
 
 ---
 
-### Step 6 — (Optional) Production build
+## Stripe setup
 
-```bash
-pnpm build   # builds all JS apps via Turborepo in dependency order
-```
-
----
-
-## Stripe Setup
-
-The Next.js app uses Stripe for subscription billing (monthly and yearly premium plans). You need a Stripe account and the following env vars in `apps/web/.env`:
+The app uses Stripe for monthly and yearly premium subscriptions. Add these to `apps/web/.env`:
 
 ```env
 STRIPE_SECRET_KEY=sk_test_...
@@ -203,151 +164,92 @@ STRIPE_YEARLY_PRICE_ID=price_...
 NEXT_PUBLIC_APP_URL=http://localhost:3000
 ```
 
-### 1 — Create products and prices
+**Products and prices:** Create one product in the [Stripe Dashboard](https://dashboard.stripe.com/products) with two recurring prices (monthly and yearly). Copy the `price_...` IDs into the env vars.
 
-In the [Stripe Dashboard](https://dashboard.stripe.com/products) create one product with two recurring prices (monthly and yearly). Copy each `price_...` ID into the env vars above.
+**Webhook endpoint:** `POST /api/stripe/webhook`
 
-### 2 — Register the webhook
-
-The webhook endpoint is:
-```
-POST /api/stripe/webhook
-```
-
-#### Local development (Stripe CLI)
+For local development, forward events with the Stripe CLI:
 
 ```bash
-# Install Stripe CLI, then:
 stripe listen --forward-to http://localhost:3000/api/stripe/webhook
 ```
 
-Stripe CLI prints a `whsec_...` signing secret — paste it into `STRIPE_WEBHOOK_SECRET`.
+The CLI prints a `whsec_...` signing secret to paste into `STRIPE_WEBHOOK_SECRET`.
 
-#### Production
+For production, add an endpoint in the Stripe Dashboard under Developers > Webhooks. Set the URL to `https://<your-domain>/api/stripe/webhook` and subscribe to these two events:
 
-In the Stripe Dashboard → **Developers → Webhooks → Add endpoint**:
+- `checkout.session.completed` — upgrades the user to premium after payment
+- `customer.subscription.deleted` — resets the user to the free plan on cancellation
 
-- **URL**: `https://<your-domain>/api/stripe/webhook`
-- **Events to listen for**:
-  - `checkout.session.completed` — upgrades the user to the premium plan after a successful payment
-  - `customer.subscription.deleted` — resets the user back to the free plan when a subscription is cancelled
-
-Copy the signing secret shown after saving and set it as `STRIPE_WEBHOOK_SECRET`.
+Copy the signing secret from the dashboard into `STRIPE_WEBHOOK_SECRET`.
 
 ---
 
-## Preview / Mock Mode
+## Preview mode
 
-Preview mode lets you run the **Next.js frontend without any backend services**. All data comes from in-memory mock fixtures and IndexedDB (browser storage).
-
-### Enable preview mode
-
-In `apps/web/.env`:
+Lets you run the Next.js frontend without any backend. Data comes from in-memory fixtures and IndexedDB.
 
 ```env
+# apps/web/.env
 PREVIEW_MODE=true
 NEXT_PUBLIC_PREVIEW_MODE=true
 ```
 
-### What preview mode does
+| Feature | Behaviour |
+|---------|-----------|
+| Introduction analysis | Hardcoded mock predictions |
+| Introductions list | 5 seeded entries + new analyses saved to IndexedDB |
+| Introduction details | Loaded from IndexedDB |
+| Premium sections | Template content from mock data |
+| Feedback | UI works, writes are no-ops |
+| Authentication | Still requires Prisma + PostgreSQL |
 
-| Feature | Preview mode behaviour |
-|---------|----------------------|
-| Introduction analysis | Uses hardcoded mock predictions (no AI calls) |
-| Introductions list | Seeded from 5 mock entries; new analyses accumulate in IndexedDB |
-| Introduction details | Loaded from IndexedDB (persists across refreshes) |
-| Premium sections | Shown using template content from mock data |
-| Feedback | UI visible but writes are no-ops |
-| Authentication | Still required (Prisma + PostgreSQL must be running) |
-
-### Disable preview mode
-
-Remove or set both vars to `false` and restart the dev server.
+Set both vars to `false` (or remove them) and restart to go back to the real backend.
 
 ---
 
 ## Testing
 
-All test commands are run from the **monorepo root**.
-
-### Run everything at once
+All commands run from the repo root.
 
 ```bash
-pnpm test:all
+pnpm test:all       # run every suite in order
+pnpm test           # user-data only (vitest + supertest)
+pnpm test:user-data # same, explicit filter
+pnpm test:python    # moves + pdf-extractor (pytest)
+pnpm test:java      # Eureka (Spring Boot Test)
 ```
 
-This runs all four suites in sequence and exits non-zero if any suite fails.
+The user-data suite needs MongoDB and Redis running:
 
-### Run individual suites
-
-```bash
-# JS services (user-data + web) — requires MongoDB + Redis containers
-pnpm test
-
-# user-data only
-pnpm test:user-data
-
-# Python services (moves + pdf-extractor)
-pnpm test:python
-
-# Eureka Spring Boot integration tests
-pnpm test:java
-```
-
-### What each suite covers
-
-#### `pnpm test` — user-data (11 tests, vitest + supertest)
-
-Hits a **real MongoDB** container (`imrad-test-db`) and **real Redis**. No mocks on the DB or cache layer.
-
-| Suite | Tests |
-|-------|-------|
-| `GET /health` | Service liveness |
-| `POST /introductions` | Create + 422 on invalid payload |
-| `GET /introductions` | Empty list; list after create |
-| `GET /introductions/:id` | Fetch by id |
-| `GET /introductions/stats` | Aggregate confidence stats |
-| `GET /introductions/dashboard/stats` | Dashboard object shape |
-| `POST …/feedback/users/:userId` | Attach sentence feedback |
-| `GET /introductions/feedbacks` | Paginated feedback list |
-| `DELETE …/feedbacks` | Remove feedback |
-
-Requires:
 ```bash
 docker compose up -d mongo redis
 ```
 
-#### `pnpm test:python` — moves + pdf-extractor (11 tests, pytest)
+**user-data** (11 tests): hits a real MongoDB container (`imrad-test-db`) and real Redis. Covers health, create/read introductions, stats, feedback CRUD.
 
-| Service | Real | Mocked |
-|---------|------|--------|
-| moves | Redis | TF-Serving (weights missing), LLM (API key), Eureka |
-| pdf-extractor | — | Eureka, PyPDF2 reader (deterministic logic tests) |
+**Python** (11 tests): Redis is real; TF-Serving and the LLM are mocked because the model weights and the API key are not in the repo.
 
-#### `pnpm test:java` — Eureka (3 tests, Spring Boot Test)
+**Eureka** (3 tests): boots the full Spring context on a random port and checks `/actuator/health` and `/eureka/apps`.
 
-Boots the full Spring context on a random port. Tests context load, `/actuator/health`, and `/eureka/apps`.
-
-### Test isolation
-
-The user-data tests use a dedicated `imrad-test-db` database and wipe all collections between tests. Your production `user-data` database is never touched.
+Tests use a dedicated `imrad-test-db` database that gets wiped between each test, so the production database is never touched.
 
 ---
 
-## Port Reference
+## Ports
 
 | Service | Port |
 |---------|------|
-| Next.js (web) | 3000 |
+| Next.js | 3000 |
 | User-data API | 8011 |
-| Moves AI service | 8000 |
+| Moves service | 8000 |
 | PDF extractor | 8010 |
 | Eureka | 8761 |
-| TF-Serving REST | 8501 |
+| TF-Serving | 8501 |
 | MongoDB | 27017 |
 | Redis | 6379 |
 | PostgreSQL | 5432 |
-| Nginx gateway | 4000 |
+| Nginx | 4000 |
 
 ---
 
