@@ -33,6 +33,8 @@ export const SentenceFindParamsDto = z.object({
 });
 
 export type FeedbackDto = z.infer<typeof FeedbackDto>;
+// Declaration merging: allows using CreateSentenceFeedbackDto as both schema and type
+export type CreateSentenceFeedbackDto = z.infer<typeof CreateSentenceFeedbackDto>;
 export type CreateSentenceFeedbackDtoType = z.infer<typeof CreateSentenceFeedbackDto>;
 export type SentenceFeedbackDtoType = z.infer<typeof SentenceFeedbackDto>;
 export type SentenceFeedbacksDtoType = z.infer<typeof SentenceFeedbacksDto>;

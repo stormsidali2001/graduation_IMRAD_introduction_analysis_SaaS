@@ -30,4 +30,6 @@ export const IntroductionStatsDto = z.object({
   ),
 });
 
+// Declaration merging: allows using IntroductionStatsDto as both schema and type
+export type IntroductionStatsDto = z.infer<typeof IntroductionStatsDto>;
 export type IntroductionStatsDtoType = z.infer<typeof IntroductionStatsDto>;
